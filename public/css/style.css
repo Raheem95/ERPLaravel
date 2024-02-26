@@ -1,0 +1,526 @@
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #30a6f0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #30a6f0;
+}
+.Result {
+  font-size: 18px;
+  font-weight: 900;
+  width: 100%;
+  text-align: center;
+}
+.headerLabel {
+  width: 100%;
+  color: #30a6f0;
+  background-color: white;
+  width: 110%;
+  padding: 20px;
+  text-align: center;
+}
+.form {
+  padding-right: 100px;
+}
+.loginStyle {
+  padding: 10;
+  padding-top: 100px;
+  background-image: linear-gradient(to bottom, #30a6f0, #e1efe8);
+}
+.fullScreen {
+  padding: 0;
+  height: 100vh;
+}
+.input {
+  width: 90%;
+  padding: 12px;
+  margin-left: 10%;
+  border-radius: 10px;
+  color: #30a6f0;
+  margin-bottom: 30px;
+  border: 2px solid #30a6f0;
+}
+.input_style {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-weight: 900;
+  color: #4d5961;
+  border: none;
+  border-bottom: 2px solid #074b75;
+  font-size: 17px;
+}
+
+.right_input_style {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-weight: 900;
+  color: #4d5961;
+  border: none;
+  border: 2px solid #07a01e;
+}
+
+.wrong_input_style {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-weight: 900;
+  color: #4d5961;
+  border: none;
+  border: 2px solid #e34b3d;
+}
+.button {
+  transition-duration: 0.4s;
+  width: 40%;
+  margin-left: 30%;
+  padding: 18px;
+  text-align: center;
+  border-radius: 12px;
+  background-color: white;
+  color: #30a6f0;
+  border-color: #30a6f0;
+  font-weight: 900;
+  font-size: 20px;
+}
+
+.button:hover {
+  background-color: #30a6f0;
+  color: whitesmoke;
+}
+.img {
+  width: 100%;
+  height: 100vh;
+}
+
+/* Start navbar style  */
+.maindiv {
+  width: 99%;
+  padding-right: 50px;
+  text-align: right;
+  margin-top: 10px;
+}
+
+.nav-item {
+  margin: 0 10px;
+  padding: 0 !important;
+}
+.navLabel {
+  color: WHITE;
+  font-size: 13px;
+  font-weight: 900;
+  padding: 15px 20px;
+}
+.NavBar {
+  background-color: #30a6f0;
+}
+.p:hover {
+  background-color: white;
+  color: #30a6f0;
+  border-radius: 3px;
+}
+.dropbtn {
+  background-color: #a2afb7;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  text-align: right;
+  background-color: white;
+  min-width: 160px;
+  z-index: 1;
+}
+
+.dropdown-content a {
+  padding: 12px 16px;
+  width: 100%;
+  text-decoration: none;
+  border-bottom: 1px solid #30a6f0;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  color: white !important;
+  background-color: #30a6f0;
+}
+.SubMenue {
+  color: #30a6f0;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Home style */
+
+.MainLabel {
+  background: #30a6f0;
+  border-radius: 5px;
+  padding: 15px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  font-weight: 900;
+}
+th {
+  text-align: center;
+  border: 1px solid #d9d7d7;
+}
+td {
+  padding: 15px !important;
+  font-size: medium;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid #d9d7d7;
+}
+
+tr {
+  background-color: #fafbfc;
+}
+tr:hover {
+  background-color: #a9cef3;
+}
+
+th {
+  padding: 8px 12px 8px 12px;
+  background-color: #30a6f0;
+  color: white;
+  text-align: center !important;
+}
+
+.add_button {
+  transition-duration: 0.4s;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: #30a6f0;
+  color: white;
+  font-weight: 900;
+  font-size: 15px;
+}
+.add_button:hover {
+  background-color: white;
+  color: #30a6f0;
+  border: 1px solid #30a6f0;
+}
+
+.search_button {
+  transition-duration: 0.4s;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: #86cf18;
+  color: white;
+  font-weight: 900;
+  font-size: 15px;
+}
+.search_button:hover {
+  background-color: white;
+  color: #86cf18;
+  border: 1px solid #86cf18;
+}
+.save_button {
+  transition-duration: 0.4s;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: #0c6575;
+  color: white;
+  font-weight: 900;
+  font-size: 15px;
+}
+.save_button:hover {
+  background-color: white;
+  color: #0c6575;
+  border: 1px solid #0c6575;
+}
+.cancel_button {
+  transition-duration: 0.4s;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: #7a3205;
+  color: white;
+  font-weight: 900;
+  font-size: 15px;
+}
+.cancel_button:hover {
+  background-color: white;
+  color: #7a3205;
+  border: 1px solid #7a3205;
+}
+.view_button {
+  transition-duration: 0.4s;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: white;
+  color: #30a6f0;
+  font-weight: 900;
+  font-size: 15px;
+}
+.view_button:hover {
+  background-color: #30a6f0;
+  color: whitesmoke;
+}
+
+.edit_button {
+  transition-duration: 0.4s;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: white;
+  color: #17883f;
+  font-weight: 900;
+  font-size: 15px;
+}
+.edit_button:hover {
+  background-color: #17883f;
+  color: whitesmoke;
+}
+.delete_button {
+  transition-duration: 0.4s;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: white;
+  color: #881717;
+  font-weight: 900;
+  font-size: 15px;
+}
+.delete_button:hover {
+  background-color: #881717;
+  color: whitesmoke;
+}
+.print_button {
+  transition-duration: 0.4s;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  background-color: white;
+  color: #c9539a;
+  font-weight: 900;
+  font-size: 15px;
+}
+.print_button:hover {
+  background-color: #c9539a;
+  color: whitesmoke;
+}
+.fontawesomeIcons {
+  margin-right: 5px;
+}
+.valueLabel {
+  border-radius: 5px;
+  padding: 15px;
+  width: 100%;
+  border: 1px solid #30a6f0;
+  border-radius: 2px;
+  text-align: center;
+  color: #30a6f0;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.VisitationHeaderLabel {
+  background: #30a6f0;
+  border-radius: 5px;
+  padding: 5px;
+  width: 100%;
+  text-align: right;
+  color: white;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.ProceduresLabel {
+  text-align: right;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #30a6f0;
+  width: 100%;
+}
+
+.SeconderyDiv,
+.modal {
+  padding: 20px;
+  border-radius: 10px;
+  background-image: linear-gradient(to bottom, #a4d4f1, #e1efe8);
+}
+
+.select2_style {
+  padding: 15px;
+  margin-bottom: 10px;
+  font-weight: 900;
+  color: #4d5961;
+  border: none;
+}
+
+/* Account Managment Style  */
+.TableHeader {
+  background-color: #30a6f0;
+  color: white;
+  padding: 10px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 900;
+  border: 1px solid white;
+}
+
+.normalCell {
+  background-color: white;
+  color: #30a6f0;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 900;
+  border: 1px solid #30a6f0;
+}
+
+.TableHeader button {
+  color: white;
+}
+
+.TableHeader button:hover {
+  background: white;
+  color: #30a6f0;
+}
+.Centeralized {
+  text-align: center;
+}
+
+/* End of Account Managment Style  */
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f0f0;
+  text-align: center;
+  padding: 0px;
+  display: none;
+}
+
+.FooterLabel {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 900;
+  text-align: right;
+  padding: 5px;
+}
+.popup {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 5px;
+  display: none;
+  z-index: 99;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: right;
+}
+.modal-dialog {
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+}
+@media print {
+  .btn {
+    display: none;
+  }
+  .modal {
+    background: white !important;
+  }
+  @page {
+    padding-bottom: 20mm; /* Adjust the value as needed */
+  }
+  * {
+    visibility: visible !important;
+  }
+  .notPrint {
+    display: none;
+  }
+
+  .table th {
+    background-color: #30a6f0 !important;
+  }
+
+  .footer:last-of-type {
+    display: block;
+  }
+}
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+}
+
+/* Hide the default checkbox input */
+.checkbox-container input {
+  display: none;
+}
+
+/* Style for the custom checkbox */
+.custom-checkbox {
+  width: 45px;
+  height: 45px;
+  border: 2px solid #3498db; /* Border color */
+  border-radius: 4px; /* Border radius */
+  margin-right: 10px; /* Spacing between checkbox and label */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style for the checkmark when checkbox is checked */
+.checkbox-container input:checked + .custom-checkbox {
+  background-color: #3498db; /* Checked background color */
+  border-color: #3498db; /* Checked border color */
+}
+
+/* Style for the checkmark symbol */
+.checkmark {
+  width: 10px; /* Width of the checkmark */
+  height: 5px; /* Height of the checkmark */
+  border-bottom: 2px solid white;
+  border-right: 2px solid white;
+  transform: rotate(320deg) scaleX(-1) scale(2.3);
+  display: none;
+}
+
+/* Show the checkmark when checkbox is checked */
+.checkbox-container input:checked + .custom-checkbox .checkmark {
+  display: block;
+}
+
+/* Style for the label text */
+.checkbox-label {
+  color: #333; /* Label text color */
+  font-size: 14px; /* Label text font size */
+}
