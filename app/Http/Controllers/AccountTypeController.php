@@ -54,7 +54,7 @@ class AccountTypeController extends Controller
         ]);
         $AccountType = new AccountType;
         $AccountType->AccountTypeName = $request->input('AccountTypeName');
-        $AccountType->AccountTypeSource = 1;//$request->input('AccountTypeSource');
+        $AccountType->AccountTypeSource = $request->input('AccountTypeSource');
         $AccountType->AddedBy = auth()->user()->id;
         $AccountType->save();
         return redirect("/AccountManagment/AccountTypes")->with("success", "تمت اضافة  النوع بنجاح");
@@ -103,7 +103,7 @@ class AccountTypeController extends Controller
         ]);
         $AccountType = AccountType::find($id);
         $AccountType->AccountTypeName = $request->input('AccountTypeName');
-        $AccountType->AccountTypeSource = 1;//$request->input('AccountTypeSource');
+        $AccountType->AccountTypeSource = $request->input('AccountTypeSource');
         $AccountType->save();
         return redirect("/AccountManagment/AccountTypes")->with("success", "تمت تعديل  النوع بنجاح");
     }

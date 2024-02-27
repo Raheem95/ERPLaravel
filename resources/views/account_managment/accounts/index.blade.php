@@ -1,53 +1,143 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- resources/views/AccountTypes/index.blade.php -->
+    <!-- resources/views/Accounts/index.blade.php -->
 
-    <h1>انواع الحسابات</h1>
-
-    <a style="width: 20%;" href="AccountTypes/create" class="btn add_button mb-3">اضافة نوع</a>
-    @if (count($AccountTypes) > 0)
-        <table class="table ">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>النوع</th>
-                    <th>دائن\مدين</th>
-                    <th>تعديل</th>
-                    <th>حذف</th>
-                </tr>
-            </thead>
-            @foreach ($AccountTypes as $AccountType)
-                <tbody>
-
-                    <tr>
-                        <td>{{ $AccountType->AccountTypeID }}</td>
-                        <td>{{ $AccountType->AccountTypeName }}</td>
-                        <td>{{ $AccountType->AccountTypeSource }}</td>
-                        <td>
-                            <a href="AccountTypes/{{ $AccountType->AccountTypeID }}/edit" class="btn edit_button">
-                                <i class='fa-solid fa-file-pen fa-2x'></i></a>
-                        </td>
-                        <td>
-                            {!! Form::open([
-                                'action' => ['AccountTypeController@destroy', $AccountType->AccountTypeID],
-                                'method' => 'post',
-                            ]) !!}
-                            {!! Form::hidden('_method', 'DELETE') !!}
-                            {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
-                                'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف الصنف  $AccountType->AccountTypeName ')",
-                            ]) !!}
-
-                            {!! Form::close() !!}
-
-                        </td>
-                    </tr>
-            @endforeach
-            </tbody>
-        </table>
+    <h1> الحسابات</h1>
+    <div class="modal fade" id="ModelAddSubAccount" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body ">
+                    {!! Form::open(['action' => 'AccountController@store', 'method' => 'post']) !!}
+                    <div class="form-group">
+                        {!! Form::label('name', 'اسم الحساب', ['class' => 'ProceduresLabel']) !!}
+                        {!! Form::text('AccountName', null, ['class' => 'input_style', 'placeholder' => 'ادخل اسم الحساب']) !!}
+                        {!! Form::hidden('AccountParent', null, ['id' => 'AccountParent']) !!}
+                        {!! Form::hidden('AccountTypeID', null, ['id' => 'AccountTypeID']) !!}
+                        {!! Form::hidden('CurrencyID', null, ['id' => 'CurrencyID']) !!}
+                    </div>
+                    <!-- Add more form fields as needed -->
+                    {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
+                    {!! Form::close() !!}
+                </div>
+            </div>
+        </div>
+    </div>
+    <a style="width: 20%;" href="Accounts/create" class="btn add_button mb-3">اضافة حساب</a>
+    @if (count($Accounts) > 0)
+        <div class='row MainDiv'>
+            <div class='col-md-8'>
+                <div id = "MyAccountsDiv">
+                </div>
+                <br>
+                <!-- Rest of your HTML content goes here -->
+            </div>
+            <div class="col-md-4 SeconderyDiv">
+                <!-- Table content goes here -->
+            </div>
+        </div>
     @else
         <div class="alert alert-danger Result"> لا توجد انواع حسابات</div>
     @endif
+
+    <script>
+        function accounts() {
+
+            var MyCurrency = {!! json_encode($Currencies) !!};
+            MyCurrency.forEach(function(currency) {
+                var CurrencyID = currency.CurrencyID
+                var CurrencyName = currency.CurrencyName
+                $("#MyAccountsDiv").append($(" <div class = 'row'>"
+
+                    +
+                    "<div class = 'col-md-4 TableHeader '><button style = 'margin-left:5px; font-size:30px' class = 'btn showhideC fa-2x fa-regular fa-square-plus' value = '" +
+                    CurrencyID + "'  id = 'C" + CurrencyID + "' ></button><label id = " + CurrencyName +
+                    ">" +
+                    CurrencyName + "</label></div>" +
+                    "</div>" +
+                    "<div id = 'CA" + CurrencyID + "' style= 'margin-right:50px' >" +
+                    "<div class = 'row'>" +
+                    "<div class = 'col-md-4 TableHeader'>اسم الحساب</div>" +
+                    "<div class = 'col-md-2 TableHeader Centeralized'>رقم الحساب</div>" +
+                    "<div class = 'col-md-3 TableHeader Centeralized'>الرصيد</div>" +
+                    "<div class = 'col-md-1 TableHeader Centeralized'>كشف حساب</div>" +
+                    "<div class = 'col-md-1 TableHeader Centeralized'>اضافة حساب تابع</div>" +
+                    "</div></div>"))
+                $("#CA" + CurrencyID).hide()
+            });
+            var Myaccounts = {!! json_encode($Accounts) !!};
+            Myaccounts.forEach(function(Account) {
+                var formatter = new Intl.NumberFormat();
+                var div = $("#CA" + Account.CurrencyID)
+                var divID = Account.AccountID
+                var AccountParent = Account.AccountParent
+                var Name = Account.AccountName
+                var AccountNumber = Account.AccountNumber
+                var Balance = formatter.format(Account.Balance)
+                var AccountTypeID = Account.AccountTypeID
+                var CurrencyID = Account.CurrencyID
+                if (Account.AccountParent != 0) {
+                    div = $("#" + AccountParent)
+                }
+                var PlusButton = ""
+                if (Account.lastChildNum != 0)
+                    PlusButton =
+                    "<button style = 'margin-left:5px; font-size:30px' class = 'btn showhide fa-2x fa-regular fa-square-plus' value = '" +
+                    divID + "'  id = 'I" + divID + "' ></button>"
+                div.append($("<div class = 'row'>" +
+                    "<div class = 'col-md-4 TableHeader '>" +
+                    PlusButton +
+                    "<label id = " + Name + ">" + Name + "</label>" +
+                    "</div>" +
+                    "<div class = 'col-md-2 normalCell '>" + "<label id = 'accountNumberLabel" + divID +
+                    "'>" + AccountNumber + "</label>" + "</div>" +
+                    "<div class = 'col-md-3 normalCell '><label>" + Balance + "</label></div>" +
+                    "<input type = 'hidden' id = 'AccountTypeID" + divID + "' value = '" + AccountTypeID +
+                    "'>" +
+                    "<input type = 'hidden' id = 'CurrencyID" + divID + "' value = '" + CurrencyID + "'>" +
+                    "<div class = 'col-md-1 normalCell '><button class = 'btn search_button setID ' value = '" +
+                    divID +
+                    "' data-toggle='modal' data-target='#AccountReport'><i class='fa-regular fa-newspaper fa-2x'></i></button></div>" +
+                    "<div class = 'col-md-1 normalCell '><button class = 'btn save_button subaccount' value = '" +
+                    divID +
+                    "' data-toggle='modal' data-target='#ModelAddSubAccount'><i class='fa-solid fa-circle-plus fa-2x'></i></button></div>" +
+                    "</div>" +
+                    "<div id = '" + divID + "' style= 'margin-right:50px;display:none;' ></div>"))
+
+            });
+        }
+        accounts();
+        $(document).on('click', '.showhide', function() {
+            var divID = $(this).val()
+            if ($("#I" + divID).hasClass("fa-2x fa-regular fa-square-plus")) {
+                $("#I" + divID).removeClass("fa-2x fa-regular fa-square-plus").addClass(
+                    "fa-2x fa-regular fa-square-minus")
+                $("#" + divID).show();
+            } else {
+                $("#I" + divID).removeClass("fa-2x fa-regular fa-square-minus").addClass(
+                    "fa-2x fa-regular fa-square-plus")
+                $("#" + divID).hide();
+            }
+        });
+        $(document).on('click', '.showhideC', function() {
+            var divID = $(this).val()
+            if ($("#C" + divID).hasClass("fa-2x fa-regular fa-square-plus")) {
+                $("#C" + divID).removeClass("fa-2x fa-regular fa-square-plus").addClass(
+                    "fa-2x fa-regular fa-square-minus")
+                $("#CA" + divID).show();
+            } else {
+                $("#C" + divID).removeClass("fa-2x fa-regular fa-square-minus").addClass(
+                    "fa-2x fa-regular fa-square-plus")
+                $("#CA" + divID).hide();
+            }
+        });
+
+        $(document).on('click', '.subaccount', function() {
+            var AccountID = $(this).val()
+            $("#AccountParent").val(AccountID);
+            $("#AccountTypeID").val($("#AccountTypeID" + AccountID).val());
+            $("#CurrencyID").val($("#CurrencyID" + AccountID).val());
+        });
+    </script>
 @endsection

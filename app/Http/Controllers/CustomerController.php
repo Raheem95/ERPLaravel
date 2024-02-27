@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Customer;
+use App\Account;
 use Illuminate\Validation\Rule;
 
 
@@ -40,12 +41,13 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'CustomerName' => 'required|unique:customers,CustomerName',
+            'CustomerName' => 'required|unique:customers,CustomerName|unique:accounts,AccountName',
+
             'CustomerPhone' => 'required|unique:customers,CustomerPhone|min:10',
             'CustomerAddress' => 'required',
         ], [
             'CustomerName.required' => 'يجب إدخال اسم العميل',
-            'CustomerName.unique' => 'هذا العميل مسجل مسبقًا',
+            'CustomerName.unique' => 'هذا  الاسم مرتبط بحساب اخر',
             'CustomerPhone.required' => 'يجب إدخال رقم الهاتف',
             'CustomerPhone.unique' => 'رقم الهاتف مسجل مسبقًا',
             'CustomerPhone.min' => 'يجب أن يكون رقم الهاتف على الأقل 10 أرقام',
@@ -55,7 +57,15 @@ class CustomerController extends Controller
         $Customer->CustomerName = $request->input('CustomerName');
         $Customer->CustomerPhone = $request->input('CustomerPhone');
         $Customer->CustomerAddress = $request->input('CustomerAddress');
-        $Customer->AccountID = 0;
+        $Account = new AccountController();
+        $Parent = Account::where('AccountTypeID', 5)->orderBy('AccountID', 'ASC')->first();
+        $lastChildNum = $Parent->lastChildNum + 1;
+        $maxAccountNumber = $Parent->AccountNumber;
+        $maxAccountNumber .= $lastChildNum;
+        $Parent->lastChildNum = $lastChildNum;
+        $Parent->save();
+        $AccountID = $Account->CreateAccount($maxAccountNumber, $request->input('CustomerName'), 5, $Parent->CurrencyID, 0, auth()->user()->id, $Parent->AccountID, 0);
+        $Customer->AccountID = $AccountID;
         $Customer->isSupplier = $request->has('isSupplier') ? 1 : 0;
         $Customer->AddedBy = auth()->user()->id;
         $Customer->save();

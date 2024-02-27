@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Supplier;
+use App\Account;
 use Illuminate\Validation\Rule;
 
 class SupplierController extends Controller
@@ -53,7 +54,15 @@ class SupplierController extends Controller
         $Supplier->SupplierName = $request->input('SupplierName');
         $Supplier->SupplierPhone = $request->input('SupplierPhone');
         $Supplier->SupplierAddress = $request->input('SupplierAddress');
-        $Supplier->AccountID = 0;
+        $Account = new AccountController();
+        $Parent = Account::where('AccountTypeID', 9)->orderBy('AccountID', 'ASC')->first();
+        $lastChildNum = $Parent->lastChildNum + 1;
+        $maxAccountNumber = $Parent->AccountNumber;
+        $maxAccountNumber .= $lastChildNum;
+        $Parent->lastChildNum = $lastChildNum;
+        $Parent->save();
+        $AccountID = $Account->CreateAccount($maxAccountNumber, $request->input('SupplierName'), 5, $Parent->CurrencyID, 0, auth()->user()->id, $Parent->AccountID, 0);
+        $Supplier->AccountID = $AccountID;
         $Supplier->isCustomer = $request->has('isCustomer') ? 1 : 0;
         $Supplier->AddedBy = auth()->user()->id;
         $Supplier->save();

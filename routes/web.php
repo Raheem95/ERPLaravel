@@ -22,11 +22,11 @@ Route::resource('items', 'ItemController');
 Route::resource('customers', 'CustomerController');
 Route::resource('suppliers', 'SupplierController');
 Route::resource('accountmanagment', 'SupplierController');
-Route::get('/AccountManagment', function () {
-    return view('/account_managment.index');
-});
 Route::resource('AccountManagment/AccountTypes', 'AccountTypeController');
 Route::resource('AccountManagment/Accounts', 'AccountController');
+Route::resource('AccountManagment/Currencies', 'CurrencyController');
+Route::resource('AccountManagment/DailyAccountingEntries', 'DailyAccountingEntryController');
+
 
 
 

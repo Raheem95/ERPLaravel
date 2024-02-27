@@ -12,9 +12,17 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
+    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/fontawesome-free-6.2.1-web/css/all.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
 
     <!-- Font Awesome CSS -->
 
@@ -193,13 +201,20 @@
                         </li>
 
                         <li id="AccountSubMenu" class="ViewSubMenu">
-                            <a class="sidebara" href="/AccountManagment">
+                            <a class="sidebara" href="#">
                                 <i class="IconClass IconStyleClose fa-solid fa-sack-dollar"></i>
                                 <label class="HeaderA">حسابات </label>
                             </a>
                         </li>
                         <div id="AccountSubMenuDiv" class='SupMenuClass' style="display:none;">
-                            <a class="sidebara" href="accountsManagment.php"><label class="HeaderA">ادارة
+                            <a class="sidebara" href="{{ url('/AccountManagment/AccountTypes') }}"><label
+                                    class="HeaderA">
+                                    انواع الحسابات </label></a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Currencies') }}"><label
+                                    class="HeaderA">العملات
+                                </label></a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Accounts') }}"><label
+                                    class="HeaderA">ادارة
                                     الحسابات </label></a>
                             <a class="sidebara" href="CreditorsDebtors.php">دائنون و
                                 مدينون </a>
@@ -211,7 +226,8 @@
 
                             <a class="sidebara" href="expenses.php">المنصرفات </a>
 
-                            <a class="sidebara" href="dailyHome.php">القيود </a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/DailyAccountingEntries') }}">القيود
+                            </a>
                         </div>
 
                         <li>
@@ -224,13 +240,14 @@
                 </ul>
             </div>
 
-            <div style="padding:20px 120px;text-align:right;">
+            <div style="padding-right:120px;padding-top:10px;text-align:right;">
                 @include('inc.messages')
                 @yield('content')
             </div>
 
             <!-- Scripts -->
             <script src="{{ asset('js/app.js') }}"></script>
+
 </body>
 @endif
 

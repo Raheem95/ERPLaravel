@@ -3,39 +3,46 @@
 @section('content')
     <!-- resources/views/categories/index.blade.php -->
     <div class="container">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class=" MainLabel">
-                        <h1>اضافة نوع حساب</h1>
-                    </div>
-                </div>
-
-                <div class="panel-body">
-
-                    <div>
-                        {!! Form::open(['action' => 'AccountTypeController@store', 'method' => 'post']) !!}
-                        <div class="form-group">
-                            {!! Form::label('name', 'النوع', ['class' => 'ProceduresLabel']) !!}
-                            {!! Form::text('AccountTypeName', null, ['class' => 'input_style', 'placeholder' => 'ادخل النوع']) !!}
-                        </div>
-                        <?php
-                        $categories = '[{"TypeID":1,"TypeName":دائن},{"TypeID":-1,"TypeName":مدين}]';
-                        $categories = json_decode($categories, true);
-                        $options = collect($categories)->pluck('TypeName', 'TypeID');
-                        ?>
-                        <div class="form-group">
-                            {!! Form::label('name', 'دائن\مدين', ['class' => 'ProceduresLabel']) !!}
-                            {!! Form::select('AccountTypeSource', $options, null, [
-                                'class' => 'input_style',
-                            ]) !!}
-                        </div>
-                        <!-- Add more form fields as needed -->
-                        {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
-                        {!! Form::close() !!}
-                    </div>
-                </div>
-            </div>
+        <div class=" MainLabel">
+            <h1>اضافة حساب</h1>
         </div>
+
+        {!! Form::open(['action' => 'AccountController@store', 'method' => 'post']) !!}
+        <div class = "row">
+
+            <div class="form-group col-md-6">
+                {!! Form::label('AccountName', 'اسم الحساب', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::text('AccountName', null, ['class' => 'input_style', 'placeholder' => 'ادخل اسم الحساب']) !!}
+            </div>
+            <div class="form-group col-md-6">
+                {!! Form::label('Balance', 'الرصيد الافتتاحي ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::text('Balance', null, ['class' => 'input_style', 'placeholder' => 'ادخل الرصيد الافتتاحي ']) !!}
+            </div>
+            <?php
+            $AccountTypes = json_decode($AccountTypes, true);
+            $AccountTypes = collect($AccountTypes)->pluck('AccountTypeName', 'AccountTypeID');
+            ?>
+            <div class="form-group col-md-6">
+                {!! Form::label('name', ' نوع الحساب', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::select('AccountTypeID', $AccountTypes, null, [
+                    'class' => 'input_style',
+                ]) !!}
+
+            </div>
+            <?php
+            $Currencies = json_decode($Currencies, true);
+            $Currencies = collect($Currencies)->pluck('CurrencyName', 'CurrencyID');
+            ?>
+            <div class="form-group col-md-6">
+                {!! Form::label('name', 'العملة', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::select('CurrencyID', $Currencies, null, [
+                    'class' => 'input_style',
+                ]) !!}
+
+            </div> <!-- Add more form fields as needed -->
+            {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
+
+        </div>
+        {!! Form::close() !!}
     </div>
 @endsection

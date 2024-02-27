@@ -2,7 +2,6 @@
 
 @section('content')
     <!-- resources/views/AccountTypes/index.blade.php -->
-
     <h1>انواع الحسابات</h1>
 
     <a style="width: 20%;" href="AccountTypes/create" class="btn add_button mb-3">اضافة نوع</a>
@@ -23,7 +22,13 @@
                     <tr>
                         <td>{{ $AccountType->AccountTypeID }}</td>
                         <td>{{ $AccountType->AccountTypeName }}</td>
-                        <td>{{ $AccountType->AccountTypeSource }}</td>
+                        <td>
+                            @if ($AccountType->AccountTypeSource == 1)
+                                دائن
+                            @else
+                                مدين
+                            @endif
+                        </td>
                         <td>
                             <a href="AccountTypes/{{ $AccountType->AccountTypeID }}/edit" class="btn edit_button">
                                 <i class='fa-solid fa-file-pen fa-2x'></i></a>

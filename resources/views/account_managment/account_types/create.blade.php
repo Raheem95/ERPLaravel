@@ -20,16 +20,18 @@
                             {!! Form::text('AccountTypeName', null, ['class' => 'input_style', 'placeholder' => 'ادخل النوع']) !!}
                         </div>
                         <?php
-                        $categories = '[{"TypeID":1,"TypeName":دائن},{"TypeID":-1,"TypeName":مدين}]';
+                        $categories = '[{"TypeID":1,"TypeName":"دائن"},{"TypeID":-1,"TypeName":"مدين"}]';
                         $categories = json_decode($categories, true);
                         $options = collect($categories)->pluck('TypeName', 'TypeID');
                         ?>
+
                         <div class="form-group">
                             {!! Form::label('name', 'دائن\مدين', ['class' => 'ProceduresLabel']) !!}
                             {!! Form::select('AccountTypeSource', $options, null, [
                                 'class' => 'input_style',
                             ]) !!}
                         </div>
+
                         <!-- Add more form fields as needed -->
                         {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
                         {!! Form::close() !!}
