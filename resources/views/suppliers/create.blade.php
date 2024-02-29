@@ -9,7 +9,6 @@
 
         {!! Form::open(['action' => 'SupplierController@store', 'method' => 'post']) !!}
         <div class = "row">
-
             <div class="form-group col-md-6">
                 {!! Form::label('', 'اسم المورد', ['class' => 'ProceduresLabel']) !!}
                 {!! Form::text('SupplierName', null, ['class' => 'input_style', 'placeholder' => 'ادخل اسم المورد']) !!}

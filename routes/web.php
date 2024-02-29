@@ -22,6 +22,7 @@ Route::resource('items', 'ItemController');
 Route::resource('sales', 'SaleController');
 Route::resource('customers', 'CustomerController');
 Route::resource('suppliers', 'SupplierController');
+Route::resource('stocks', 'StockController');
 Route::resource('accountmanagment', 'SupplierController');
 Route::resource('AccountManagment/AccountTypes', 'AccountTypeController');
 Route::resource('AccountManagment/Accounts', 'AccountController');

@@ -148,9 +148,10 @@ class PurchaseController extends Controller
         $flag = true;
         $UserID = auth()->user()->id;
         $Purchase = Purchase::find($id);
+        $RestrictionID = $Purchase->RestrictionID;
         $Supplier = Supplier::find($request->SupplierID);
         $DailyAccountingEntryController = new DailyAccountingEntryController;
-        $DeletingOldRestrictionIDResult = $DailyAccountingEntryController->deleteDaily($id);
+        $DeletingOldRestrictionIDResult = $DailyAccountingEntryController->deleteDaily($RestrictionID);
         if ($DeletingOldRestrictionIDResult) {
             $DailyAccountingEntryController = new DailyAccountingEntryController;
             $restrictionDetails = "تعديل فاتورة مشتريات بالرقم " . $Purchase->PurchaseNumber . " خاصة بالعميل " . $request->SupplierName;
@@ -166,6 +167,7 @@ class PurchaseController extends Controller
                     $Purchase->SupplierName = $request->SupplierName;
                     $Purchase->AccountID = $Supplier->AccountID;
                     $Purchase->TotalPurchase = $request->TotalPurchase;
+                    $Purchase->RestrictionID = $RestrictionID;
                     $Purchase->save();
                     $PurchaseID = $Purchase->PurchaseID;
                     $NumberOfItems = $request->NumberOfItems;
@@ -201,7 +203,17 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $Purchase = Purchase::find($id);
+        $RestrictionID = $Purchase->RestrictionID;
+        $DailyAccountingEntryController = new DailyAccountingEntryController;
+        $DeletingOldRestrictionIDResult = $DailyAccountingEntryController->deleteDaily($RestrictionID);
+        if ($DeletingOldRestrictionIDResult) {
+            $PurchaseDetails = PurchaseDetails::where("PurchaseID", $id);
+            $PurchaseDetails->delete();
+            if ($Purchase->delete())
+                return redirect("/purchases")->with("success", "تمت حذف  الفاتورة بنجاح");
+        }
+        return redirect("/purchases")->with("error", "خطاء في جذف الفاتورة");
     }
 
     public function AddPayment(Request $request)

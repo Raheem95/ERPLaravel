@@ -190,6 +190,11 @@
                             <label class="HeaderA">المنتجات </label>
                         </a>
                     </li>
+                    <li><a class="sidebara" href="/stocks">
+                            <i class="IconClass IconStyleClose fa-solid fa-file-signature"></i>
+                            <label class="HeaderA">المخازن</label>
+                        </a>
+                    </li>
                     <li>
                         <a class="sidebara" href="/customers">
                             <i class="IconClass IconStyleClose fa-solid fa-passport"></i>
