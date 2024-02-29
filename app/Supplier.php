@@ -17,4 +17,13 @@ class Supplier extends Model
         'isCustomer',
         'AddedBy'
     ];
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'AccountID', 'AccountID');
+    }
+    public function purchase()
+    {
+        return $this->hasMany(Purchase::class, 'SupplierID', 'SupplierID');
+    }
 }

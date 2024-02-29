@@ -167,7 +167,18 @@
                             <i class="IconClass IconStyleClose fa-solid fa-house"></i>
                             <label class="HeaderA">الرئيسية</label></a>
                     </li>
-
+                    <li>
+                        <a class="sidebara" href="/purchases">
+                            <i class="IconClass IconStyleClose fa-solid fa-people-roof"></i>
+                            <label class="HeaderA">المشتريات </label>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="sidebara" href="/sales">
+                            <i class="IconClass IconStyleClose fa-solid fa-people-roof"></i>
+                            <label class="HeaderA">المبيعات </label>
+                        </a>
+                    </li>
                     <li>
                         <a class="sidebara" href="/categories">
                             <i class="IconClass IconStyleClose fa-solid fa-people-roof"></i>

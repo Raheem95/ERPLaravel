@@ -187,11 +187,12 @@ class DailyAccountingEntryController extends Controller
     private function updateAccountBalances($AccountID, $TransactionAmount, $TransactionType)
     {
         $flag = true;
+        if ($TransactionType == 1) {
+            $TransactionAmount *= -1;
+        }
         while ($AccountID != 0) {
             $accountBalance = DB::table('accounts')->where('AccountID', $AccountID)->value('Balance');
-            if ($TransactionType == 1) {
-                $TransactionAmount *= -1;
-            }
+
             $updated = DB::table('accounts')->where('AccountID', $AccountID)
                 ->update(['Balance' => $accountBalance + $TransactionAmount]);
             $AccountID = DB::table('accounts')->where('AccountID', $AccountID)->value('AccountParent');
@@ -200,7 +201,7 @@ class DailyAccountingEntryController extends Controller
         return $flag;
     }
 
-    private function deleteDaily($RestrictionID)
+    public function deleteDaily($RestrictionID)
     {
         $flag = true;
 

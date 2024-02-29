@@ -15,4 +15,8 @@ class Item extends Model
     {
         return $this->belongsTo(Category::class, 'CategoryID');
     }
+    public function purchase_details()
+    {
+        return $this->hasMany(PurchaseDetails::class, 'ItemID', 'ItemID');
+    }
 }

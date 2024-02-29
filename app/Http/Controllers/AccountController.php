@@ -151,4 +151,13 @@ class AccountController extends Controller
             return -1;
         }
     }
+    public function getAccount($CurrencyID, $AccountType)
+    {
+        $accounts = Account::where('CurrencyID', $CurrencyID)
+            ->where('AccountTypeID', $AccountType)
+            ->where('lastChildNum', 0)
+            ->get(); // Execute the query and retrieve results
+
+        return response()->json($accounts);
+    }
 }
