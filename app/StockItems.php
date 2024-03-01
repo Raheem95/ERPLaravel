@@ -8,7 +8,7 @@ class StockItems extends Model
 {
     protected $table = 'stock_items';
 
-    protected $primaryKey = 'StockID';
+    protected $primaryKey = 'StockItemID';
 
     protected $fillable = [
         'StockID',

@@ -37,10 +37,16 @@
                 ]) !!}
 
             </div>
-            <!-- Add more form fields as needed -->
-            {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
-
         </div>
-        {!! Form::close() !!}
+        <!-- Add more form fields as needed -->
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
+                {!! Form::close() !!}
+            </div>
+            <div class="col-md-3"><a href = "/items"><button type="button" class="btn cancel_button">رجوع</button></a>
+            </div>
+        </div>
     </div>
 @endsection

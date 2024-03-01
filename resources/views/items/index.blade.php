@@ -28,8 +28,8 @@
                         <td>{{ $item->ItemID }}</td>
                         <td>{{ $item->ItemPartNumber }}</td>
                         <td>{{ $item->ItemName }}</td>
-                        <td>{{ $item->ItemPrice }}</td>
-                        <td>{{ $item->ItemQty }}</td>
+                        <td>{{ number_format($item->ItemPrice) }}</td>
+                        <td>{{ number_format($item->ItemQty) }}</td>
                         <td>{{ $item->Minimum }}</td>
                         <td>{{ $item->categories->CategoryName }}</td>
                         <td>

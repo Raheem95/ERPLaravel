@@ -256,7 +256,7 @@
                 </ul>
             </div>
 
-            <div style="padding-right:120px;padding-top:10px;text-align:right;">
+            <div style="padding:20px;padding-right:120px;text-align:right;">
                 @include('inc.messages')
                 @yield('content')
             </div>

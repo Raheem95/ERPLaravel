@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\StockController;
 use App\Supplier;
 use Illuminate\Http\Request;
 use App\Purchase;
@@ -9,6 +10,8 @@ use App\Item;
 use App\Currency;
 use App\PurchaseDetails;
 use App\PurchasePayment;
+use App\Stock;
+use App\StockItems;
 
 class PurchaseController extends Controller
 {
@@ -38,7 +41,8 @@ class PurchaseController extends Controller
     {
         $Suppliers = Supplier::orderBy('SupplierID', 'asc')->get();
         $Items = Item::orderBy('ItemID', 'asc')->get();
-        return view("purchases.create")->with(["Suppliers" => $Suppliers, "Items" => $Items]);
+        $Stocks = Stock::orderBy('StockID', 'asc')->get();
+        return view("purchases.create")->with(["Suppliers" => $Suppliers, "Items" => $Items, "Stocks" => $Stocks]);
     }
 
     /**
@@ -77,7 +81,7 @@ class PurchaseController extends Controller
                 $Purchace->AccountID = $AccountID;
                 $Purchace->TotalPurchase = $TotalPurchase;
                 $Purchace->PurchaseStatus = 0;
-                $Purchace->StockID = 0;
+                $Purchace->StockID = $request->StockID;
                 $Purchace->RestrictionID = $RestrictionID;
                 $Purchace->Transfer = 0;
                 $Purchace->CurrencyID = 0;
@@ -133,7 +137,8 @@ class PurchaseController extends Controller
         $PurchaseDetails = $Purchase->purchase_details;
         $Suppliers = Supplier::orderBy('SupplierID', 'asc')->get();
         $Items = Item::orderBy('ItemID', 'asc')->get();
-        return view("purchases.edit")->with(['Suppliers' => $Suppliers, 'Items' => $Items, 'Purchase' => $Purchase, "PurchaseDetails" => $PurchaseDetails]);
+        $Stocks = Stock::orderBy('StockID', 'asc')->get();
+        return view("purchases.edit")->with(['Suppliers' => $Suppliers, 'Items' => $Items, "Stocks" => $Stocks, 'Purchase' => $Purchase, "PurchaseDetails" => $PurchaseDetails]);
     }
 
     /**
@@ -168,6 +173,7 @@ class PurchaseController extends Controller
                     $Purchase->AccountID = $Supplier->AccountID;
                     $Purchase->TotalPurchase = $request->TotalPurchase;
                     $Purchase->RestrictionID = $RestrictionID;
+                    $Purchase->StockID = $request->StockID;
                     $Purchase->save();
                     $PurchaseID = $Purchase->PurchaseID;
                     $NumberOfItems = $request->NumberOfItems;
@@ -270,5 +276,59 @@ class PurchaseController extends Controller
             return response()->json($PaidAmount);
         } else
             return response()->json("خطاء في حذف  القيد ");
+    }
+    public function Transfare(Request $request)
+    {
+        $Result = "";
+        $flag = true;
+        $Purchase = Purchase::find($request->PurchaseID);
+        $Purchase->Transfer = $request->Status;
+        $StockID = $Purchase->StockID;
+        $Status = $request->Status;
+        $StockController = new StockController;
+        $PurchaseDetails = PurchaseDetails::where("PurchaseID", $request->PurchaseID)->get();
+        if ($Status == 0)
+            foreach ($PurchaseDetails as $PurchaseItem) {
+                $AvailableQTY = $StockController->getStockItemQTY($StockID, $PurchaseItem->ItemID);
+                if ($AvailableQTY < $PurchaseItem->ItemQTY) {
+                    $Result .= " الكمية غير متوفرة للمنتج " . $PurchaseItem->item->ItemName . "<br>";
+                    $flag = false;
+                }
+            }
+        if ($flag) {
+            foreach ($PurchaseDetails as $PurchaseItem) {
+                $PurchaseItemID = $PurchaseItem->ItemID;
+                $PurchaseQTY = $PurchaseItem->ItemQTY;
+                $ItemName = $PurchaseItem->item->ItemName;
+                $TransactionDetails = "تغذية المخزن عن طريق فاتورة المشتريات بالرقم " . $Purchase->PurchaseNumber . " للمنتج " . $ItemName;
+                if ($Status == 0) {
+                    $PurchaseQTY *= -1;
+                    $TransactionDetails = "الغاء تغذية المخزن عن طريق فاتورة المشتريات بالرقم " . $Purchase->PurchaseNumber . " للمنتج " . $ItemName;
+                }
+                $Result .= $StockController->AddTransaction($StockID, $PurchaseItemID, $PurchaseQTY, $TransactionDetails, $Status);
+                if ($Result == 1) {
+                    $MyItem = Item::find($PurchaseItemID);
+                    $MyItem->ItemQty += $PurchaseQTY;
+                    if (!$MyItem->save()) {
+                        $Result .= "خطاء في تعديل  كمية المنتج " . $ItemName . " <br> ";
+                        $flag = false;
+                    }
+                } else if ($Result == -1) {
+                    $flag = false;
+                    $Result .= "خطاء في تعديل كمية المنتج " . $ItemName . " في المخزن <br> ";
+                } else if ($Result == -2) {
+                    $flag = false;
+                    $Result .= "خطاء في اضافة الحركة المخزنية للمنتج " . $ItemName . " <br> ";
+                }
+            }
+            if ($flag)
+                $Purchase->save();
+
+        }
+        if ($flag)
+            return response()->json(1);
+        else
+            return response()->json($Result);
+
     }
 }

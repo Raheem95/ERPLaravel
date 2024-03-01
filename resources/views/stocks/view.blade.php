@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="maindiv">
+        <a style="width: 20%;" href="/stocks" class="btn cancel_button mb-3">رجوع</a>
         <div class="row">
             <div class="col-md-3" style="float: right">
                 <label for="" class="MainLabel">اسم المخزن</label>
@@ -10,7 +11,7 @@
         <br>
         <br>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <label for="" class="MainLabel">الحركات المخزنية</label>
                 @if (count($StockTransactions) > 0)
                     <table class="table">
@@ -20,13 +21,14 @@
                             <th>تفاصيل العملية</th>
                             <th>تاريخ العملية</th>
                             <th>نوع العملية</th>
+                            <th>منفذ العملية</th>
                         </tr>
-                        @foreach ($StockTransactions as $Transactios)
+                        @foreach ($StockTransactions as $Transaction)
                             <tr>
                                 <td>{{ $Transaction->item->ItemName }}</td>
-                                <td>{{ $Transaction->ItemQTY }}</td>
+                                <td>{{ number_format($Transaction->ItemQTY) }}</td>
                                 <td>{{ $Transaction->TransactionDetails }}</td>
-                                <td>{{ $Transaction->created_at }}</td>
+                                <td>{{ date('Y-m-d', strtotime($Transaction->created_at)) }}</td>
                                 <td>
                                     @if ($Transaction->OprationType == 1)
                                         تغذية
@@ -34,6 +36,7 @@
                                         صرف
                                     @endif
                                 </td>
+                                <td>{{ $Transaction->user->name }}</td>
                             </tr>
                         @endforeach
                     </table>
@@ -41,7 +44,7 @@
                     <div class="alert alert-danger Result">لا توجد حركات مخزنية</div>
                 @endif
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="" class="MainLabel">المنتجات</label>
                 @if (count($StockItems) > 0)
                     <table class="table">
@@ -52,7 +55,7 @@
                         @foreach ($StockItems as $Item)
                             <tr>
                                 <td>{{ $Item->item->ItemName }}</td>
-                                <td>{{ $Item->ItemQTY }}</td>
+                                <td>{{ number_format($Item->ItemQTY) }}</td>
                             </tr>
                         @endforeach
                     </table>

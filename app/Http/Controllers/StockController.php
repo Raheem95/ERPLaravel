@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Stock;
+use App\StockItems;
+use App\StockTransactions;
 use Illuminate\Validation\Rule;
 
 class StockController extends Controller
@@ -59,8 +61,8 @@ class StockController extends Controller
     public function show($id)
     {
         $Stock = Stock::find($id);
-        $StockItems = $Stock->stock_items;
-        $StockTransactions = $Stock->stock_transactions;
+        $StockItems = StockItems::where('StockID', $id)->get();
+        $StockTransactions = $Stock->stock_transactions()->orderBy('TransactionID', 'desc')->get();
         return view("stocks.view")->with(['Stock' => $Stock, "StockItems" => $StockItems, "StockTransactions" => $StockTransactions]);
     }
 
@@ -109,5 +111,46 @@ class StockController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function AddTransaction($StockID, $ItemID, $QTY, $TransactionDetails, $Status)
+    {
+        $Reuslt = "";
+        $MyStockItem = StockItems::where(["StockID" => $StockID, "ItemID" => $ItemID])->get();
+        if (count($MyStockItem) > 0) {
+            $StockItem = $MyStockItem->first();
+            $StockItem->ItemQTY += $QTY;
+            if (!$StockItem->save())
+                return -1;
+        } else {
+            $StockItem = new StockItems;
+            $StockItem->StockID = $StockID;
+            $StockItem->ItemID = $ItemID;
+            $StockItem->ItemQTY = $QTY;
+            $StockItem->AddedBy = auth()->user()->id;
+            if (!$StockItem->save())
+                return -1;
+        }
+        $StockTransactions = new StockTransactions;
+        $StockTransactions->StockID = $StockID;
+        $StockTransactions->ItemID = $ItemID;
+        $StockTransactions->ItemQTY = $QTY;
+        $StockTransactions->OprationType = $Status;
+        $StockTransactions->TransactionDetails = $TransactionDetails;
+        $StockTransactions->AddedBy = auth()->user()->id;
+        if (!$StockTransactions->save())
+            return -2;
+        else
+            return 1;
+    }
+    public function getStockItemQTY($StockID, $ItemID)
+    {
+        $QTY = 0;
+        $MyStockItem = StockItems::where(["StockID" => $StockID, "ItemID" => $ItemID])->get();
+        if (count($MyStockItem) > 0) {
+            $StockItem = $MyStockItem->first();
+            $QTY = $StockItem->ItemQTY;
+        }
+        return $QTY;
     }
 }

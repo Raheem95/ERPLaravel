@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\StockController;
+use App\Supplier;
 use Illuminate\Http\Request;
-
+use App\Sale;
+use App\Item;
+use App\Currency;
+use App\SaleDetails;
+use App\SalePayment;
+use App\Stock;
+use App\StockItems;
 class SaleController extends Controller
 {
     /**

@@ -37,6 +37,6 @@ class CreateStockTransactionTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('stock_transaction');
     }
 }

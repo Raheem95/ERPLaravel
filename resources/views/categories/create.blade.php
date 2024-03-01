@@ -20,8 +20,16 @@
                             {!! Form::text('CategoryName', null, ['class' => 'input_style', 'placeholder' => 'ادخل اسم الصنف']) !!}
                         </div>
                         <!-- Add more form fields as needed -->
-                        {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
-                        {!! Form::close() !!}
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3">
+                                {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
+                                {!! Form::close() !!}
+                            </div>
+                            <div class="col-md-3"><a href = "/categories"><button type="button"
+                                        class="btn cancel_button">رجوع</button></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

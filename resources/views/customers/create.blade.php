@@ -33,9 +33,13 @@
             </div>
 
             <!-- Add more form fields as needed -->
-            {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
 
+            <div class="col-md-3"></div>
+            <div class="col-md-3">{!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
+
+                {!! Form::close() !!}
+            </div>
+            <div class="col-md-3"><a href="/customers" class="btn cancel_button mb-3">رجوع</a></div>
         </div>
-        {!! Form::close() !!}
     </div>
 @endsection

@@ -17,8 +17,13 @@
                     'placeholder' => 'ادخل اسم المخزن',
                 ]) !!}{!! Form::hidden('StockID', $Stock->StockID, []) !!}
             </div>
-            {{ Form::hidden('_method', 'PUT') }}
-            <!-- Add more form fields as needed -->
-            {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
+            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                {{ Form::hidden('_method', 'PUT') }}
+                <!-- Add more form fields as needed -->
+                {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
+                {!! Form::close() !!}
+            </div>
+            <div class="col-md-3"><a href="/stocks" class="btn cancel_button mb-3">رجوع</a></div>
         </div>
     @endsection
