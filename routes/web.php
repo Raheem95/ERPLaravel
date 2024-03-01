@@ -38,10 +38,11 @@ Route::post('transfare_purchase_payment', 'PurchaseController@Transfare')->name(
 
 //sales routs
 Route::resource('sales', 'SaleController');
-Route::post('pay_sales', 'SaleController@AddPayment')->name('pay_sales');
-Route::get('get_sales_payment_details/{salesID}', 'SaleController@payment_details');
-Route::post('delete_sales_payment', 'SaleController@DeletePayment')->name('delete_sales_payment');
-Route::post('transfare_sales_payment', 'SaleController@Transfare')->name('transfare_sales_payment');
+Route::post('pay_sale', 'SaleController@AddPayment')->name('pay_sale');
+Route::get('get_sale_payment_details/{salesID}', 'SaleController@payment_details');
+Route::post('delete_sale_payment', 'SaleController@DeletePayment')->name('delete_sale_payment');
+Route::post('transfare_sales_payment', 'SaleController@Transfare')->name('transfare_sale_payment');
+Route::post('get_item_details', 'SaleController@GetItemDetails')->name('get_item_details');
 
 
 

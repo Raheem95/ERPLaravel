@@ -37,9 +37,11 @@
 
             <?php
             $Suppliers = json_decode($Suppliers, true);
-            $options = collect(['0' => 'اختر المورد']); // Creating a collection with default option
             
-            $options = $options->merge(collect($Suppliers)->pluck('SupplierName', 'SupplierID'));
+            $options = ['0' => 'اختر المورد'];
+            foreach ($Suppliers as $Supplier) {
+                $options[$Supplier['SupplierID']] = $Supplier['SupplierName'];
+            }
             ?>
             <div class="form-group col-md-6">
                 {!! Form::label('name', 'اختر المورد', ['class' => 'ProceduresLabel']) !!}
@@ -57,15 +59,17 @@
                 ]) !!}
             </div>
             <?php
-            $Stockw = json_decode($Stocks, true);
-            $options = collect(['0' => 'اختر المخزن']); // Creating a collection with default option
+            $Stocks = json_decode($Stocks, true);
             
-            $options = $options->merge(collect($Stocks)->pluck('StockName', 'StockID'));
+            $options = ['0' => 'اختر المخزن'];
+            foreach ($Stocks as $Stock) {
+                $options[$Stock['StockID']] = $Stock['StockName'];
+            }
             ?>
             <div class="form-group col-md-6">
                 {!! Form::label('name', 'اختر المخزن', ['class' => 'ProceduresLabel']) !!}
                 {!! Form::select('StockID', $options, null, [
-                    'class' => 'input_style SetSupllierName',
+                    'class' => 'input_style',
                     'id' => 'StockID',
                 ]) !!}
             </div>

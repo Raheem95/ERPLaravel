@@ -22,14 +22,10 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        $Supplier = [];
         $Currencies = Currency::orderBy('CurrencyID', 'asc')->get();
         $Purchases = Purchase::orderBy('PurchaseID', 'desc')->get();
-        foreach ($Purchases as $purchase) {
-            $Supplier = $purchase->supplier;
-            // Do something with $Supplier
-        }
-        return view("purchases.index")->with(['Purchases' => $Purchases, "Supplier" => $Supplier, "Currencies" => $Currencies]);
+
+        return view("purchases.index")->with(['Purchases' => $Purchases, "Currencies" => $Currencies]);
     }
 
     /**
