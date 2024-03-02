@@ -125,18 +125,22 @@
 
                         </td>
                         <td>
-                            <?php $Class = 'UnTransfareButton';
-                            $color = 'red'; ?>
-                            @if ($Purchase->Transfer == 0)
-                                <?php $Class = 'TransfareButton';
-                                $color = 'blue'; ?>
+                            @if ($Purchase->Transfer <= 1)
+                                <?php $Class = 'UnTransfareButton';
+                                $color = 'red'; ?>
+                                @if ($Purchase->Transfer == 0)
+                                    <?php $Class = 'TransfareButton';
+                                    $color = 'blue'; ?>
+                                @endif
+                                <button id = "TransfareButton{{ $Purchase->PurchaseID }}"
+                                    class="btn view_button Transfare {{ $Class }}"
+                                    style="color:{{ $color }}"value='{{ $Purchase->PurchaseID }}'><i
+                                        class="fa-solid fa-shuffle fa-2x "></i></button>
+                                <input type="hidden" id = "Transfer{{ $Purchase->PurchaseID }}"
+                                    value = "{{ $Purchase->Transfer }}">
+                            @else
+                                تم تغذية الفاتورة في المخزن
                             @endif
-                            <button id = "TransfareButton{{ $Purchase->PurchaseID }}"
-                                class="btn view_button Transfare {{ $Class }}"
-                                style="color:{{ $color }}"value='{{ $Purchase->PurchaseID }}'><i
-                                    class="fa-solid fa-shuffle fa-2x "></i></button>
-                            <input type="hidden" id = "Transfer{{ $Purchase->PurchaseID }}"
-                                value = "{{ $Purchase->Transfer }}">
                         </td>
 
 
@@ -364,7 +368,7 @@
                 form_data.append('PurchaseID', PurchaseID);
                 form_data.append('Status', Status);
                 $.ajax({
-                    url: "{{ route('transfare_purchase_payment') }}",
+                    url: "{{ route('purchase_transfare') }}",
                     dataType: 'json',
                     cache: false,
                     contentType: false,

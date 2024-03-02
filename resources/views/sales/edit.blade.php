@@ -23,62 +23,65 @@
     <!-- resources/views/categories/index.blade.php -->
     <div class="maindiv">
         <div class=" MainLabel">
-            <h1>فاتورة مشتريات</h1>
+            <h1>فاتورة مبيعات</h1>
         </div>
         <div class="col-md-12 Result" id = "Results"></div>
 
         {!! Form::open([
-            'action' => ['PurchaseController@update', $Purchase->PurchaseID],
+            'action' => ['SaleController@update', $Sale->SaleID],
             'method' => 'post',
             'onsubmit' => 'return validateForm()',
             'style' => 'margin-right:50px;',
         ]) !!}
-
         <div class = "row">
 
             <?php
-            $Suppliers = json_decode($Suppliers, true);
-            $options = collect(['0' => 'اخترالمورد']); // Creating a collection with default option
-            
-            $options = $options->merge(collect($Suppliers)->pluck('SupplierName', 'SupplierID'));
+            $Customers = json_decode($Customers, true);
+            $options = ['0' => 'اختر العميل']; // Initialize with default option
+            foreach ($Customers as $customer) {
+                $options[$customer['CustomerID']] = $customer['CustomerName'];
+            }
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'اختر المورد', ['class' => 'ProceduresLabel']) !!}
-                {!! Form::select('SupplierID', $options, $Purchase->SupplierID, [
-                    'class' => 'input_style SetSupllierName',
-                    'id' => 'SupplierID',
+                {!! Form::label('name', 'اختر العميل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::select('CustomerID', $options, $Sale->CustomerID, [
+                    'class' => 'input_style SetCustomerName',
+                    'id' => 'CustomerID',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('', 'ادخل اسم المورد', ['class' => 'ProceduresLabel']) !!}
-                {!! Form::text('SupplierName', $Purchase->SupplierName, [
+                {!! Form::label('', 'ادخل اسم العميل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::text('CustomerName', $Sale->CustomerName, [
                     'class' => 'input_style',
-                    'placeholder' => 'ادخل اسم المورد',
-                    'id' => 'SupplierName',
+                    'placeholder' => 'ادخل اسم العميل',
+                    'id' => 'CustomerName',
                 ]) !!}
             </div>
             <?php
-            $Stockw = json_decode($Stocks, true);
-            $options = collect(['0' => 'اختر المخزن']); // Creating a collection with default option
+            $Stocks = json_decode($Stocks, true);
             
-            $options = $options->merge(collect($Stocks)->pluck('StockName', 'StockID'));
+            $options = ['0' => 'اختر المخزن'];
+            foreach ($Stocks as $Stock) {
+                $options[$Stock['StockID']] = $Stock['StockName'];
+            }
             ?>
             <div class="form-group col-md-6">
                 {!! Form::label('name', 'اختر المخزن', ['class' => 'ProceduresLabel']) !!}
-                {!! Form::select('StockID', $options, $Purchase->StockID, [
+                {!! Form::select('StockID', $options, $Sale->StockID, [
                     'class' => 'input_style',
                     'id' => 'StockID',
+                    'onchange' => 'GetAllItemsAvailableQTY()',
                 ]) !!}
             </div>
         </div>
         <div class="PriceDiv">
             {!! Form::label('', 'مجمل الفاتورة', ['class' => 'PriceLabel']) !!}
-            {!! Form::label($Purchase->TotalPurchase, '0', ['class' => 'PriceLabel', 'id' => 'TotalPurchaseText']) !!}
-            {!! Form::hidden('TotalPurchase', $Purchase->TotalPurchase, [
-                'id' => 'TotalPurchase',
+            {!! Form::label('0', '0', ['class' => 'PriceLabel', 'id' => 'TotalSaleText']) !!}
+            {!! Form::hidden('TotalSale', $Sale->TotalSale, [
+                'id' => 'TotalSale',
             ]) !!}
         </div>
-        {!! Form::hidden('NumberOfItems', count($PurchaseDetails), [
+        {!! Form::hidden('NumberOfItems', count($SaleDetails), [
             'id' => 'NumberOfItems',
         ]) !!}
         <div class="col-md-2" style="float: right;margin:10px;"><button type="button" class="btn add_button AddRow"><i
@@ -86,12 +89,12 @@
         <table class = "table" id = "ItemsTable">
             <tr>
                 <th>-</th>
-                <th width="40%">المنتج</th>
+                <th width="30%">المنتج</th>
+                <th>الكمية المتوفرة</th>
                 <th>الكمية</th>
                 <th>السعر</th>
-                <th>المجمل</th>
+                <th width="10%">المجمل</th>
             </tr>
-
             <?php
             $i = 0;
             $options = collect(['0' => 'اختر المنتج']); // Creating a collection with default option
@@ -100,18 +103,29 @@
                 $options[$item['ItemID']] = $item['ItemName'];
             }
             ?>
-            @foreach ($PurchaseDetails as $RowItem)
+            @foreach ($SaleDetails as $RowItem)
                 {{ $i++ }}
                 <tr id="Row{{ $i }}">
-                    <td><button type='button' class='btn delete_button RemoveRow' id='RemoveButton1' value='1'><i
-                                class='fa-solid fa-trash-can'></i></button></td>
+                    <td>
+                        <?php
+                        $style = 'display:none;';
+                        if (count($SaleDetails) > 1) {
+                            $style = 'display:block;';
+                        }
+                        ?>
+                        <button style="{{ $style }}" type='button' class='btn delete_button RemoveRow'
+                            id='RemoveButton{{ $i }}' value='1'><i
+                                class='fa-solid fa-trash-can'></i></button>
+
+                    </td>
                     <td>
 
                         {!! Form::select('ItemID' . $i, $options, $RowItem->ItemID, [
-                            'class' => 'input_style',
+                            'class' => 'input_style GetItemDetails',
                             'id' => 'ItemID' . $i,
                         ]) !!}
                     </td>
+                    <td><label id="AvailableQTY{{ $i }}">0</label></td>
                     <td>{!! Form::number('ItemQTY' . $i, $RowItem->ItemQTY, [
                         'class' => 'input_style',
                         'placeholder' => 'ادخل الكمية',
@@ -134,14 +148,16 @@
             <div class="col-md-3">
                 {{ Form::hidden('_method', 'PUT') }}
                 {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
-                {!! Form::close() !!}
             </div>
-            <div class="col-md-3"><a href = "/purchases"><button type="button" class="btn cancel_button">رجوع</button></a></div>
+            <div class="col-md-3"><a href = "/sales"><button type="button" class="btn cancel_button">رجوع</button></a>
+            </div>
         </div>
     </div>
+    {!! Form::close() !!}
+    </div>
     <script>
-        $(document).on('change', '.SetSupllierName', function() {
-            $("#SupplierName").val($(this).find('option:selected').text())
+        $(document).on('change', '.SetCustomerName', function() {
+            $("#CustomerName").val($(this).find('option:selected').text())
         });
         $(document).on('click', '.AddRow', function() {
             var myrowCount = $("#NumberOfItems").val()
@@ -150,12 +166,13 @@
             var table = $("#ItemsTable")
             myrowCount++
             $("#NumberOfItems").val(myrowCount)
+
             var tr = $('<tr id = "Row' + myrowCount + '"></tr>')
             tr.append($("<td><button type='button' class='btn delete_button RemoveRow' id='RemoveButton" +
                 myrowCount + "' value='" + myrowCount + "'>" +
                 "<i class='fa-solid fa-trash-can'></i></button></td>"));
 
-            var Select = $("<select class='input_style' id='ItemID" + myrowCount +
+            var Select = $("<select class='input_style GetItemDetails' id='ItemID" + myrowCount +
                 "'  name='ItemID" + myrowCount + "'></select>");
             $.each(Items, function(key, value) {
                 Select.append($("<option value='" + key + "'>" + value + "</option>"));
@@ -163,10 +180,11 @@
             var td = $("<td></td>")
             td.append(Select)
             tr.append(td)
+            tr.append($("<td><label id='AvailableQTY" + myrowCount + "'>0</label></td>"))
             tr.append($(
                 "<td><input type = 'number' value = '0' id = 'ItemQTY" + myrowCount +
                 "' name = 'ItemQTY" + myrowCount +
-                "' placeholder = 'ادخل الكمية' class = 'input_style ' value = '0' oninput = (CalculateRow(" +
+                "' placeholder = 'ادخل الكمية' class = 'input_style CheckQTY' value = '0' oninput = (CalculateRow(" +
                 myrowCount + "))></td>"
             ))
             tr.append($(
@@ -178,10 +196,9 @@
             tr.append($("<td><label id = 'TotalRow" + myrowCount + "'>0</label></td>"))
             tr.appendTo(table)
             if (myrowCount > 1)
-                $("#RemoveButton1").show()
+                $("#RemoveButton1").css("display", "block")
             else
-                $("#RemoveButton1").hide()
-
+                $("#RemoveButton1").css("display", "none")
         });
         $(document).on('click', '.RemoveRow', function() {
             var ItemID = $(this).val()
@@ -196,8 +213,9 @@
                 $("#ItemID" + i).attr("id", "ItemID" + myCurrentID)
                 $("#ItemID" + myCurrentID).attr("name", "ItemID" + myCurrentID)
 
-                $("#ItemQTY" + i).attr("id", "ItemQTY" + myCurrentID)
-                $("#ItemQTY" + myCurrentID).attr("name", "ItemQTY" + myCurrentID)
+
+
+                $("#AvailableQTY" + i).attr("id", "AvailableQTY" + myCurrentID)
 
                 $("#ItemPrice" + i).attr("id", "ItemPrice" + myCurrentID)
                 $("#ItemPrice" + myCurrentID).attr("name", "ItemPrice" + myCurrentID)
@@ -212,9 +230,54 @@
             NumberOfItems--
             $("#NumberOfItems").val(NumberOfItems)
             if (NumberOfItems > 1)
-                $("#RemoveButton1").show()
+                $("#RemoveButton1").css("display", "block")
             else
-                $("#RemoveButton1").hide()
+                $("#RemoveButton1").css("display", "none")
+        });
+        $(document).on('change', '.GetItemDetails', function() {
+            var ItemID = $(this).val()
+            var StockID = $("#StockID").val()
+            var RowID = $(this).attr("id").replace("ItemID", "");
+            if (StockID > 0) {
+                $("#Results").html("")
+                var form_data = new FormData();
+                form_data.append('ItemID', ItemID);
+                form_data.append('StockID', StockID);
+
+                $.ajax({
+                    url: "{{ route('get_item_details') }}",
+                    dataType: 'json',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    type: 'post',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
+                            'content'));
+                    },
+                    success: function(result) {
+                        $("#ItemPrice" + RowID).val(result.SalesPrice)
+                        $("#AvailableQTY" + RowID).html(result.AvailableQTY)
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                    }
+                });
+            } else {
+                $("#Results").html("<div class = 'alert alert-danger Result'> الرجاء تحديد المخزن </div>")
+                $(this).val(0)
+            }
+        });
+
+        $(document).on('change', '.CheckQTY', function() {
+            var ItemQTY = $(this).val()
+            var RowID = $(this).attr("id").replace("ItemQTY", "");
+            if (parseFloat(ItemQTY) > parseFloat($("#AvailableQTY" + RowID).html()))
+                $(this).removeClass("right_input_style").addClass("wrong_input_style")
+            else
+                $(this).removeClass("wrong_input_style").addClass("right_input_style")
+
         });
 
         function CalculateRow(RowID) {
@@ -230,21 +293,21 @@
             for (var i = 1; i <= myrowCount; i++)
                 Total += parseFloat($("#ItemPrice" + i).val()) * parseFloat($("#ItemQTY" + i)
                     .val());
-            $("#TotalPurchaseText").html(Total.toLocaleString());
+            $("#TotalSaleText").html(Total.toLocaleString());
 
-            $("#TotalPurchase").val(Total)
+            $("#TotalSale").val(Total)
         }
 
         function validateForm() {
             var flag = true
             var Result = "";
-            if ($("#SupplierID").val() == 0) {
+            if ($("#CustomerID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المورد </div>"
+                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار العميل </div>"
             }
-            if ($("#SupplierName").val() == "") {
+            if ($("#CustomerName").val() == "") {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء ادخال اسم المورد </div>"
+                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء ادخال اسم العميل </div>"
             }
             if ($("#StockID").val() == 0) {
                 flag = false;
@@ -274,10 +337,60 @@
                         "<div class = 'alert alert-danger Result'> الرجاء ادخال سعر صحيح للمنتج رقم " + i + "</div>"
                 }
             }
-            document.getElementById('Results').scrollIntoView();
 
+            if (flag) {
+                var flag2 = true;
+                for (var i = 1; i <= $("#NumberOfItems").val(); i++) {
+                    if (parseFloat($("#ItemQTY" + i).val()) > parseFloat($("#AvailableQTY" + i).html()))
+                        flag2 = false;
+                }
+                if (!flag2)
+                    if (!confirm("توجد منتجات غير متوقرة الكمية هل تريد المتابعة ؟"))
+                        flag = false;
+            }
+            document.getElementById('Results').scrollIntoView();
             $("#Results").html(Result)
             return flag;
         }
+
+        function GetAllItemsAvailableQTY() {
+            var NumberOfItems = $("#NumberOfItems").val()
+            var StockID = $("#StockID").val()
+            for (var i = 1; i <= NumberOfItems; i++) {
+                (function(index) {
+                    var ItemID = $("#ItemID" + index).val()
+                    var form_data = new FormData();
+                    form_data.append('ItemID', ItemID);
+                    form_data.append('StockID', StockID);
+                    $.ajax({
+                        url: "{{ route('get_item_details') }}",
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        type: 'post',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
+                                'content'));
+                        },
+                        success: function(result) {
+                            $("#AvailableQTY" + index).html(result.AvailableQTY);
+                            if (parseFloat($("#ItemQTY" + index).val()) > parseFloat(result.AvailableQTY))
+                                $("#ItemQTY" + index).removeClass("right_input_style").addClass(
+                                    "wrong_input_style")
+                            else
+                                $("#ItemQTY" + index).removeClass("wrong_input_style").addClass(
+                                    "right_input_style")
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                })(i);
+            }
+
+        }
+        GetAllItemsAvailableQTY();
     </script>
 @endsection

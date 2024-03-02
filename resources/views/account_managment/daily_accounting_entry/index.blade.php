@@ -101,6 +101,7 @@
                     var MyTable = $(
                         "<table class = 'table' style = 'background-color:white'><tr style= 'background-color:black;color:white;'><th>التاريخ</th><th>رقم الحساب</th><th>إسم الحساب</th><th>البيان</th><th>منه</th><th>له</th></tr></table>"
                     )
+                    var formatter = new Intl.NumberFormat();
                     for (var i = 0; i < details.length; i++) {
                         var detail = details[i];
                         var MyAccount = account[i];
@@ -110,9 +111,11 @@
                         TR.append($("<td>" + MyAccount.AccountName + "</td>"));
                         TR.append($("<td>" + detail.TransactionDetails + "</td>"));
                         if (detail.TransactionType == 1)
-                            TR.append($("<td>" + detail.TransactionAmount + "</td><td>-</td>"));
+                            TR.append($("<td>" + formatter.format(detail.TransactionAmount) +
+                                "</td><td>-</td>"));
                         else
-                            TR.append($("<td>-</td><td>" + detail.TransactionAmount + "</td>"));
+                            TR.append($("<td>-</td><td>" + formatter.format(detail.TransactionAmount) +
+                                "</td>"));
                         MyTable.append(TR);
                     }
                     $("#RTransactions").append(MyTable)

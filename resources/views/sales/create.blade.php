@@ -70,6 +70,7 @@
                 {!! Form::select('StockID', $options, null, [
                     'class' => 'input_style',
                     'id' => 'StockID',
+                    'onchange' => 'GetAllItemsAvailableQTY()',
                 ]) !!}
             </div>
         </div>
@@ -83,6 +84,8 @@
         {!! Form::hidden('NumberOfItems', 1, [
             'id' => 'NumberOfItems',
         ]) !!}
+        <div class="col-md-2" style="float: right;margin:10px;"><button type="button" class="btn add_button AddRow"><i
+                    class="fas fa-plus"></i></button></div>
         <table class = "table" id = "ItemsTable">
             <tr>
                 <th>-</th>
@@ -93,7 +96,11 @@
                 <th width="10%">المجمل</th>
             </tr>
             <tr id = "Row1">
-                <td><button type="button" class = 'btn add_button AddRow'><i class="fas fa-plus"></button></td>
+                <td>
+                    <button style="display:none" type='button' class='btn delete_button RemoveRow'
+                        id='RemoveButton1'value='1'><i class='fa-solid fa-trash-can'></i></button>
+
+                </td>
                 <td>
                     <?php
                     $Items = json_decode($Items, true);
@@ -172,6 +179,10 @@
             ))
             tr.append($("<td><label id = 'TotalRow" + myrowCount + "'>0</label></td>"))
             tr.appendTo(table)
+            if (myrowCount > 1)
+                $("#RemoveButton1").css("display", "block")
+            else
+                $("#RemoveButton1").css("display", "none")
         });
         $(document).on('click', '.RemoveRow', function() {
             var ItemID = $(this).val()
@@ -202,6 +213,10 @@
             }
             NumberOfItems--
             $("#NumberOfItems").val(NumberOfItems)
+            if (NumberOfItems > 1)
+                $("#RemoveButton1").css("display", "block")
+            else
+                $("#RemoveButton1").css("display", "none")
         });
         $(document).on('change', '.GetItemDetails', function() {
             var ItemID = $(this).val()
@@ -320,6 +335,45 @@
             document.getElementById('Results').scrollIntoView();
             $("#Results").html(Result)
             return flag;
+        }
+
+        function GetAllItemsAvailableQTY() {
+            var NumberOfItems = $("#NumberOfItems").val()
+            var StockID = $("#StockID").val()
+            for (var i = 1; i <= NumberOfItems; i++) {
+                (function(index) {
+                    var ItemID = $("#ItemID" + index).val()
+                    var form_data = new FormData();
+                    form_data.append('ItemID', ItemID);
+                    form_data.append('StockID', StockID);
+                    $.ajax({
+                        url: "{{ route('get_item_details') }}",
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        type: 'post',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
+                                'content'));
+                        },
+                        success: function(result) {
+                            $("#AvailableQTY" + index).html(result.AvailableQTY);
+                            if (parseFloat($("#ItemQTY" + index).val()) > parseFloat(result.AvailableQTY))
+                                $("#ItemQTY" + index).removeClass("right_input_style").addClass(
+                                    "wrong_input_style")
+                            else
+                                $("#ItemQTY" + index).removeClass("wrong_input_style").addClass(
+                                    "right_input_style")
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                })(i);
+            }
+
         }
     </script>
 @endsection

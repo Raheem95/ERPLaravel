@@ -18,7 +18,7 @@ class StockController extends Controller
     public function index()
     {
         $Stocks = Stock::orderBy('StockID', 'asc')->get();
-        return view("stocks.index")->with('Stocks', $Stocks);
+        return view("stocks.stock_managment.index")->with('Stocks', $Stocks);
     }
 
     /**
@@ -28,7 +28,7 @@ class StockController extends Controller
      */
     public function create()
     {
-        return view("stocks.create");
+        return view("stocks.stock_managment.create");
     }
 
     /**
@@ -49,7 +49,7 @@ class StockController extends Controller
         $Stock->StockName = $request->input('StockName');
         $Stock->AddedBy = auth()->user()->id;
         $Stock->save();
-        return redirect("/stocks")->with("success", "تمت  اضافة المخزن بنجاح");
+        return redirect("/Stocks/StockManagment")->with("success", "تمت  اضافة المخزن بنجاح");
     }
 
     /**
@@ -63,7 +63,7 @@ class StockController extends Controller
         $Stock = Stock::find($id);
         $StockItems = StockItems::where('StockID', $id)->get();
         $StockTransactions = $Stock->stock_transactions()->orderBy('TransactionID', 'desc')->get();
-        return view("stocks.view")->with(['Stock' => $Stock, "StockItems" => $StockItems, "StockTransactions" => $StockTransactions]);
+        return view("stocks.stock_managment.view")->with(['Stock' => $Stock, "StockItems" => $StockItems, "StockTransactions" => $StockTransactions]);
     }
 
     /**
@@ -75,7 +75,7 @@ class StockController extends Controller
     public function edit($id)
     {
         $Stock = Stock::find($id);
-        return view("stocks.edit")->with('Stock', $Stock);
+        return view("stocks.stock_managment.edit")->with('Stock', $Stock);
     }
 
     /**
@@ -99,7 +99,7 @@ class StockController extends Controller
         $Stock = Stock::find($id);
         $Stock->StockName = $request->input('StockName');
         $Stock->save();
-        return redirect("/stocks")->with("success", "تمت  تعديل المخزن بنجاح");
+        return redirect("/Stocks/StockManagment")->with("success", "تمت  تعديل المخزن بنجاح");
     }
 
     /**
@@ -110,7 +110,16 @@ class StockController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $Stock = Stock::find($id);
+        $MyStockItem = StockItems::where(["StockID" => $id])->get();
+        if(count($MyStockItem) > 0)
+            return redirect("/Stocks/StockManagment")->with("error", "المحزن يحتوي على منتجات");
+        else{
+            if($Stock->delete())
+            return redirect("/Stocks/StockManagment")->with("success", "تم حذف المخزن بنجاح");
+            else
+            return redirect("/Stocks/StockManagment")->with("error", "خظاء في حذف المخزن");
+        }
     }
 
     public function AddTransaction($StockID, $ItemID, $QTY, $TransactionDetails, $Status)

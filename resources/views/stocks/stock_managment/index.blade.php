@@ -5,7 +5,7 @@
 
     <h1>المخازن</h1>
 
-    <a style="width: 20%;" href="/stocks/create" class="btn add_button mb-3">اضافة مخزن</a>
+    <a style="width: 20%;" href="StockManagment/create" class="btn add_button mb-3">اضافة مخزن</a>
     @if (count($Stocks) > 0)
         <table class="table ">
             <thead>
@@ -24,11 +24,11 @@
                         <td>{{ $Stock->StockID }}</td>
                         <td>{{ $Stock->StockName }}</td>
                         <td>
-                            <a href="stocks/{{ $Stock->StockID }}/" class="btn view_button">
+                            <a href="StockManagment/{{ $Stock->StockID }}/" class="btn view_button">
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i></a>
                         </td>
                         <td>
-                            <a href="stocks/{{ $Stock->StockID }}/edit" class="btn edit_button">
+                            <a href="StockManagment/{{ $Stock->StockID }}/edit" class="btn edit_button">
                                 <i class='fa-solid fa-file-pen fa-2x'></i></a>
                         </td>
                         <td>

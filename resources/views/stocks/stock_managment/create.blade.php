@@ -19,7 +19,7 @@
                 {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
                 {!! Form::close() !!}
             </div>
-            <div class="col-md-3"><a href="/stocks" class="btn cancel_button mb-3">رجوع</a></div>
+            <div class="col-md-3"><a href="/Stocks/StockManagment" class="btn cancel_button mb-3">رجوع</a></div>
             <!-- Add more form fields as needed -->
 
 

@@ -21,8 +21,8 @@ Route::resource('categories', 'CategoryController');
 Route::resource('items', 'ItemController');
 Route::resource('customers', 'CustomerController');
 Route::resource('suppliers', 'SupplierController');
-Route::resource('stocks', 'StockController');
-Route::resource('accountmanagment', 'SupplierController');
+
+// Account Routs
 Route::resource('AccountManagment/AccountTypes', 'AccountTypeController');
 Route::resource('AccountManagment/Accounts', 'AccountController');
 Route::resource('AccountManagment/Currencies', 'CurrencyController');
@@ -34,7 +34,7 @@ Route::resource('purchases', 'PurchaseController');
 Route::post('pay_purchase', 'PurchaseController@AddPayment')->name('pay_purchase');
 Route::get('get_purchase_payment_details/{PurchaseID}', 'PurchaseController@payment_details');
 Route::post('delete_purchase_payment', 'PurchaseController@DeletePayment')->name('delete_purchase_payment');
-Route::post('transfare_purchase_payment', 'PurchaseController@Transfare')->name('transfare_purchase_payment');
+Route::post('purchase_transfare', 'PurchaseController@Transfare')->name('purchase_transfare');
 
 //sales routs
 Route::resource('sales', 'SaleController');
@@ -44,7 +44,11 @@ Route::post('delete_sale_payment', 'SaleController@DeletePayment')->name('delete
 Route::post('transfare_sales_payment', 'SaleController@Transfare')->name('transfare_sale_payment');
 Route::post('get_item_details', 'SaleController@GetItemDetails')->name('get_item_details');
 
+// Stock Routs
 
+Route::resource('Stocks/StockManagment', 'StockController');
+Route::resource('Stocks/Purchases', 'StockPurchaseController');
+Route::post('stock_purchase_transfare', 'StockPurchaseController@Transfare')->name('stock_purchase_transfare');
 
 
 

@@ -190,11 +190,23 @@
                             <label class="HeaderA">المنتجات </label>
                         </a>
                     </li>
-                    <li><a class="sidebara" href="/stocks">
-                            <i class="IconClass IconStyleClose fa-solid fa-file-signature"></i>
-                            <label class="HeaderA">المخازن</label>
+                    <li id="StockSubMenu" class="ViewSubMenu">
+                        <a class="sidebara" href="#">
+                            <i class="IconClass IconStyleClose fa-solid fa-sack-dollar"></i>
+                            <label class="HeaderA">المخازن </label>
                         </a>
                     </li>
+                    <div id="StockSubMenuDiv" class='SupMenuClass' style="display:none;">
+                        <a class="sidebara" href="{{ url('/Stocks/StockManagment') }}"><label class="HeaderA">
+                                ادارة المخازن</label></a>
+                        <a class="sidebara" href="{{ url('/Stocks/Purchases') }}"><label class="HeaderA">فواتير
+                                المشتريات
+                            </label></a>
+                        <a class="sidebara" href="{{ url('/Stocks/Sales') }}"><label class="HeaderA">
+                                فواتير المبيعات
+                            </label></a>
+                        <a class="sidebara" href="{{ url('/Stocks/Sales') }}">التحويلات المخزنية</a>
+                    </div>
                     <li>
                         <a class="sidebara" href="/customers">
                             <i class="IconClass IconStyleClose fa-solid fa-passport"></i>
@@ -208,51 +220,49 @@
                     </li>
 
 
-                    @if (Auth::user()->id == 1)
-                        <li>
-                            <a class="sidebara" href="RecruitmentOffices.php">
-                                <i class="IconClass IconStyleClose fa-regular fa-building"></i>
-                                <label class="HeaderA">مكاتب الاستقدام </label>
-                            </a>
-                        </li>
+                    <li>
+                        <a class="sidebara" href="RecruitmentOffices.php">
+                            <i class="IconClass IconStyleClose fa-regular fa-building"></i>
+                            <label class="HeaderA">مكاتب الاستقدام </label>
+                        </a>
+                    </li>
 
-                        <li id="AccountSubMenu" class="ViewSubMenu">
-                            <a class="sidebara" href="#">
-                                <i class="IconClass IconStyleClose fa-solid fa-sack-dollar"></i>
-                                <label class="HeaderA">حسابات </label>
-                            </a>
-                        </li>
-                        <div id="AccountSubMenuDiv" class='SupMenuClass' style="display:none;">
-                            <a class="sidebara" href="{{ url('/AccountManagment/AccountTypes') }}"><label
-                                    class="HeaderA">
-                                    انواع الحسابات </label></a>
-                            <a class="sidebara" href="{{ url('/AccountManagment/Currencies') }}"><label
-                                    class="HeaderA">العملات
-                                </label></a>
-                            <a class="sidebara" href="{{ url('/AccountManagment/Accounts') }}"><label
-                                    class="HeaderA">ادارة
-                                    الحسابات </label></a>
-                            <a class="sidebara" href="CreditorsDebtors.php">دائنون و
-                                مدينون </a>
-                            <a class="sidebara" href="ChargeBalance.php">تغذية المحفظة </a>
+                    <li id="AccountSubMenu" class="ViewSubMenu">
+                        <a class="sidebara" href="#">
+                            <i class="IconClass IconStyleClose fa-solid fa-sack-dollar"></i>
+                            <label class="HeaderA">حسابات </label>
+                        </a>
+                    </li>
+                    <div id="AccountSubMenuDiv" class='SupMenuClass' style="display:none;">
+                        <a class="sidebara" href="{{ url('/AccountManagment/AccountTypes') }}"><label
+                                class="HeaderA">
+                                انواع الحسابات </label></a>
+                        <a class="sidebara" href="{{ url('/AccountManagment/Currencies') }}"><label
+                                class="HeaderA">العملات
+                            </label></a>
+                        <a class="sidebara" href="{{ url('/AccountManagment/Accounts') }}"><label
+                                class="HeaderA">ادارة
+                                الحسابات </label></a>
+                        <a class="sidebara" href="CreditorsDebtors.php">دائنون و
+                            مدينون </a>
+                        <a class="sidebara" href="ChargeBalance.php">تغذية المحفظة </a>
 
-                            <a class="sidebara" href="Salaries.php">الرواتب </a>
+                        <a class="sidebara" href="Salaries.php">الرواتب </a>
 
-                            <a class="sidebara" href="Loans.php">السلفيات </a>
+                        <a class="sidebara" href="Loans.php">السلفيات </a>
 
-                            <a class="sidebara" href="expenses.php">المنصرفات </a>
+                        <a class="sidebara" href="expenses.php">المنصرفات </a>
 
-                            <a class="sidebara" href="{{ url('/AccountManagment/DailyAccountingEntries') }}">القيود
-                            </a>
-                        </div>
+                        <a class="sidebara" href="{{ url('/AccountManagment/DailyAccountingEntries') }}">القيود
+                        </a>
+                    </div>
 
-                        <li>
-                            <a class="sidebara" href="employees.php">
-                                <i class="IconClass IconStyleClose fa-solid fa-user"></i>
-                                <label class="HeaderA">الموظفين </label>
-                            </a>
-                        </li>
-                    @endif
+                    <li>
+                        <a class="sidebara" href="employees.php">
+                            <i class="IconClass IconStyleClose fa-solid fa-user"></i>
+                            <label class="HeaderA">الموظفين </label>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
