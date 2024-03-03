@@ -283,7 +283,7 @@ class PurchaseController extends Controller
         $Status = $request->Status;
         $StockController = new StockController;
         $PurchaseDetails = PurchaseDetails::where("PurchaseID", $request->PurchaseID)->get();
-        if ($Status == 0)
+        if ($Status == 0){
             foreach ($PurchaseDetails as $PurchaseItem) {
                 $AvailableQTY = $StockController->getStockItemQTY($StockID, $PurchaseItem->ItemID);
                 if ($AvailableQTY < $PurchaseItem->ItemQTY) {
@@ -291,40 +291,12 @@ class PurchaseController extends Controller
                     $flag = false;
                 }
             }
-        if ($flag) {
-            foreach ($PurchaseDetails as $PurchaseItem) {
-                $PurchaseItemID = $PurchaseItem->ItemID;
-                $PurchaseQTY = $PurchaseItem->ItemQTY;
-                $ItemName = $PurchaseItem->item->ItemName;
-                $TransactionDetails = "تغذية المخزن عن طريق فاتورة المشتريات بالرقم " . $Purchase->PurchaseNumber . " للمنتج " . $ItemName;
-                if ($Status == 0) {
-                    $PurchaseQTY *= -1;
-                    $TransactionDetails = "الغاء تغذية المخزن عن طريق فاتورة المشتريات بالرقم " . $Purchase->PurchaseNumber . " للمنتج " . $ItemName;
-                }
-                $Result .= $StockController->AddTransaction($StockID, $PurchaseItemID, $PurchaseQTY, $TransactionDetails, $Status);
-                if ($Result == 1) {
-                    $MyItem = Item::find($PurchaseItemID);
-                    $MyItem->ItemQty += $PurchaseQTY;
-                    if (!$MyItem->save()) {
-                        $Result .= "خطاء في تعديل  كمية المنتج " . $ItemName . " <br> ";
-                        $flag = false;
-                    }
-                } else if ($Result == -1) {
-                    $flag = false;
-                    $Result .= "خطاء في تعديل كمية المنتج " . $ItemName . " في المخزن <br> ";
-                } else if ($Result == -2) {
-                    $flag = false;
-                    $Result .= "خطاء في اضافة الحركة المخزنية للمنتج " . $ItemName . " <br> ";
-                }
-            }
-            if ($flag)
-                $Purchase->save();
-
         }
-        if ($flag)
+        if($flag){
+            $Purchase->save();
             return response()->json(1);
+        }
         else
             return response()->json($Result);
-
     }
 }

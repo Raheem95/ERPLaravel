@@ -4,10 +4,18 @@
     <div class = "maindiv">
         <div class="row">
             <div class="col-md-6">
-                <label for="" class="MainLabel">رقم الفاتورة</label>
-                <label for="" class="valueLabel">{{ $Purchase->PurchaseNumber }}</label>
-                <label for="" class="MainLabel">تاريخ الفاتورة </label>
-                <label for="" class="valueLabel">{{ $Purchase->created_at }}</label>
+                <label for="" class="MainLabel"> اسم المورد</label>
+                <label for="" class="valueLabel">{{ $Purchase->SupplierName }}</label>
+                <br><br>
+                <div class="col-md-6">
+                    <label for="" class="MainLabel">رقم الفاتورة</label>
+                    <label for="" class="valueLabel">{{ $Purchase->PurchaseNumber }}</label>
+
+                </div>
+                <div class="col-md-6">
+                    <label for="" class="MainLabel">تاريخ الفاتورة </label>
+                    <label for="" class="valueLabel">{{ date('Y-m-d', strtotime($Purchase->created_at)) }}</label>
+                </div>
             </div>
             <div class="col-md-6">
 
@@ -16,13 +24,16 @@
         <br>
         <table class="table">
             <tr>
+                <th>#</th>
                 <th>اسم المنتج</th>
                 <th>الكمية</th>
             </tr>
+            {{ $counter = 0 }}
             @foreach ($PurchaseDetails as $RowItem)
                 <tr>
+                    <td>{{ ++$counter }}</td>
                     <td>{{ $RowItem->item->ItemName }}</td>
-                    <td>{{ $RowItem->ItemQTY }}</td>
+                    <td>{{ number_format($RowItem->ItemQTY) }}</td>
                 </tr>
             @endforeach
         </table>

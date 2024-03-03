@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- resources/views/Purchases/index.blade.php -->
-    <input type = 'hidden' id = "PurchaseID">
+    <!-- resources/views/sales/index.blade.php -->
+    <input type = 'hidden' id = "SaleID">
 
     <h1>فواتير المشتريات</h1>
     <div class="col-md-12 alert Result" id = "Results"></div>
-    @if (count($Purchases) > 0)
+    @if (count($Sales) > 0)
         <table class="table ">
             <thead>
                 <tr>
@@ -15,28 +15,27 @@
                     <th>تغذية المخزن</th>
                 </tr>
             </thead>
-            @foreach ($Purchases as $Purchase)
+            @foreach ($Sales as $Sale)
                 <tbody>
 
                     <tr>
-                        <td id = "PurchaseNumber{{ $Purchase->PurchaseID }}">{{ $Purchase->PurchaseNumber }}</td>
+                        <td id = "SaleNumber{{ $Sale->SaleID }}">{{ $Sale->SaleNumber }}</td>
                         <td>
-                            <a href="Purchases/{{ $Purchase->PurchaseID }}/" class="btn view_button">
+                            <a href="Sales/{{ $Sale->SaleID }}/" class="btn view_button">
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i>
                         </td>
                         <td>
                             <?php $Class = 'UnTransfareButton';
                             $color = 'red'; ?>
-                            @if ($Purchase->Transfer == 1)
+                            @if ($Sale->Transfer == 1)
                                 <?php $Class = 'TransfareButton';
                                 $color = 'blue'; ?>
                             @endif
-                            <button id = "TransfareButton{{ $Purchase->PurchaseID }}"
+                            <button id = "TransfareButton{{ $Sale->SaleID }}"
                                 class="btn view_button Transfare {{ $Class }}"
-                                style="color:{{ $color }}"value='{{ $Purchase->PurchaseID }}'><i
+                                style="color:{{ $color }}"value='{{ $Sale->SaleID }}'><i
                                     class="fa-solid fa-shuffle fa-2x "></i></button>
-                            <input type="hidden" id = "Transfer{{ $Purchase->PurchaseID }}"
-                                value = "{{ $Purchase->Transfer }}">
+                            <input type="hidden" id = "Transfer{{ $Sale->SaleID }}" value = "{{ $Sale->Transfer }}">
                         </td>
                     </tr>
             @endforeach
@@ -47,20 +46,20 @@
     @endif
     <script>
         $(document).on('click', '.Transfare', function() {
-            var PurchaseID = $(this).val()
-            var PurchaseNumber = $("#PurchaseNumber" + PurchaseID).html()
+            var SaleID = $(this).val()
+            var SaleNumber = $("#SaleNumber" + SaleID).html()
             var Status = 2;
             var AlertMessage = "صرف"
             if ($(this).hasClass("UnTransfareButton")) {
                 Status = 1;
                 var AlertMessage = " الغاء صرف"
             }
-            if (confirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + PurchaseNumber)) {
+            if (confirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + SaleNumber)) {
                 var form_data = new FormData();
-                form_data.append('PurchaseID', PurchaseID);
+                form_data.append('SaleID', SaleID);
                 form_data.append('Status', Status);
                 $.ajax({
-                    url: "{{ route('stock_purchase_transfare') }}",
+                    url: "{{ route('stock_sale_transfare') }}",
                     dataType: 'json',
                     cache: false,
                     contentType: false,
@@ -77,9 +76,9 @@
                                     "alert-success")
                                 .html(
                                     "تم  " + AlertMessage + " الفاتورة بنجاح");
-                            $("#Transfer" + PurchaseID).val(Status)
+                            $("#Transfer" + SaleID).val(Status)
 
-                            resetButtons(PurchaseID)
+                            resetButtons(SaleID)
                         } else
                             $("#Results").removeClass("alert-success").addClass(
                                 "alert-danger").html(
@@ -92,12 +91,12 @@
             }
         });
 
-        function resetButtons(PurchaseID) {
-            $("#TransfareButton" + PurchaseID).removeClass("TransfareButton").addClass("UnTransfareButton");
-            $("#TransfareButton" + PurchaseID).css("color", "red")
-            if ($("#Transfer" + PurchaseID).val() == 1) {
-                $("#TransfareButton" + PurchaseID).removeClass("UnTransfareButton").addClass("TransfareButton");
-                $("#TransfareButton" + PurchaseID).css("color", "blue")
+        function resetButtons(SaleID) {
+            $("#TransfareButton" + SaleID).removeClass("TransfareButton").addClass("UnTransfareButton");
+            $("#TransfareButton" + SaleID).css("color", "red")
+            if ($("#Transfer" + SaleID).val() == 1) {
+                $("#TransfareButton" + SaleID).removeClass("UnTransfareButton").addClass("TransfareButton");
+                $("#TransfareButton" + SaleID).css("color", "blue")
             }
         }
     </script>

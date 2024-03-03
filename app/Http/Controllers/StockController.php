@@ -124,7 +124,6 @@ class StockController extends Controller
 
     public function AddTransaction($StockID, $ItemID, $QTY, $TransactionDetails, $Status)
     {
-        $Reuslt = "";
         $MyStockItem = StockItems::where(["StockID" => $StockID, "ItemID" => $ItemID])->get();
         if (count($MyStockItem) > 0) {
             $StockItem = $MyStockItem->first();

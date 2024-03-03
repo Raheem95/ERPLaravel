@@ -121,17 +121,22 @@
 
                         </td>
                         <td>
-                            <?php $Class = 'UnTransfareButton';
-                            $color = 'red'; ?>
-                            @if ($Sale->Transfer == 0)
-                                <?php $Class = 'TransfareButton';
-                                $color = 'blue'; ?>
+                            @if ($Sale->Transfer < 2)
+                                <?php $Class = 'UnTransfareButton';
+                                $color = 'red'; ?>
+                                @if ($Sale->Transfer == 0)
+                                    <?php $Class = 'TransfareButton';
+                                    $color = 'blue'; ?>
+                                @endif
+                                <button id = "TransfareButton{{ $Sale->SaleID }}"
+                                    class="btn view_button Transfare {{ $Class }}"
+                                    style="color:{{ $color }}"value='{{ $Sale->SaleID }}'><i
+                                        class="fa-solid fa-shuffle fa-2x "></i></button>
+                            @else
+                                تم صرف الفاتورة من المخزن
                             @endif
-                            <button id = "TransfareButton{{ $Sale->SaleID }}"
-                                class="btn view_button Transfare {{ $Class }}"
-                                style="color:{{ $color }}"value='{{ $Sale->SaleID }}'><i
-                                    class="fa-solid fa-shuffle fa-2x "></i></button>
                             <input type="hidden" id = "Transfer{{ $Sale->SaleID }}" value = "{{ $Sale->Transfer }}">
+
                         </td>
 
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="maindiv">
-        <a style="width: 20%;" href="/stocks" class="btn cancel_button mb-3">رجوع</a>
+        <a style="width: 20%;" href="/Stocks/StockManagment" class="btn cancel_button mb-3">رجوع</a>
         <div class="row">
             <div class="col-md-3" style="float: right">
                 <label for="" class="MainLabel">اسم المخزن</label>

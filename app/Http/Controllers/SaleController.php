@@ -304,7 +304,6 @@ $Result = "";
                 }
             }
         if ($flag) {
-            
             foreach ($SaleDetails as $SaleItem) {
                 $SaleItemID = $SaleItem->ItemID;
                 $SaleQTY = $SaleItem->ItemQTY;
@@ -317,7 +316,7 @@ $Result = "";
                 
        
                 $Result .= $StockController->AddTransaction($StockID, $SaleItemID, $SaleQTY, $TransactionDetails, $Status);
-                if ($Result == 1) {
+                if ($Result > 0) {
                     $MyItem = Item::find($SaleItemID);
                     $MyItem->ItemQty += $SaleQTY;
                     if (!$MyItem->save()) {

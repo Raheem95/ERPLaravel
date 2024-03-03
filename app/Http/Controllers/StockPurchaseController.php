@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Purchase;
 use App\PurchaseDetails;
+use App\Item;
 
 use Illuminate\Http\Request;
 
@@ -15,9 +16,10 @@ class StockPurchaseController extends Controller
      */
     public function index()
     {
-        $Purchases = Purchase::where("Transfer", ">=","1")->orderBy('Transfer', 'desc')->orderBy('PurchaseID', 'desc')->get();
+        $Purchases = Purchase::where("Transfer", ">=","1")->orderBy('Transfer', 'asc')->orderBy('PurchaseID', 'desc')->get();
 
         return view("stocks.purchases.index")->with(['Purchases' => $Purchases]);
+
     }
 
     /**
@@ -91,7 +93,7 @@ class StockPurchaseController extends Controller
 
 
  public function Transfare(Request $request){
-        $Result = "1";
+        $Result = "";
         $flag = true;
         $Purchase = Purchase::find($request->PurchaseID);
         $Purchase->Transfer = $request->Status;
@@ -108,7 +110,33 @@ class StockPurchaseController extends Controller
                 }
             }
         if ($flag) {
-            $Purchase->save();
+            foreach ($PurchaseDetails as $PurchaseItem) {
+                $PurchaseItemID = $PurchaseItem->ItemID;
+                $PurchaseQTY = $PurchaseItem->ItemQTY;
+                $ItemName = $PurchaseItem->item->ItemName;
+                $TransactionDetails = "تغذية المخزن عن طريق فاتورة المشتريات بالرقم " . $Purchase->PurchaseNumber . " للمنتج " . $ItemName;
+                if ($Status == 1) {
+                    $PurchaseQTY *= -1;
+                    $TransactionDetails = "الغاء تغذية المخزن عن طريق فاتورة المشتريات بالرقم " . $Purchase->PurchaseNumber . " للمنتج " . $ItemName;
+                }
+                $Result .= $StockController->AddTransaction($StockID, $PurchaseItemID, $PurchaseQTY, $TransactionDetails, $Status);
+                if ($Result > 0) {
+                    $MyItem = Item::find($PurchaseItemID);
+                    $MyItem->ItemQty += $PurchaseQTY;
+                    if (!$MyItem->save()) {
+                        $Result .= "خطاء في تعديل  كمية المنتج " . $ItemName . " <br> ";
+                        $flag = false;
+                    }
+                } else if ($Result == -1) {
+                    $flag = false;
+                    $Result .= "خطاء في تعديل كمية المنتج " . $ItemName . " في المخزن <br> ";
+                } else if ($Result == -2) {
+                    $flag = false;
+                    $Result .= "خطاء في اضافة الحركة المخزنية للمنتج " . $ItemName . " <br> ";
+                }
+            }
+            if($flag)
+                $Purchase->save();
         }
             return response()->json($Result);
     }

@@ -49,6 +49,8 @@ Route::post('get_item_details', 'SaleController@GetItemDetails')->name('get_item
 Route::resource('Stocks/StockManagment', 'StockController');
 Route::resource('Stocks/Purchases', 'StockPurchaseController');
 Route::post('stock_purchase_transfare', 'StockPurchaseController@Transfare')->name('stock_purchase_transfare');
+Route::resource('Stocks/Sales', 'StockSaleController');
+Route::post('stock_sale_transfare', 'StockSaleController@Transfare')->name('stock_sale_transfare');
 
 
 
