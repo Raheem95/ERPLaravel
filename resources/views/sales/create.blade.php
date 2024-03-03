@@ -180,7 +180,7 @@
             tr.append($("<td><label id = 'TotalRow" + myrowCount + "'>0</label></td>"))
             tr.appendTo(table)
             if (myrowCount > 1)
-                $("#RemoveButton1").css("display", "block")
+                $("#RemoveButton1").css("display", "contents")
             else
                 $("#RemoveButton1").css("display", "none")
         });
@@ -223,7 +223,7 @@
             NumberOfItems--
             $("#NumberOfItems").val(NumberOfItems)
             if (NumberOfItems > 1)
-                $("#RemoveButton1").css("display", "block")
+                $("#RemoveButton1").css("display", "contents")
             else
                 $("#RemoveButton1").css("display", "none")
         });

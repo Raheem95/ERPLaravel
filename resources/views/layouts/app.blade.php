@@ -78,7 +78,7 @@
             right: -200px;
             /* Initially hidden */
             background-color: #30a6f0;
-            padding-top: 60px;
+            padding-top: 90px;
             transition: 0.5s;
             z-index: 1;
             overflow-y: scroll;
@@ -128,7 +128,7 @@
 
         .IconStyleClose {
             position: absolute;
-            left: 15px;
+            left: 5px;
         }
     </style>
 </head>
