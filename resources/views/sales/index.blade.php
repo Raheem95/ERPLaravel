@@ -75,12 +75,11 @@
             <thead>
                 <tr>
                     <th>الرقم </th>
-                    <th>المورد </th>
+                    <th>العميل </th>
                     <th>القيمة</th>
                     <th>المسدد</th>
                     <th>التاريخ</th>
                     <th>عرض</th>
-                    <th>سداد</th>
                     <th>تغذية المخزن</th>
                     <th>تعديل</th>
                     <th>حذف</th>
@@ -95,13 +94,10 @@
                         </td>
                         <td>
                             <label id = "TotalSale{{ $Sale->SaleID }}">{{ number_format($Sale->TotalSale) }}</label>
-                            <input type = "hidden" id = "TotalSaleValue{{ $Sale->SaleID }}" value={{ $Sale->TotalSale }}>
                         </td>
-                        <td data-toggle="modal" data-target="#PaymentDetailsModel"
-                            onclick="viewPaymentDetails({{ $Sale->SaleID }})">
+                        <td>
                             <labe id = "PaidAmount{{ $Sale->SaleID }}"> {{ number_format($Sale->PaidAmount) }}
                             </labe>
-                            <input type="hidden" id = "PaidAmountValue{{ $Sale->SaleID }}" value={{ $Sale->PaidAmount }}>
                         </td>
                         <td dir="ltr">{{ date('Y-m-d', strtotime($Sale->created_at)) }}
                         </td>
@@ -109,17 +105,7 @@
                             <a href="sales/{{ $Sale->SaleID }}/" class="btn view_button">
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i>
                         </td>
-                        <td>
-                            <?php $display = 'none'; ?>
-                            @if ($Sale->PaidAmount < $Sale->TotalSale)
-                                <?php $display = 'block'; ?>
-                            @endif
-                            <button style="display:{{ $display }}" class="btn SetID edit_button" data-toggle="modal"
-                                data-target="#PaymentModel" id = "PayButton{{ $Sale->SaleID }}"
-                                value = "{{ $Sale->SaleID }}"><i class='fa-solid fa-sack-dollar fa-2x'></i></button>
 
-
-                        </td>
                         <td>
                             @if ($Sale->Transfer < 2)
                                 <?php $Class = 'UnTransfareButton';
@@ -176,180 +162,6 @@
         <div class="alert alert-danger Result"> لا يوجد فواتير مبيعات</div>
     @endif
     <script>
-        $(document).on('change', '#PaymentType', function() {
-            $("#PaymentResults").removeClass("alert-danger").html("")
-            var CurrencyID = $("#CurrencyID").val()
-            var AccountType = 4
-            if ($("#PaymentType").val() == 2 || $("#PaymentType").val() == 3)
-                AccountType = 3
-            if (CurrencyID != '0') {
-
-                $.ajax({
-                    url: '{{ url('get_account') }}/' + CurrencyID + '/' + AccountType,
-                    method: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response != 1 && response != 2) {
-                            $("#PaymentAccountID").empty().append(
-                                "<option value='0'>اختر الحساب</option>");
-                            for (var i = 0; i < response.length; i++) {
-                                $("#PaymentAccountID").append("<option value='" + response[i][
-                                    "AccountID"
-                                ] + "'>" + response[i]["AccountName"] + "</option>");
-                            }
-                        } else {
-                            $("#PaymentResults").addClass("alert-danger")
-                                .html("خطاء في النظام");
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                        $("#PaymentResults").addClass("alert-danger").html(
-                            "حدث خطأ أثناء الاتصال بالخادم");
-                    }
-                });
-
-            } else {
-                $("#PaymentResults").addClass("alert-danger").html(
-                    "حدد نوع العملة اولا")
-                $("#PaymentType").val("0")
-            }
-        });
-        $(document).on('click', '.SetID', function() {
-            $("#SaleID").val($(this).val())
-        });
-        $(document).on('click', '.SavePayment', function() {
-            var Amount = parseFloat($("#Amount").val())
-            var SaleID = $("#SaleID").val()
-            var PaymentAccountID = $("#PaymentAccountID").val()
-            var TotalSale = parseFloat($("#TotalSaleValue" + SaleID).val())
-            var PaidAmount = parseFloat($("#PaidAmountValue" + SaleID).val())
-            if (Amount > (TotalSale - PaidAmount))
-                $("#Results").removeClass("alert-success").addClass("alert-danger").html(
-                    " عذرا لا يمكنك سداد مبلغ اكبر من المبلغ المتبقي ")
-            else {
-                if (PaymentType != 0) {
-                    if (confirm("تأكيد دفع " + $("#CustomerName" + SaleID).html() + " لقيمة " + Amount +
-                            " جنيه ")) {
-                        var form_data = new FormData();
-                        form_data.append('SaleID', SaleID);
-                        form_data.append('PaidAmount', Amount);
-                        form_data.append('FromAccount', PaymentAccountID);
-
-                        $.ajax({
-                            url: "{{ route('pay_sale') }}",
-                            dataType: 'json',
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            data: form_data,
-                            type: 'post',
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                                    'content'));
-                            },
-                            success: function(result) {
-                                if (result == 1) {
-                                    $("#Results").removeClass("alert-danger").addClass("alert-success")
-                                        .html(
-                                            "تم الدفع بنجاح");
-                                    PaidAmount = parseFloat($("#PaidAmountValue" + SaleID).val()) +
-                                        Amount;
-                                    $("#PaidAmountValue" + SaleID).val(PaidAmount)
-                                    var formatter = new Intl.NumberFormat();
-                                    $("#PaidAmount" + SaleID).html(formatter.format(PaidAmount))
-                                    resetButtons(SaleID)
-                                } else {
-                                    $("#Results").removeClass("alert-success").addClass("alert-danger")
-                                        .html(result);
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                // Handle error
-                            }
-                        });
-
-                    }
-                } else {
-                    $("#Results").removeClass("alert-success").addClass("alert-danger").html(
-                        "الرجاء تحديد طريقة الدفع")
-                }
-            }
-        });
-
-        function viewPaymentDetails(SaleID) {
-            $("#SaleID").val(SaleID)
-            $("#PaymentDetailsTable").empty().append("<tr><th>المبلغ</th><th>تاريخ السداد</th><th>حذف</th></tr>")
-            $.ajax({
-                url: '{{ url('get_sale_payment_details') }}/' + SaleID,
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    var formatter = new Intl.NumberFormat();
-                    for (var i = 0; i < response.length; i++) {
-                        var tr = $("<tr id = 'PaymentNo" + response[i]["PaymentID"] + "'></tr>")
-                        tr.append($("<td>" + formatter.format(response[i]["PaidAmount"]) + "</td>"))
-                        tr.append($("<td>" + response[i]["created_at"] + "</td>"))
-                        tr.append($(
-                            "<td><button class = 'btn delete_button DeletePayment' value = '" +
-                            response[i]["PaymentID"] +
-                            "'><i class='fas fa-trash-alt fa-2x'></i></button></td>"))
-                        $("#PaymentDetailsTable").append(tr)
-                    }
-
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                    $("#PaymentResults").addClass("alert-danger").html(
-                        "حدث خطأ أثناء الاتصال بالخادم");
-                }
-            });
-        }
-        $(document).on('click', '.DeletePayment', function() {
-            if (confirm("تاكيد حذف السداد")) {
-                var form_data = new FormData();
-                var PaymentID = $(this).val();
-                form_data.append('PaymentID', PaymentID);
-                $.ajax({
-                    url: "{{ route('delete_sale_payment') }}",
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data,
-                    type: 'post',
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                            'content'));
-                    },
-                    success: function(result) {
-                        if (!isNaN(result)) {
-                            var formatter = new Intl.NumberFormat();
-                            var SaleID = $("#SaleID").val()
-                            var formatter = new Intl.NumberFormat();
-                            $("#PaidAmount" + SaleID).html(formatter.format(parseFloat($(
-                                "#PaidAmountValue" +
-                                SaleID).val()) - parseFloat(result)))
-                            $("#PaidAmountValue" + SaleID).val(parseFloat($("#PaidAmountValue" +
-                                SaleID).val()) - parseFloat(result))
-
-                            $("#DeletePaymentResults").removeClass("alert-danger").addClass(
-                                    "alert-success")
-                                .html(
-                                    "تم حذف السداد بنجاح");
-                            $("#PaymentNo" + PaymentID).remove()
-                            resetButtons(SaleID)
-                        } else
-                            $("#DeletePaymentResults").removeClass("alert-success").addClass(
-                                "alert-danger").html(
-                                result);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error
-                    }
-                });
-            }
-        });
         $(document).on('click', '.Transfare', function() {
             var SaleID = $(this).val()
             var SaleNumber = $("#SaleNumber" + SaleID).html()
@@ -397,14 +209,10 @@
         });
 
         function resetButtons(SaleID) {
-            $("#PayButton" + SaleID).css("display", "none");
-            if (parseFloat($("#TotalSaleValue" + SaleID).val()) > parseFloat($("#PaidAmountValue" + SaleID)
-                    .val()))
-                $("#PayButton" + SaleID).css("display", "block");
 
             $("#EditButton" + SaleID).css("display", "block");
             $("#DeleteButton" + SaleID).css("display", "block");
-            if ($("#PaidAmountValue" + SaleID).val() > 0 || $("#Transfer" + SaleID).val() == 1) {
+            if ($("#Transfer" + SaleID).val() == 1) {
                 $("#EditButton" + SaleID).css("display", "none");
                 $("#DeleteButton" + SaleID).css("display", "none");
             }

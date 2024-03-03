@@ -107,6 +107,7 @@
             padding: 10px;
             font-weight: 900;
             border-bottom: 1px solid white;
+            font-size: 18px;
         }
 
         .sidebara:hover {
@@ -169,30 +170,30 @@
                     </li>
                     <li>
                         <a class="sidebara" href="/purchases">
-                            <i class="IconClass IconStyleClose fa-solid fa-people-roof"></i>
+                            <i class="IconClass IconStyleClose fa-solid fa-cart-shopping"></i>
                             <label class="HeaderA">المشتريات </label>
                         </a>
                     </li>
                     <li>
                         <a class="sidebara" href="/sales">
-                            <i class="IconClass IconStyleClose fa-solid fa-people-roof"></i>
+                            <i class="IconClass IconStyleClose fa-solid fa-basket-shopping"></i>
                             <label class="HeaderA">المبيعات </label>
                         </a>
                     </li>
                     <li>
                         <a class="sidebara" href="/categories">
-                            <i class="IconClass IconStyleClose fa-solid fa-people-roof"></i>
+                            <i class="IconClass IconStyleClose fa-solid fa-layer-group"></i>
                             <label class="HeaderA">الاصناف </label>
                         </a>
                     </li>
                     <li><a class="sidebara" href="/items">
-                            <i class="IconClass IconStyleClose fa-solid fa-file-signature"></i>
+                            <i class="IconClass IconStyleClose fa-solid fa-boxes-stacked"></i>
                             <label class="HeaderA">المنتجات </label>
                         </a>
                     </li>
                     <li id="StockSubMenu" class="ViewSubMenu">
                         <a class="sidebara" href="#">
-                            <i class="IconClass IconStyleClose fa-solid fa-sack-dollar"></i>
+                            <i class="IconClass IconStyleClose fa-solid fa-warehouse"></i>
                             <label class="HeaderA">المخازن </label>
                         </a>
                     </li>
@@ -209,13 +210,13 @@
                     </div>
                     <li>
                         <a class="sidebara" href="/customers">
-                            <i class="IconClass IconStyleClose fa-solid fa-passport"></i>
+                            <i class="IconClass IconStyleClose fa-solid fa-people-group"></i>
                             <label class="HeaderA">العملاء</label>
                         </a>
                     </li>
                     <li>
                         <a class="sidebara" href="/suppliers">
-                            <i class="IconClass IconStyleClose fa-solid fa-list-check"></i>
+                            <i class="IconClass IconStyleClose fa-solid fa-people-carry-box"></i>
                             <label class="HeaderA">الموردين</label></a>
                     </li>
 
@@ -243,6 +244,12 @@
                         <a class="sidebara" href="{{ url('/AccountManagment/Accounts') }}"><label
                                 class="HeaderA">ادارة
                                 الحسابات </label></a>
+                        <a class="sidebara" href="{{ url('/AccountManagment/Purchase') }}"><label
+                                class="HeaderA">فواتير المشتريات
+                            </label></a>
+                        <a class="sidebara" href="{{ url('/AccountManagment/Sale') }}"><label class="HeaderA">فواتير
+                                المبيعات
+                            </label></a>
                         <a class="sidebara" href="CreditorsDebtors.php">دائنون و
                             مدينون </a>
                         <a class="sidebara" href="ChargeBalance.php">تغذية المحفظة </a>

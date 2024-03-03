@@ -27,6 +27,8 @@ Route::resource('AccountManagment/AccountTypes', 'AccountTypeController');
 Route::resource('AccountManagment/Accounts', 'AccountController');
 Route::resource('AccountManagment/Currencies', 'CurrencyController');
 Route::resource('AccountManagment/DailyAccountingEntries', 'DailyAccountingEntryController');
+Route::resource('AccountManagment/Purchase', 'AccountPurchaseController');
+Route::resource('AccountManagment/Sale', 'AccountSaleController');
 Route::get('get_account/{CurrencyID}/{AccountType}', 'AccountController@getAccount');
 
 // purchase routs
