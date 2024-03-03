@@ -23,40 +23,19 @@
     <!-- resources/views/categories/index.blade.php -->
     <div class="maindiv">
         <div class=" MainLabel">
-            <h1>فاتورة مبيعات</h1>
+            <h1>تحويل مخزني</h1>
         </div>
         <div class="col-md-12 Result" id = "Results"></div>
 
         {!! Form::open([
-            'action' => 'SaleController@store',
+            'action' => 'StockTransfareController@store',
             'method' => 'post',
             'onsubmit' => 'return validateForm()',
             'style' => 'margin-right:50px;',
         ]) !!}
         <div class = "row">
 
-            <?php
-            $Customers = json_decode($Customers, true);
-            $options = ['0' => 'اختر العميل']; // Initialize with default option
-            foreach ($Customers as $customer) {
-                $options[$customer['CustomerID']] = $customer['CustomerName'];
-            }
-            ?>
-            <div class="form-group col-md-6">
-                {!! Form::label('name', 'اختر العميل', ['class' => 'ProceduresLabel']) !!}
-                {!! Form::select('CustomerID', $options, null, [
-                    'class' => 'input_style SetCustomerName',
-                    'id' => 'CustomerID',
-                ]) !!}
-            </div>
-            <div class="form-group col-md-6">
-                {!! Form::label('', 'ادخل اسم العميل', ['class' => 'ProceduresLabel']) !!}
-                {!! Form::text('CustomerName', null, [
-                    'class' => 'input_style',
-                    'placeholder' => 'ادخل اسم العميل',
-                    'id' => 'CustomerName',
-                ]) !!}
-            </div>
+
             <?php
             $Stocks = json_decode($Stocks, true);
             
@@ -66,21 +45,30 @@
             }
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'اختر المخزن', ['class' => 'ProceduresLabel']) !!}
-                {!! Form::select('StockID', $options, null, [
+                {!! Form::label('name', 'من مخزن', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::select('FromStockID', $options, null, [
                     'class' => 'input_style',
-                    'id' => 'StockID',
+                    'id' => 'FromStockID',
                     'onchange' => 'GetAllItemsAvailableQTY()',
                 ]) !!}
             </div>
+            <div class="form-group col-md-6">
+                {!! Form::label('name', 'الى مخزن', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::select('ToStockID', $options, null, [
+                    'class' => 'input_style',
+                    'id' => 'ToStockID',
+                ]) !!}
+            </div>
+
+            <div class="form-group col-md-12">
+                {!! Form::label('name', 'التعليق', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::text('Comment', null, [
+                    'class' => 'input_style',
+                    'placeholder' => 'ادخل  التعليق',
+                ]) !!}
+            </div>
         </div>
-        <div class="PriceDiv">
-            {!! Form::label('', 'مجمل الفاتورة', ['class' => 'PriceLabel']) !!}
-            {!! Form::label('0', '0', ['class' => 'PriceLabel', 'id' => 'TotalSaleText']) !!}
-            {!! Form::hidden('TotalSale', 0, [
-                'id' => 'TotalSale',
-            ]) !!}
-        </div>
+
         {!! Form::hidden('NumberOfItems', 1, [
             'id' => 'NumberOfItems',
         ]) !!}
@@ -92,8 +80,6 @@
                 <th width="30%">المنتج</th>
                 <th>الكمية المتوفرة</th>
                 <th>الكمية</th>
-                <th>السعر</th>
-                <th width="10%">المجمل</th>
             </tr>
             <tr id = "Row1">
                 <td>
@@ -118,16 +104,8 @@
                     'class' => 'input_style CheckQTY',
                     'placeholder' => 'ادخل الكمية ',
                     'id' => 'ItemQTY1',
-                    'oninput' => 'CalculateRow(1)',
-                ]) !!}</td>
-                <td>{!! Form::number('ItemPrice1', 0, [
-                    'class' => 'input_style ',
-                    'placeholder' => 'ادخل السعر',
-                    'id' => 'ItemPrice1',
-                    'oninput' => 'CalculateRow(1)',
-                ]) !!}</td>
-                <td><label id = "TotalRow1">0</label></td>
-
+                ]) !!}
+                </td>
             </tr>
         </table>
         <!-- Add more form fields as needed -->
@@ -141,9 +119,6 @@
     {!! Form::close() !!}
     </div>
     <script>
-        $(document).on('change', '.SetCustomerName', function() {
-            $("#CustomerName").val($(this).find('option:selected').text())
-        });
         $(document).on('click', '.AddRow', function() {
             var myrowCount = $("#NumberOfItems").val()
             var Items = <?php echo json_encode($options); ?>;
@@ -168,16 +143,8 @@
             tr.append($(
                 "<td><input type = 'number' value = '0' id = 'ItemQTY" + myrowCount +
                 "' name = 'ItemQTY" + myrowCount +
-                "' placeholder = 'ادخل الكمية' class = 'input_style CheckQTY' value = '0' oninput = (CalculateRow(" +
-                myrowCount + "))></td>"
+                "' placeholder = 'ادخل الكمية' class = 'input_style CheckQTY' value = '0'></td>"
             ))
-            tr.append($(
-                "<td><input type = 'number' value = '0' id = 'ItemPrice" + myrowCount +
-                "' name = 'ItemPrice" + myrowCount +
-                "' placeholder = 'ادخل السعر' class = 'input_style ' value = '0' oninput = (CalculateRow(" +
-                myrowCount + "))></td>"
-            ))
-            tr.append($("<td><label id = 'TotalRow" + myrowCount + "'>0</label></td>"))
             tr.appendTo(table)
             if (myrowCount > 1)
                 $("#RemoveButton1").css("display", "block")
@@ -197,24 +164,10 @@
                 $("#ItemID" + i).attr("id", "ItemID" + myCurrentID)
                 $("#ItemID" + myCurrentID).attr("name", "ItemID" + myCurrentID)
 
-
                 $("#ItemQTY" + i).attr("id", "ItemQTY" + myCurrentID)
                 $("#ItemQTY" + myCurrentID).attr("name", "ItemQTY" + myCurrentID)
-                $("#ItemQTY" + myCurrentID).on('input', function() {
-                    CalculateRow(myCurrentID);
-                });
-
 
                 $("#AvailableQTY" + i).attr("id", "AvailableQTY" + myCurrentID)
-
-                $("#ItemPrice" + i).attr("id", "ItemPrice" + myCurrentID)
-                $("#ItemPrice" + myCurrentID).attr("name", "ItemPrice" + myCurrentID)
-                $("#ItemPrice" + myCurrentID).on('input', function() {
-                    CalculateRow(myCurrentID);
-                });
-
-                $("#TotalRow" + i).attr("id", "TotalRow" + myCurrentID)
-                $("#TotalRow" + myCurrentID).attr("name", "TotalRow" + myCurrentID)
 
                 $("#RemoveButton" + i).attr("id", "RemoveButton" + myCurrentID)
                 $("#RemoveButton" + myCurrentID).val(myCurrentID)
@@ -229,7 +182,7 @@
         });
         $(document).on('change', '.GetItemDetails', function() {
             var ItemID = $(this).val()
-            var StockID = $("#StockID").val()
+            var StockID = $("#FromStockID").val()
             var RowID = $(this).attr("id").replace("ItemID", "");
             if (StockID > 0) {
                 $("#Results").html("")
@@ -250,7 +203,6 @@
                             'content'));
                     },
                     success: function(result) {
-                        $("#ItemPrice" + RowID).val(result.SalesPrice)
                         $("#AvailableQTY" + RowID).html(result.AvailableQTY)
                     },
                     error: function(xhr, status, error) {
@@ -273,73 +225,43 @@
 
         });
 
-        function CalculateRow(RowID) {
-            var Total = parseFloat($("#ItemPrice" + RowID).val()) * parseFloat($("#ItemQTY" + RowID)
-                .val());
-            $("#TotalRow" + RowID).html(Total.toLocaleString())
-            CalculateTotal()
-        }
-
-        function CalculateTotal() {
-            var myrowCount = $("#NumberOfItems").val()
-            var Total = 0;
-            for (var i = 1; i <= myrowCount; i++)
-                Total += parseFloat($("#ItemPrice" + i).val()) * parseFloat($("#ItemQTY" + i)
-                    .val());
-            $("#TotalSaleText").html(Total.toLocaleString());
-
-            $("#TotalSale").val(Total)
-        }
-
         function validateForm() {
             var flag = true
             var Result = "";
-            if ($("#CustomerID").val() == 0) {
+            if ($("#FromStockID").val() == $("#ToStockID").val()) {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار العميل </div>"
+                Result = Result + "<div class = 'alert alert-danger Result'> لا يمكن التحويل لنفس المخزن</div>"
             }
-            if ($("#CustomerName").val() == "") {
+            if ($("#FromStockID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء ادخال اسم العميل </div>"
+                Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المخزن المحول منه </div>"
             }
-            if ($("#StockID").val() == 0) {
+            if ($("#ToStockID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المخزن </div>"
+                Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المخزن المحول اليه </div>"
             }
             if ($("#NumberOfItems").val() == 0) {
                 flag = false;
-                var Result = Result +
+                Result = Result +
                     "<div class = 'alert alert-danger Result'> يجب ان تحتوي الفاتورة على منتج واحد على الاقل </div>"
             }
             for (var i = 1; i <= $("#NumberOfItems").val(); i++) {
                 if ($("#ItemID" + i).val() == 0) {
                     flag = false;
-                    var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المنتج رقم " + i +
+                    Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المنتج رقم " + i +
                         "</div>"
                 }
                 var ItemQTY = $("#ItemQTY" + i).val();
                 if (isNaN(ItemQTY) || parseFloat(ItemQTY) <= 0) {
                     flag = false;
-                    var Result = Result +
+                    Result = Result +
                         "<div class = 'alert alert-danger Result'> الرجاء ادخال كمية صحيحة للمنتج رقم " + i + "</div>"
                 }
-                var ItemPrice = $("#ItemPrice" + i).val();
-                if (isNaN(ItemPrice) || parseFloat(ItemPrice) <= 0) {
+                if (parseFloat($("#ItemQTY" + i).val()) > parseFloat($("#AvailableQTY" + i).html())) {
                     flag = false;
-                    var Result = Result +
-                        "<div class = 'alert alert-danger Result'> الرجاء ادخال سعر صحيح للمنتج رقم " + i + "</div>"
+                    Result = Result +
+                        "<div class = 'alert alert-danger Result'> الكمية غير متوفرة للمنتج رقم " + i + "</div>"
                 }
-            }
-
-            if (flag) {
-                var flag2 = true;
-                for (var i = 1; i <= $("#NumberOfItems").val(); i++) {
-                    if (parseFloat($("#ItemQTY" + i).val()) > parseFloat($("#AvailableQTY" + i).html()))
-                        flag2 = false;
-                }
-                if (!flag2)
-                    if (!confirm("توجد منتجات غير متوقرة الكمية هل تريد المتابعة ؟"))
-                        flag = false;
             }
             document.getElementById('Results').scrollIntoView();
             $("#Results").html(Result)

@@ -77,7 +77,6 @@
                     <th>الرقم </th>
                     <th>المورد </th>
                     <th>القيمة</th>
-                    <th>المسدد</th>
                     <th>التاريخ</th>
                     <th>عرض</th>
                     <th>تغذية المخزن</th>
@@ -95,10 +94,6 @@
                         <td>
                             <label
                                 id = "TotalPurchase{{ $Purchase->PurchaseID }}">{{ number_format($Purchase->TotalPurchase) }}</label>
-                        </td>
-                        <td>
-                            <labe id = "PaidAmount{{ $Purchase->PurchaseID }}"> {{ number_format($Purchase->PaidAmount) }}
-                            </labe>
                         </td>
                         <td dir="ltr">{{ date('Y-m-d', strtotime($Purchase->created_at)) }}
                         </td>

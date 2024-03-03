@@ -28,8 +28,8 @@
             @foreach ($PurchaseDetails as $RowItem)
                 <tr>
                     <td>{{ $RowItem->item->ItemName }}</td>
-                    <td>{{ $RowItem->ItemQTY }}</td>
-                    <td>{{ $RowItem->ItemPrice }}</td>
+                    <td>{{ number_format($RowItem->ItemQTY) }}</td>
+                    <td>{{ number_format($RowItem->ItemPrice) }}</td>
                     <td>{{ number_format($RowItem->ItemQTY * $RowItem->ItemPrice) }}</td>
                 </tr>
             @endforeach

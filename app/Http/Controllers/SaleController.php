@@ -70,20 +70,20 @@ class SaleController extends Controller
             if ($Result == 1)
                 $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, 4, $TotalSale, 1, 1, $restrictionDetails, $UserID);
             if ($Result == 1) {
-                $Purchace = new Sale;
-                $Purchace->SaleNumber = $maxSaleNumber;
-                $Purchace->CustomerID = $CustomerID;
-                $Purchace->CustomerName = $CustomerName;
-                $Purchace->AccountID = $AccountID;
-                $Purchace->TotalSale = $TotalSale;
-                $Purchace->SaleStatus = 0;
-                $Purchace->StockID = $request->StockID;
-                $Purchace->RestrictionID = $RestrictionID;
-                $Purchace->Transfer = 0;
-                $Purchace->CurrencyID = 0;
-                $Purchace->AddedBy = $UserID;
-                $Purchace->save();
-                $SaleID = $Purchace->SaleID;
+                $Sale = new Sale;
+                $Sale->SaleNumber = $maxSaleNumber;
+                $Sale->CustomerID = $CustomerID;
+                $Sale->CustomerName = $CustomerName;
+                $Sale->AccountID = $AccountID;
+                $Sale->TotalSale = $TotalSale;
+                $Sale->SaleStatus = 0;
+                $Sale->StockID = $request->StockID;
+                $Sale->RestrictionID = $RestrictionID;
+                $Sale->Transfer = 0;
+                $Sale->CurrencyID = 0;
+                $Sale->AddedBy = $UserID;
+                $Sale->save();
+                $SaleID = $Sale->SaleID;
                 $NumberOfItems = $request->NumberOfItems;
 
                 for ($i = 1; $i <= $NumberOfItems; $i++) {

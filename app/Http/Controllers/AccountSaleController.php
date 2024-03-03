@@ -18,7 +18,7 @@ class AccountSaleController extends Controller
         $Currencies = Currency::orderBy('CurrencyID', 'asc')->get();
         $Sales  = Sale::orderBy('SaleID', 'desc')->get();
 
-        return view("account_managment.sales.index")->with(['Sales' => $Sales , "Currencies" => $Currencies]);
+        return view("account_managment.sales.index")->with(['Sales' => $Sales, "Currencies" => $Currencies]);
     }
 
     /**
@@ -51,7 +51,7 @@ class AccountSaleController extends Controller
     public function show($id)
     {
         $Sales = Sale::find($id);
-        $SaleDetails = $Sale->Sale_details;
+        $SaleDetails = $Sales->Sale_details;
         return view("account_managment.sales.view")->with(['Sales' => $Sales, "SaleDetails" => $SaleDetails]);
     }
 

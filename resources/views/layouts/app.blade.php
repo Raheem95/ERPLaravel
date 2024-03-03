@@ -206,7 +206,7 @@
                         <a class="sidebara" href="{{ url('/Stocks/Sales') }}"><label class="HeaderA">
                                 فواتير المبيعات
                             </label></a>
-                        <a class="sidebara" href="{{ url('/Stocks/Sales') }}">التحويلات المخزنية</a>
+                        <a class="sidebara" href="{{ url('/Stocks/Transfare') }}">التحويلات المخزنية</a>
                     </div>
                     <li>
                         <a class="sidebara" href="/customers">
@@ -219,15 +219,6 @@
                             <i class="IconClass IconStyleClose fa-solid fa-people-carry-box"></i>
                             <label class="HeaderA">الموردين</label></a>
                     </li>
-
-
-                    <li>
-                        <a class="sidebara" href="RecruitmentOffices.php">
-                            <i class="IconClass IconStyleClose fa-regular fa-building"></i>
-                            <label class="HeaderA">مكاتب الاستقدام </label>
-                        </a>
-                    </li>
-
                     <li id="AccountSubMenu" class="ViewSubMenu">
                         <a class="sidebara" href="#">
                             <i class="IconClass IconStyleClose fa-solid fa-sack-dollar"></i>
@@ -250,15 +241,15 @@
                         <a class="sidebara" href="{{ url('/AccountManagment/Sale') }}"><label class="HeaderA">فواتير
                                 المبيعات
                             </label></a>
+                        <a class="sidebara" href="expenses.php">المنصرفات </a>
                         <a class="sidebara" href="CreditorsDebtors.php">دائنون و
                             مدينون </a>
-                        <a class="sidebara" href="ChargeBalance.php">تغذية المحفظة </a>
 
                         <a class="sidebara" href="Salaries.php">الرواتب </a>
 
                         <a class="sidebara" href="Loans.php">السلفيات </a>
 
-                        <a class="sidebara" href="expenses.php">المنصرفات </a>
+
 
                         <a class="sidebara" href="{{ url('/AccountManagment/DailyAccountingEntries') }}">القيود
                         </a>

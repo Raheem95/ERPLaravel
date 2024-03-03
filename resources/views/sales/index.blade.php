@@ -77,7 +77,6 @@
                     <th>الرقم </th>
                     <th>العميل </th>
                     <th>القيمة</th>
-                    <th>المسدد</th>
                     <th>التاريخ</th>
                     <th>عرض</th>
                     <th>تغذية المخزن</th>
@@ -94,10 +93,6 @@
                         </td>
                         <td>
                             <label id = "TotalSale{{ $Sale->SaleID }}">{{ number_format($Sale->TotalSale) }}</label>
-                        </td>
-                        <td>
-                            <labe id = "PaidAmount{{ $Sale->SaleID }}"> {{ number_format($Sale->PaidAmount) }}
-                            </labe>
                         </td>
                         <td dir="ltr">{{ date('Y-m-d', strtotime($Sale->created_at)) }}
                         </td>

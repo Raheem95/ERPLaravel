@@ -13,7 +13,7 @@
                 <label for="" class="MainLabel">تاريخ الفاتورة </label>
                 <label for="" class="valueLabel">{{ date('Y-m-d', strtotime($Sale->created_at)) }}</label>
                 <label for="" class="MainLabel">قيمة الفاتورة </label>
-                <label for="" class="valueLabel">{{ $Sale->TotalSale }}</label>
+                <label for="" class="valueLabel">{{ number_format($Sale->TotalSale) }}</label>
             </div>
             <div class="col-md-6">
 
@@ -30,8 +30,8 @@
             @foreach ($SaleDetails as $RowItem)
                 <tr>
                     <td>{{ $RowItem->item->ItemName }}</td>
-                    <td>{{ $RowItem->ItemQTY }}</td>
-                    <td>{{ $RowItem->ItemPrice }}</td>
+                    <td>{{ number_format($RowItem->ItemQTY) }}</td>
+                    <td>{{ number_format($RowItem->ItemPrice) }}</td>
                     <td>{{ number_format($RowItem->ItemQTY * $RowItem->ItemPrice) }}</td>
                 </tr>
             @endforeach

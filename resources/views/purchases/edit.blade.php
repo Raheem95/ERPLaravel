@@ -204,9 +204,15 @@
 
                 $("#ItemQTY" + i).attr("id", "ItemQTY" + myCurrentID)
                 $("#ItemQTY" + myCurrentID).attr("name", "ItemQTY" + myCurrentID)
+                $("#ItemQTY" + myCurrentID).on('input', function() {
+                    CalculateRow(myCurrentID);
+                });
 
                 $("#ItemPrice" + i).attr("id", "ItemPrice" + myCurrentID)
                 $("#ItemPrice" + myCurrentID).attr("name", "ItemPrice" + myCurrentID)
+                $("#ItemPrice" + myCurrentID).on('input', function() {
+                    CalculateRow(myCurrentID);
+                });
 
                 $("#TotalRow" + i).attr("id", "TotalRow" + myCurrentID)
                 $("#TotalRow" + myCurrentID).attr("name", "TotalRow" + myCurrentID)
