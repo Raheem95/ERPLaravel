@@ -1,11 +1,17 @@
 @extends('layouts.app')
 @section('content')
     <div class="maindiv">
-        <a style="width: 20%;" href="/Stocks/StockManagment" class="btn cancel_button mb-3">رجوع</a>
+        <a style="width: 20%;" href="/Stocks/Transfare" class="btn cancel_button mb-3">رجوع</a>
         <div class="row">
-            <div class="col-md-3" style="float: right">
-                <label for="" class="MainLabel">اسم المخزن</label>
-                <label for="" class="valueLabel">{{ $Stock->StockName }}</label>
+            <div class="col-md-6" style="float: right">
+                <label for="" class="MainLabel">من مخزن</label>
+                <label for="" class="valueLabel">{{ $StockTransfare->from_stock->StockName }}</label>
+                <label for="" class="MainLabel">الى مخزن</label>
+                <label for="" class="valueLabel">{{ $StockTransfare->to_stock->StockName }}</label>
+
+                <label for="" class="MainLabel">التعليق</label>
+                <label for="" class="valueLabel">{{ $StockTransfare->Comment }}</label>
+
             </div>
         </div>
         <br>
@@ -13,54 +19,22 @@
         <div class="row">
             <div class="col-md-9">
                 <label for="" class="MainLabel">الحركات المخزنية</label>
-                @if (count($StockTransactions) > 0)
+                @if (count($StockTransfareDetails) > 0)
                     <table class="table">
                         <tr>
                             <th>المنتج</th>
                             <th>الكمية</th>
-                            <th>تفاصيل العملية</th>
-                            <th>تاريخ العملية</th>
-                            <th>نوع العملية</th>
-                            <th>منفذ العملية</th>
                         </tr>
-                        @foreach ($StockTransactions as $Transaction)
+                        @foreach ($StockTransfareDetails as $Details)
                             <tr>
-                                <td>{{ $Transaction->item->ItemName }}</td>
-                                <td>{{ number_format($Transaction->ItemQTY) }}</td>
-                                <td>{{ $Transaction->TransactionDetails }}</td>
-                                <td>{{ date('Y-m-d', strtotime($Transaction->created_at)) }}</td>
-                                <td>
-                                    @if ($Transaction->OprationType == 1)
-                                        تغذية
-                                    @else
-                                        صرف
-                                    @endif
-                                </td>
-                                <td>{{ $Transaction->user->name }}</td>
+                                <td>{{ $Details->item->ItemName }}</td>
+                                <td>{{ number_format($Details->ItemQTY) }}</td>
+
                             </tr>
                         @endforeach
                     </table>
                 @else
                     <div class="alert alert-danger Result">لا توجد حركات مخزنية</div>
-                @endif
-            </div>
-            <div class="col-md-3">
-                <label for="" class="MainLabel">المنتجات</label>
-                @if (count($StockItems) > 0)
-                    <table class="table">
-                        <tr>
-                            <th>اسم المنتج</th>
-                            <th>الكمية المتوفرة</th>
-                        </tr>
-                        @foreach ($StockItems as $Item)
-                            <tr>
-                                <td>{{ $Item->item->ItemName }}</td>
-                                <td>{{ number_format($Item->ItemQTY) }}</td>
-                            </tr>
-                        @endforeach
-                    </table>
-                @else
-                    <div class="alert alert-danger Result">لا توجد منتجات</div>
                 @endif
             </div>
         </div>

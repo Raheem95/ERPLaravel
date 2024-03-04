@@ -26,11 +26,11 @@
                         @foreach ($StockTransactions as $Transaction)
                             <tr>
                                 <td>{{ $Transaction->item->ItemName }}</td>
-                                <td>{{ number_format($Transaction->ItemQTY) }}</td>
+                                <td>{{ number_format(abs($Transaction->ItemQTY)) }}</td>
                                 <td>{{ $Transaction->TransactionDetails }}</td>
                                 <td>{{ date('Y-m-d', strtotime($Transaction->created_at)) }}</td>
                                 <td>
-                                    @if ($Transaction->OprationType == 1)
+                                    @if ($Transaction->ItemQTY > 0)
                                         تغذية
                                     @else
                                         صرف

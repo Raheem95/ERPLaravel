@@ -54,3 +54,4 @@ Route::post('stock_purchase_transfare', 'StockPurchaseController@Transfare')->na
 Route::resource('Stocks/Sales', 'StockSaleController');
 Route::post('stock_sale_transfare', 'StockSaleController@Transfare')->name('stock_sale_transfare');
 Route::resource('Stocks/Transfare', 'StockTransfareController');
+Route::post('stock_transfare', 'StockTransfareController@Transfare')->name('stock_transfare');

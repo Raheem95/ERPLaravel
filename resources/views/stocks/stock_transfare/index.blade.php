@@ -4,7 +4,7 @@
     <!-- resources/views/Transfares/index.blade.php -->
 
     <h1>المخازن</h1>
-
+    <div class="col-md-12 Result" id = "Results"></div>
     <a style="width: 20%;" href="Transfare/create" class="btn add_button mb-3">اضافة تحويل مخزني</a>
     @if (count($Transfares) > 0)
         <table class="table ">
@@ -25,7 +25,7 @@
 
                     <tr>
                         <td>{{ $Transfare->TransfareID }}</td>
-                        <td>{{ $Transfare->Comment }}</td>
+                        <td id = "TransfareDetsils{{ $Transfare->TransfareID }}">{{ $Transfare->Comment }}</td>
                         <td>{{ $Transfare->from_stock->StockName }}</td>
                         <td>{{ $Transfare->to_stock->StockName }}</td>
                         <td>
@@ -33,10 +33,10 @@
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i></a>
                         </td>
                         <td>
-                            @if ($Transfare->Transfer < 2)
+                            @if ($Transfare->Transfare < 2)
                                 <?php $Class = 'UnTransfareButton';
                                 $color = 'red'; ?>
-                                @if ($Transfare->Transfer == 0)
+                                @if ($Transfare->Transfare == 0)
                                     <?php $Class = 'TransfareButton';
                                     $color = 'blue'; ?>
                                 @endif
@@ -48,7 +48,7 @@
                                 تم صرف الفاتورة من المخزن
                             @endif
                             <input type="hidden" id = "Transfer{{ $Transfare->TransfareID }}"
-                                value = "{{ $Transfare->Transfer }}">
+                                value = "{{ $Transfare->Transfare }}">
 
                         </td>
                         <td>
@@ -77,4 +77,60 @@
     @else
         <div class="alert alert-danger Result"> لا يوجد تحويلات</div>
     @endif
+    <script>
+        $(document).on('click', '.Transfare', function() {
+            var TransfareID = $(this).val()
+            var TransfareDetsils = $("#TransfareDetsils" + TransfareID).html()
+            var Status = 1;
+            var AlertMessage = "صرف"
+            if ($(this).hasClass("UnTransfareButton")) {
+                Status = 0;
+                var AlertMessage = " الغاء صرف"
+            }
+            if (confirm("تاكيد " + AlertMessage + "  التحويل " + TransfareDetsils)) {
+                var form_data = new FormData();
+                form_data.append('TransfareID', TransfareID);
+                form_data.append('Status', Status);
+                $.ajax({
+                    url: "{{ route('stock_transfare') }}",
+                    dataType: 'json',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: form_data,
+                    type: 'post',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
+                            'content'));
+                    },
+                    success: function(result) {
+                        if (!isNaN(result)) {
+                            $("#Results").removeClass("alert-danger").addClass(
+                                    "alert-success")
+                                .html(
+                                    "تم  " + AlertMessage + " الفاتورة بنجاح");
+                            $("#Transfer" + TransfareID).val(Status)
+
+                            resetButtons(TransfareID)
+                        } else
+                            $("#Results").removeClass("alert-success").addClass(
+                                "alert-danger").html(
+                                result);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                    }
+                });
+            }
+        });
+
+        function resetButtons(TransfareID) {
+            $("#TransfareButton" + TransfareID).removeClass("TransfareButton").addClass("UnTransfareButton");
+            $("#TransfareButton" + TransfareID).css("color", "red")
+            if ($("#Transfer" + TransfareID).val() == 0) {
+                $("#TransfareButton" + TransfareID).removeClass("UnTransfareButton").addClass("TransfareButton");
+                $("#TransfareButton" + TransfareID).css("color", "blue")
+            }
+        }
+    </script>
 @endsection
