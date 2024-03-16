@@ -49,9 +49,15 @@
         });
     </script>
     <style>
+        @font-face {
+            font-family: 'MyFont';
+            src: url('/font/Changa-VariableFont_wght.ttf') format('woff2');
+            /* Add more src definitions for different font formats if necessary */
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'MyFont', sans-serif;
         }
 
         .toggle-btn {

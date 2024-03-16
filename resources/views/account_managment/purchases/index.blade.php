@@ -166,7 +166,6 @@
                             "حدث خطأ أثناء الاتصال بالخادم");
                     }
                 });
-
             } else {
                 $("#PaymentResults").addClass("alert-danger").html(
                     "حدد نوع العملة اولا")
