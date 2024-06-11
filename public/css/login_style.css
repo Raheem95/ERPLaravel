@@ -1,0 +1,121 @@
+@font-face {
+  font-family: "MyFont";
+  src: url("/font/Changa-VariableFont_wght.ttf") format("woff2");
+  /* Add more src definitions for different font formats if necessary */
+}
+
+body {
+  position: fixed;
+  width: 100%;
+  background-image: url("/images/login-background-img.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  font-family: "MyFont", sans-serif;
+}
+
+.login-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: rgba(43, 42, 42, 0.8);
+  /* Transparent white background */
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 50px;
+  text-align: center;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  text-align: right;
+}
+
+.inputContainer {
+  width: 100%;
+  height: 40px;
+  background: white;
+}
+
+.form-control {
+  width: 100%;
+  height: 40px;
+  padding-right: 30px;
+  font-size: 17px;
+}
+
+.login-result {
+  background-color: rgba(234, 232, 232, 0.8);
+  padding: 18px;
+  text-align: center;
+}
+
+.text-view {
+  font-size: 20px;
+  padding: 5px 5px;
+  color: #eaebec;
+  font-weight: 600;
+  width: 100%;
+}
+
+.btn-login {
+  padding: 15px;
+  background-color: #13c796;
+  border-radius: 10px;
+  width: 50%;
+  color: white;
+  font-weight: 600;
+}
+
+.btn-login:hover {
+  color: #fff;
+  background-color: #37a5be;
+  border-color: #37a5be;
+}
+
+.btn-back {
+  padding: 15px;
+  color: #13c796;
+  border-radius: 10px;
+  width: 50%;
+  background-color: white;
+  font-weight: 600;
+}
+
+.btn-back:hover {
+  background-color: #37a5be;
+  color: #fff;
+  border-color: #37a5be;
+}
+
+.btn-forgot {
+  font-size: 14px;
+}
+
+.btn-signup {
+  font-size: 14px;
+}
+
+.help-block {
+  color: #a50c0cdc;
+}
+
+.img-fluid {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.fa-solid {
+  color: black;
+  position: absolute;
+  margin: 15px 5px;
+}

@@ -264,7 +264,8 @@ class SaleController extends Controller
         } else
             return response()->json("خطاء في انشاء  القيد ");
     }
-    public function payment_details($SaleID){
+    public function payment_details($SaleID)
+    {
         $SalePaymentDetails = SalePayment::where('SaleID', $SaleID)->get();
         return response()->json($SalePaymentDetails);
     }
@@ -285,17 +286,17 @@ class SaleController extends Controller
     }
     public function Transfare(Request $request)
     {
-$Result = "";
+        $Result = "";
         $flag = true;
         $Sale = Sale::find($request->SaleID);
         $Sale->Transfer = $request->Status;
         $StockID = $Sale->StockID;
         $StockController = new StockController;
         $SaleDetails = SaleDetails::where("SaleID", $request->SaleID)->get();
-         $Status = 0;
-        if($request->Status == 0)
+        $Status = 0;
+        if ($request->Status == 0)
             $Status = 1;
-        if ($Status == 0 )
+        if ($Status == 0)
             foreach ($SaleDetails as $SaleItem) {
                 $AvailableQTY = $StockController->getStockItemQTY($StockID, $SaleItem->ItemID);
                 if ($AvailableQTY < $SaleItem->ItemQTY) {
@@ -313,8 +314,8 @@ $Result = "";
                     $SaleQTY *= -1;
                     $TransactionDetails = "  صرف فاتورة مبيعات  بالرقم " . $Sale->SaleNumber . " للمنتج " . $ItemName;
                 }
-                
-       
+
+
                 $Result .= $StockController->AddTransaction($StockID, $SaleItemID, $SaleQTY, $TransactionDetails, $Status);
                 if ($Result > 0) {
                     $MyItem = Item::find($SaleItemID);
@@ -333,7 +334,6 @@ $Result = "";
             }
             if ($flag)
                 $Sale->save();
-
         }
         if ($flag)
             return response()->json(1);

@@ -13,10 +13,8 @@
 
     <!-- Styles -->
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
     <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -29,16 +27,35 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     <script>
-        function toggleSidebar() {
-            var sidebar = document.getElementById("sidebar");
+        $(document).on('click', '#ArrorIcon', function() {
+            toggleSidebar(0)
+        });
 
+        function handleClickOutside(event) {
+            var div = document.getElementById('ContainerNav');
+            if (!div.contains(event.target)) {
+                sidebar.style.right = "-200px";
+                icon.style.right = "25px";
+                $("#icon").empty().append($('<i id="ArrorIcon" class="fa-solid fa-circle-arrow-left "></i>'))
+            }
+        }
+
+        // Add event listener to the document to detect clicks
+        document.addEventListener('click', handleClickOutside);
+
+        function toggleSidebar(Type) {
+            var sidebar = document.getElementById("sidebar");
             var icon = document.getElementById("icon");
             if (sidebar.style.right === "0px") {
-                sidebar.style.right = "-200px";
-                icon.style.right = "2px";
+                if (Type != 1) {
+                    sidebar.style.right = "-200px";
+                    icon.style.right = "25px";
+                    $("#icon").empty().append($('<i id="ArrorIcon"  class="fa-solid fa-circle-arrow-left "></i>'))
+                }
             } else {
                 sidebar.style.right = "0px";
-                icon.style.right = "200px";
+                icon.style.right = "225px";
+                $("#icon").empty().append($('<i id="ArrorIcon" class="fa-solid fa-circle-xmark"></i>'));
             }
         }
         $(document).on('click', '.ViewSubMenu', function() {
@@ -62,18 +79,17 @@
 
         .toggle-btn {
             position: fixed;
-            top: 20px;
-            right: 0px;
-            font-size: 20px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: #111;
-            z-index: 3;
-            transition: 0.5s;
-            color: white;
-            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 25px;
             font-size: 30px;
+            background: #274557;
+            color: white;
+            border: none;
+            transition: 0.5s;
+            padding: 15px;
+            border-radius: 60px 0 0px 60px;
+            z-index: 1;
         }
 
         .sidebar {
@@ -83,16 +99,16 @@
             top: 0;
             right: -200px;
             /* Initially hidden */
-            background-color: #30a6f0;
-            padding-top: 90px;
+            background-color: #274557;
+            padding-top: 30px;
             transition: 0.5s;
-            z-index: 1;
+            z-index: 2;
             overflow-y: scroll;
             /* Smooth transition effect */
         }
 
         .sidebar h2 {
-            color: #30a6f0;
+            color: #274557;
             text-align: center;
         }
 
@@ -118,7 +134,7 @@
 
         .sidebara:hover {
             background-color: white;
-            color: #30a6f0;
+            color: #274557;
 
         }
 
@@ -146,137 +162,127 @@
         ?>
     @else
         <div id="app" class="content" style="width:100%">
-            <div class='MainLabel notPrint'>
-                <label class='MainLabel' style='text-align: right; padding-right: 50px; font-size: 20px;'>
-                    مرحبا <b>
-                        {{ Auth::user()->name }}
-                    </b>
-                </label>
-                <a href="logout.php" style="position: absolute;top: 10;left: 10px;">
-                    <button class="btn delete_button">خروج <i
-                            class=" fa-solid fa-arrow-right-from-bracket"></i></button>
-                </a>
-                <a href="{{ route('logout') }}"
-                    style="position: absolute;top: 10;left: 10px;"onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                    <button class="btn delete_button">خروج <i class=" fa-solid fa-arrow-right-from-bracket"></i>
-                    </button>
-                </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    {{ csrf_field() }}
-                </form>
-            </div>
-            <button class="toggle-btn notPrint" id="icon" onclick="toggleSidebar()">
-                <i class="fa-brands fa-elementor"></i>
-            </button>
-            <div class="sidebar notPrint" id="sidebar">
-                <ul>
-                    <li><a class="sidebara" href="/home">
-                            <i class="IconClass IconStyleClose fa-solid fa-house"></i>
-                            <label class="HeaderA">الرئيسية</label></a>
-                    </li>
-                    <li>
-                        <a class="sidebara" href="/purchases">
-                            <i class="IconClass IconStyleClose fa-solid fa-cart-shopping"></i>
-                            <label class="HeaderA">المشتريات </label>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="sidebara" href="/sales">
-                            <i class="IconClass IconStyleClose fa-solid fa-basket-shopping"></i>
-                            <label class="HeaderA">المبيعات </label>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="sidebara" href="/categories">
-                            <i class="IconClass IconStyleClose fa-solid fa-layer-group"></i>
-                            <label class="HeaderA">الاصناف </label>
-                        </a>
-                    </li>
-                    <li><a class="sidebara" href="/items">
-                            <i class="IconClass IconStyleClose fa-solid fa-boxes-stacked"></i>
-                            <label class="HeaderA">المنتجات </label>
-                        </a>
-                    </li>
-                    <li id="StockSubMenu" class="ViewSubMenu">
-                        <a class="sidebara" href="#">
-                            <i class="IconClass IconStyleClose fa-solid fa-warehouse"></i>
-                            <label class="HeaderA">المخازن </label>
-                        </a>
-                    </li>
-                    <div id="StockSubMenuDiv" class='SupMenuClass' style="display:none;">
-                        <a class="sidebara" href="{{ url('/Stocks/StockManagment') }}"><label class="HeaderA">
-                                ادارة المخازن</label></a>
-                        <a class="sidebara" href="{{ url('/Stocks/Purchases') }}"><label class="HeaderA">فواتير
-                                المشتريات
-                            </label></a>
-                        <a class="sidebara" href="{{ url('/Stocks/Sales') }}"><label class="HeaderA">
-                                فواتير المبيعات
-                            </label></a>
-                        <a class="sidebara" href="{{ url('/Stocks/Transfare') }}">التحويلات المخزنية</a>
-                    </div>
-                    <li>
-                        <a class="sidebara" href="/customers">
-                            <i class="IconClass IconStyleClose fa-solid fa-people-group"></i>
-                            <label class="HeaderA">العملاء</label>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="sidebara" href="/suppliers">
-                            <i class="IconClass IconStyleClose fa-solid fa-people-carry-box"></i>
-                            <label class="HeaderA">الموردين</label></a>
-                    </li>
-                    <li id="AccountSubMenu" class="ViewSubMenu">
-                        <a class="sidebara" href="#">
-                            <i class="IconClass IconStyleClose fa-solid fa-sack-dollar"></i>
-                            <label class="HeaderA">حسابات </label>
-                        </a>
-                    </li>
-                    <div id="AccountSubMenuDiv" class='SupMenuClass' style="display:none;">
-                        <a class="sidebara" href="{{ url('/AccountManagment/AccountTypes') }}"><label
-                                class="HeaderA">
-                                انواع الحسابات </label></a>
-                        <a class="sidebara" href="{{ url('/AccountManagment/Currencies') }}"><label
-                                class="HeaderA">العملات
-                            </label></a>
-                        <a class="sidebara" href="{{ url('/AccountManagment/Accounts') }}"><label
-                                class="HeaderA">ادارة
-                                الحسابات </label></a>
-                        <a class="sidebara" href="{{ url('/AccountManagment/Purchase') }}"><label
-                                class="HeaderA">فواتير المشتريات
-                            </label></a>
-                        <a class="sidebara" href="{{ url('/AccountManagment/Sale') }}"><label class="HeaderA">فواتير
-                                المبيعات
-                            </label></a>
-                        <a class="sidebara" href="expenses.php">المنصرفات </a>
-                        <a class="sidebara" href="CreditorsDebtors.php">دائنون و
-                            مدينون </a>
 
-                        <a class="sidebara" href="Salaries.php">الرواتب </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                {{ csrf_field() }}
+            </form>
+            <div id="ContainerNav">
+                <button class="toggle-btn notPrint" id="icon" onclick="toggleSidebar(0)">
+                    <i id="ArrorIcon" class="fa-solid fa-circle-arrow-left "></i>
+                </button>
+                <div class="sidebar notPrint" id="sidebar">
+                    <ul>
+                        <li><a class="sidebara" href="/home">
+                                <i class="IconClass IconStyleClose fa-solid fa-house"></i>
+                                <label class="HeaderA">الرئيسية</label></a>
+                        </li>
+                        <li>
+                            <a class="sidebara" href="/purchases">
+                                <i class="IconClass IconStyleClose fa-solid fa-cart-shopping"></i>
+                                <label class="HeaderA">المشتريات </label>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="sidebara" href="/sales">
+                                <i class="IconClass IconStyleClose fa-solid fa-basket-shopping"></i>
+                                <label class="HeaderA">المبيعات </label>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="sidebara" href="/categories">
+                                <i class="IconClass IconStyleClose fa-solid fa-layer-group"></i>
+                                <label class="HeaderA">الاصناف </label>
+                            </a>
+                        </li>
+                        <li><a class="sidebara" href="/items">
+                                <i class="IconClass IconStyleClose fa-solid fa-boxes-stacked"></i>
+                                <label class="HeaderA">المنتجات </label>
+                            </a>
+                        </li>
+                        <li id="StockSubMenu" class="ViewSubMenu">
+                            <a class="sidebara" href="#" onclick="toggleSidebar(1)">
+                                <i class="IconClass IconStyleClose fa-solid fa-warehouse"></i>
+                                <label class="HeaderA">المخازن </label>
+                            </a>
+                        </li>
+                        <div id="StockSubMenuDiv" class='SupMenuClass' style="display:none;">
+                            <a class="sidebara" href="{{ url('/Stocks/StockManagment') }}"><label class="HeaderA">
+                                    ادارة المخازن</label></a>
+                            <a class="sidebara" href="{{ url('/Stocks/Purchases') }}"><label class="HeaderA">فواتير
+                                    المشتريات
+                                </label></a>
+                            <a class="sidebara" href="{{ url('/Stocks/Sales') }}"><label class="HeaderA">
+                                    فواتير المبيعات
+                                </label></a>
+                            <a class="sidebara" href="{{ url('/Stocks/Transfare') }}">التحويلات المخزنية</a>
+                        </div>
+                        <li>
+                            <a class="sidebara" href="/customers">
+                                <i class="IconClass IconStyleClose fa-solid fa-people-group"></i>
+                                <label class="HeaderA">العملاء</label>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="sidebara" href="/suppliers">
+                                <i class="IconClass IconStyleClose fa-solid fa-people-carry-box"></i>
+                                <label class="HeaderA">الموردين</label></a>
+                        </li>
+                        <li id="AccountSubMenu" class="ViewSubMenu">
+                            <a class="sidebara" href="#" onclick="toggleSidebar(1)">
+                                <i class="IconClass IconStyleClose fa-solid fa-sack-dollar"></i>
+                                <label class="HeaderA">حسابات </label>
+                            </a>
+                        </li>
+                        <div id="AccountSubMenuDiv" class='SupMenuClass' style="display:none;">
+                            <a class="sidebara" href="{{ url('/AccountManagment/AccountTypes') }}"><label
+                                    class="HeaderA">
+                                    انواع الحسابات </label></a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Currencies') }}"><label
+                                    class="HeaderA">العملات
+                                </label></a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Accounts') }}"><label
+                                    class="HeaderA">ادارة
+                                    الحسابات </label></a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Purchase') }}"><label
+                                    class="HeaderA">فواتير المشتريات
+                                </label></a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Sale') }}"><label
+                                    class="HeaderA">فواتير
+                                    المبيعات
+                                </label></a>
 
-                        <a class="sidebara" href="Loans.php">السلفيات </a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Expenses') }}">المنصرفات </a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/CreditorsDebtors') }}">دائنون و
+                                مدينون </a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Salaries') }}">الرواتب </a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/Loans') }}">السلفيات </a>
+                            <a class="sidebara" href="{{ url('/AccountManagment/DailyAccountingEntries') }}">القيود
+                            </a>
+                        </div>
+                        <li>
+                            <a class="sidebara" href="/Employees">
+                                <i class="IconClass IconStyleClose fa-solid fa-user"></i>
+                                <label class="HeaderA">الموظفين </label>
+                            </a>
+                        </li>
 
+                        <li>
+                            <a class="sidebara" style="color: red;background: white;" href="{{ route('logout') }}"
+                                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                <label class="HeaderA">خروج </label><i
+                                    class="IconClass IconStyleClose fa-solid fa-arrow-right-from-bracket"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
+                <div style="padding:20px;padding-right:120px;text-align:right;margin-top:10px;">
+                    @include('inc.messages')
+                    @yield('content')
+                </div>
 
-                        <a class="sidebara" href="{{ url('/AccountManagment/DailyAccountingEntries') }}">القيود
-                        </a>
-                    </div>
-
-                    <li>
-                        <a class="sidebara" href="employees.php">
-                            <i class="IconClass IconStyleClose fa-solid fa-user"></i>
-                            <label class="HeaderA">الموظفين </label>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div style="padding:20px;padding-right:120px;text-align:right;">
-                @include('inc.messages')
-                @yield('content')
-            </div>
-
-            <!-- Scripts -->
-            <script src="{{ asset('js/app.js') }}"></script>
+                <!-- Scripts -->
+                <script src="{{ asset('js/app.js') }}"></script>
 
 </body>
 @endif

@@ -1,6 +1,8 @@
+<title> قيود اليومية</title>
 @extends('layouts.app')
 
 @section('content')
+
     <!-- resources/views/AccountTypes/index.blade.php -->
     <h1>انواع الحسابات</h1>
     <div class="modal fade" id="RestrictionModel" role="dialog">
@@ -95,7 +97,7 @@
                     var account = response.accounts;
                     var details = response.details;
                     var user = response.user;
-                    $("#RDate").html(dailyEntry.created_at)
+                    $("#RDate").html(new Date(dailyEntry.created_at).toISOString().split('T')[0]);
                     $("#RCreator").html(user.name)
                     $("#RDetails").html(dailyEntry.RestrictionDetails)
                     var MyTable = $(
@@ -106,7 +108,8 @@
                         var detail = details[i];
                         var MyAccount = account[i];
                         var TR = $("<tr></tr>");
-                        TR.append($("<td>" + detail.created_at + "</td>"));
+                        TR.append($("<td>" + new Date(detail.created_at).toISOString().split('T')[0] +
+                            "</td>"));
                         TR.append($("<td>" + MyAccount.AccountNumber + "</td>"));
                         TR.append($("<td>" + MyAccount.AccountName + "</td>"));
                         TR.append($("<td>" + detail.TransactionDetails + "</td>"));
@@ -127,4 +130,14 @@
             });
         });
     </script>
+
+
 @endsection
+<style>
+    .MainLabel,
+    .valueLabel {
+        padding: 10px !important;
+        font-size: 18px !important;
+        font-weight: 500 !important;
+    }
+</style>

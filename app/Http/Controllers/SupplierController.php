@@ -55,7 +55,7 @@ class SupplierController extends Controller
         $Supplier->SupplierPhone = $request->input('SupplierPhone');
         $Supplier->SupplierAddress = $request->input('SupplierAddress');
         $Account = new AccountController();
-        $Parent = Account::where('AccountTypeID', 9)->orderBy('AccountID', 'ASC')->first();
+        $Parent = Account::where('AccountTypeID', 8)->orderBy('AccountID', 'ASC')->first();
         $lastChildNum = $Parent->lastChildNum + 1;
         $maxAccountNumber = $Parent->AccountNumber;
         $maxAccountNumber .= $lastChildNum;

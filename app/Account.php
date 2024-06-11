@@ -21,6 +21,8 @@ class Account extends Model
     {
         return $this->hasMany(DailyAccountingEntryDetails::class, 'AccountID');
     }
-
-
+    public function Currency()
+    {
+        return $this->belongsTo(Currency::class, 'CurrencyID');
+    }
 }
