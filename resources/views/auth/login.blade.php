@@ -16,7 +16,30 @@
     <link href="{{ asset('css/fontawesome-free-6.2.1-web/css/all.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/login_style.css') }}" rel="stylesheet">
-
+    <style>
+        .form-group {
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.inputContainer input');
+            inputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    input.classList.add('filled');
+                }
+                input.addEventListener('focus', () => {
+                    input.classList.add('filled');
+                });
+                input.addEventListener('blur', () => {
+                    if (input.value.trim() === '') {
+                        input.classList.remove('filled');
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -27,19 +50,19 @@
             <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                 {{ csrf_field() }}
                 <div class="form-group">
-                    <label for="email" class="text-view">البريد الالكتروني</label><br>
                     <div class="inputContainer">
                         <i class="fa-solid fa-at fa-2x"></i>
                         <input id="email" type="email" class="form-control" name="email" autocomplete="off"
-                            placeholder="البريد الالكتروني" value="{{ old('email') }}" required autofocus>
+                            value="{{ old('email') }}" required autofocus placeholder=" ">
+                        <label for="email" class="floating-label">البريد الالكتروني</label>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password" class="text-view">كلمة المرور</label>
                     <div class="inputContainer">
                         <i class="fa-solid fa-key fa-2x"></i>
-                        <input id="password" type="password" class="form-control" name="password"
-                            placeholder="كلمة المرور" autocomplete="off">
+                        <input id="password" type="password" class="form-control" name="password" autocomplete="off"
+                            placeholder=" ">
+                        <label for="password" class="floating-label">كلمة المرور</label>
                     </div>
                 </div>
                 @if ($errors->has('email') || $errors->has('password'))
