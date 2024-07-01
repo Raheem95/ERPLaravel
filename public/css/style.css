@@ -6,12 +6,12 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #274557;
+  background: #e7eef1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #274557;
+  background: #e7eef1;
 }
 .Result {
   font-size: 18px;

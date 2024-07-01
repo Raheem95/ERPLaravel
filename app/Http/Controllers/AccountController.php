@@ -26,7 +26,14 @@ class AccountController extends Controller
                 ->groupBy('CurrencyID');
         })
             ->get();
-        return view("account_managment.accounts.index")->with(['Accounts' => $Accounts, 'Currencies' => $Currencies]);
+        $SummaryBalance = Account::with('accountType', 'currency')
+            ->selectRaw('SUM(Balance) as TotalBalance, CurrencyID, AccountTypeID')
+            ->groupBy('CurrencyID', 'AccountTypeID')
+            ->orderBy('CurrencyID', 'asc')
+            ->orderBy('AccountTypeID', 'asc')
+            ->get();
+
+        return view("account_managment.accounts.index")->with(['Accounts' => $Accounts, 'Currencies' => $Currencies, "SummaryBalance" => $SummaryBalance]);
     }
 
     /**

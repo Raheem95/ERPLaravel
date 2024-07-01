@@ -1,3 +1,4 @@
+<title>ادارة الحسابات</title>
 @extends('layouts.app')
 
 @section('content')
@@ -25,21 +26,56 @@
         </div>
     </div>
     <a style="width: 20%;" href="Accounts/create" class="btn add_button mb-3">اضافة حساب</a>
-    @if (count($Accounts) > 0)
-        <div class='row MainDiv'>
-            <div class='col-md-8'>
+    <div class='row MainDiv'>
+        <div class='col-md-8'>
+            @if (count($Accounts) > 0)
                 <div id = "MyAccountsDiv">
                 </div>
                 <br>
-                <!-- Rest of your HTML content goes here -->
-            </div>
-            <div class="col-md-4 SeconderyDiv">
-                <!-- Table content goes here -->
-            </div>
+            @else
+                <div class="alert alert-danger Result"> لا توجد انواع حسابات</div>
+            @endif
+            <!-- Rest of your HTML content goes here -->
         </div>
-    @else
-        <div class="alert alert-danger Result"> لا توجد انواع حسابات</div>
-    @endif
+        <div class="col-md-4">
+            <table class="table">
+                <thead>
+                    <th>نوع الحساب</th>
+                    <th>العملة</th>
+                    <th>المجمل</th>
+                </thead>
+                <?php $TotalBalance = 0;
+                $CurrencyID = 0;
+                $CurrencyName = 0; ?>
+                @foreach ($SummaryBalance as $AccountSummary)
+                    @if ($CurrencyID != $AccountSummary->currency->CurrencyID)
+                        @if ($CurrencyID != 0)
+                            <tr>
+                                <th colspan="2"> المجمل لعملة {{ $CurrencyName }}</th>
+                                <th>{{ number_format($TotalBalance, 2) }}</th>
+                            </tr>
+                        @endif
+                        <?php $TotalBalance = 0;
+                        $CurrencyID = $AccountSummary->currency->CurrencyID;
+                        $CurrencyName = $AccountSummary->currency->CurrencyName; ?>
+                    @endif
+                    <tr>
+                        <td>{{ $AccountSummary->accountType->AccountTypeName }}</td>
+                        <td>{{ $AccountSummary->currency->CurrencyName }}</td>
+                        <td>{{ number_format($AccountSummary->TotalBalance * $AccountSummary->accountType->AccountTypeSource, 2) }}
+                        </td>
+                    </tr>
+                    <?php
+                    $TotalBalance += $AccountSummary->TotalBalance * $AccountSummary->accountType->AccountTypeSource;
+                    ?>
+                @endforeach
+                <tr>
+                    <th colspan="2"> المجمل لعملة {{ $CurrencyName }}</th>
+                    <th>{{ number_format($TotalBalance, 2) }}</th>
+                </tr>
+            </table>
+        </div>
+    </div>
 
     <script>
         function accounts() {

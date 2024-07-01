@@ -25,4 +25,8 @@ class Account extends Model
     {
         return $this->belongsTo(Currency::class, 'CurrencyID');
     }
+    public function accountType()
+    {
+        return $this->belongsTo(AccountType::class, 'AccountTypeID');
+    }
 }

@@ -69,7 +69,6 @@
     </div>
     <h1>فواتير المبيعات</h1>
     <div class="col-md-12 alert Result" id = "Results"></div>
-    <a style="width: 20%;" href="/sales/create" class="btn add_button mb-3">اضافة فاتورة</a>
     @if (count($Sales) > 0)
         <table class="table ">
             <thead>
