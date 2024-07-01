@@ -55,10 +55,7 @@
         </div>
 
         <div class="col-md-9 text-center">
-            <input type='text' id='Keyword' class='input_style' placeholder='ادخل كلمات مفتاحية للبحث'><br>
-            <button class='btn search_button Search' style="width: 250px;" type='button'>
-                بحث<i class="fa-solid fa-magnifying-glass fontawesomeIcons"></i>
-            </button>
+            <input type='text' id='Keyword' class='input_style Search' placeholder='ادخل كلمات مفتاحية للبحث'><br>
         </div>
     </div>
     <br>
@@ -98,7 +95,7 @@
         @endforeach
     </div>
     <script>
-        $(document).on('click', '.Search', function() {
+        $(document).on('input', '.Search', function() {
             var Keyword = $("#Keyword").val();
             if (!Keyword)
                 Keyword = "allEmployees"
@@ -117,8 +114,9 @@
                 },
                 success: function(result) {
                     $("#employees").empty();
-                    $.each(result, function(index, employee) {
-                        var employeeHtml = `
+                    if (result.length > 0)
+                        $.each(result, function(index, employee) {
+                            var employeeHtml = `
                                 <div class="col-md-3">
                                     <div class="card mb-4">
                                         <div class="card-img-top"
@@ -150,8 +148,11 @@
                                     </div>
                                 </div>
                             `;
-                        $("#employees").append(employeeHtml);
-                    });
+                            $("#employees").append(employeeHtml);
+                        });
+                    else
+                        $("#employees").append(
+                            "<div class = 'col-md-12 alert alert-danger Result'>لا توجد نتائج</div>")
                 }
             });
         });

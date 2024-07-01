@@ -4,7 +4,7 @@
     <!-- resources/views/sales/index.blade.php -->
     <input type = 'hidden' id = "SaleID">
 
-    <h1>فواتير المشتريات</h1>
+    <h1>فواتير المبيعات</h1>
     <div class="col-md-12 alert Result" id = "Results"></div>
     @if (count($Sales) > 0)
         <table class="table ">
@@ -42,7 +42,7 @@
             </tbody>
         </table>
     @else
-        <div class="alert alert-danger Result"> لا يوجد فواتير مشتريات</div>
+        <div class="alert alert-danger Result"> لا يوجد فواتير مبيعات</div>
     @endif
     <script>
         $(document).on('click', '.Transfare', function() {

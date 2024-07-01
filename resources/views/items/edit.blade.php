@@ -3,7 +3,7 @@
 @section('content')
     <!-- resources/views/categories/index.blade.php -->
     <div class="container">
-        <div class=" MainLabel">
+        <div class=" input_label">
             <h1>تعديل منتج</h1>
         </div>
 

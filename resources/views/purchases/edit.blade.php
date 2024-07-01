@@ -22,7 +22,7 @@
 @section('content')
     <!-- resources/views/categories/index.blade.php -->
     <div class="maindiv">
-        <div class=" MainLabel">
+        <div class=" input_label">
             <h1>فاتورة مشتريات</h1>
         </div>
         <div class="col-md-12 Result" id = "Results"></div>

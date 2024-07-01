@@ -4,7 +4,7 @@
 @section('content')
     <!-- resources/views/employees/create.blade.php -->
     <div class="container">
-        <div class=" MainLabel">
+        <div class=" input_label">
             <h1>إضافة موظف</h1>
         </div>
         {!! Form::open([

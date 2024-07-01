@@ -43,6 +43,7 @@
 </head>
 
 <body>
+    <img src="/images/login-background-img.jpg" class="bgImage" alt="">
     <div class="container">
         <div class="login-container">
             <h2 class="text-view" style="font-size:30px;">تسجيل دخول</h2>

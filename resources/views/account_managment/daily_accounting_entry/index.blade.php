@@ -11,15 +11,17 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div class='row'>
-                        <div class='col-md-4'>
-                            <label class="MainLabel">تاريخ القيد</label>
-                            <label class="valueLabel" id='RDate'></label>
-                            <label class="MainLabel">محرر القيد</label>
-                            <label class="valueLabel" id='RCreator'></label>
+                        <div class='col-md-6'>
+                            <label class="model_label">تاريخ القيد</label>
+                            <label class="input_style" id='RDate'></label>
                         </div>
-                        <div class='col-md-7'>
-                            <label class="MainLabel">تفاصيل القيد</label>
-                            <label class="valueLabel" id='RDetails'></label>
+                        <div class='col-md-6'>
+                            <label class="model_label">محرر القيد</label>
+                            <label class="input_style" id='RCreator'></label>
+                        </div>
+                        <div class='col-md-12'>
+                            <label class="model_label">تفاصيل القيد</label>
+                            <label class="input_style" id='RDetails'></label>
                         </div>
                     </div>
                     <div id="RTransactions"></div>
@@ -134,7 +136,7 @@
 
 @endsection
 <style>
-    .MainLabel,
+    .input_label,
     .valueLabel {
         padding: 10px !important;
         font-size: 18px !important;

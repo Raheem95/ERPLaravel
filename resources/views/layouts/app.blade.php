@@ -27,19 +27,18 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     <script>
-        $(document).on('click', '#ArrorIcon', function() {
-            toggleSidebar(0)
-        });
-
         function handleClickOutside(event) {
             var div = document.getElementById('ContainerNav');
-            if (!div.contains(event.target)) {
+            var sidebar = document.getElementById('sidebar');
+            var icon = document.getElementById('icon');
+            var arrowIcon = document.getElementById('ArrorIcon');
+            // Check if the click is outside the sidebar and not on the arrow icon
+            if (!div.contains(event.target) && event.target.id != "ArrorIcon") {
                 sidebar.style.right = "-200px";
                 icon.style.right = "25px";
-                $("#icon").empty().append($('<i id="ArrorIcon" class="fa-solid fa-circle-arrow-left "></i>'))
+                $("#icon").empty().append($('<i id="ArrorIcon" class="fa-solid fa-circle-arrow-left"></i>'));
             }
         }
-
         // Add event listener to the document to detect clicks
         document.addEventListener('click', handleClickOutside);
 
@@ -83,8 +82,8 @@
             transform: translateY(-50%);
             right: 25px;
             font-size: 30px;
-            background: #274557;
-            color: white;
+            background: #e7eef1;
+            color: #274557;
             border: none;
             transition: 0.5s;
             padding: 15px;
@@ -99,7 +98,7 @@
             top: 0;
             right: -200px;
             /* Initially hidden */
-            background-color: #274557;
+            background-color: #e7eef1;
             padding-top: 30px;
             transition: 0.5s;
             z-index: 2;
@@ -122,13 +121,13 @@
         }
 
         .sidebara {
-            color: white;
+            color: #274557;
             text-decoration: none;
             display: block;
             text-align: right;
             padding: 10px;
             font-weight: 900;
-            border-bottom: 1px solid white;
+            border-bottom: 1px solid #274557;
             font-size: 18px;
         }
 
@@ -152,6 +151,24 @@
             position: absolute;
             left: 5px;
         }
+
+        .sidebar::-webkit-scrollbar {
+            height: 12px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #e7eef1;
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #e7eef1;
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #e7eef1;
+        }
     </style>
 </head>
 
@@ -168,7 +185,7 @@
             </form>
             <div id="ContainerNav">
                 <button class="toggle-btn notPrint" id="icon" onclick="toggleSidebar(0)">
-                    <i id="ArrorIcon" class="fa-solid fa-circle-arrow-left "></i>
+                    <i id="ArrorIcon" class="fa-solid fa-circle-arrow-left"></i>
                 </button>
                 <div class="sidebar notPrint" id="sidebar">
                     <ul>

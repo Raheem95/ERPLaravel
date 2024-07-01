@@ -39,63 +39,42 @@
   padding: 0;
   height: 100vh;
 }
-.input {
-  width: 90%;
-  padding: 12px;
-  margin-left: 10%;
-  border-radius: 10px;
+
+.model_label {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #4d5961;
+  border: none;
+  border: 2px solid #e5e9eb;
+  font-size: 17px;
+  border-radius: 5px;
+  background: #d8e1e4;
+  margin-bottom: 10px;
+  border-radius: 0;
+}
+.input_label {
+  text-align: right;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: 600;
   color: #274557;
-  margin-bottom: 30px;
-  border: 2px solid #274557;
+  width: 100%;
 }
 .input_style {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
-  font-weight: 900;
+  font-weight: 600;
   color: #4d5961;
   border: none;
-  border-bottom: 2px solid #074b75;
+  border: 2px solid #e5e9eb;
   font-size: 17px;
+  border-radius: 5px;
 }
 
-.right_input_style {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-weight: 900;
-  color: #4d5961;
-  border: none;
-  border: 2px solid #07a01e;
-}
-
-.wrong_input_style {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-weight: 900;
-  color: #4d5961;
-  border: none;
-  border: 2px solid #e34b3d;
-}
-.button {
-  transition-duration: 0.4s;
-  width: 40%;
-  margin-left: 30%;
-  padding: 18px;
-  text-align: center;
-  border-radius: 12px;
-  background-color: white;
-  color: #274557;
-  border-color: #274557;
-  font-weight: 900;
-  font-size: 20px;
-}
-
-.button:hover {
-  background-color: #274557;
-  color: whitesmoke;
-}
 .img {
   width: 100%;
   height: 100vh;
@@ -184,13 +163,17 @@ th {
   text-align: center;
   border: 1px solid #d9d7d7;
   font-size: 18px;
+  padding: 8px 12px 8px 12px;
+  background-color: #3498db;
+  color: white;
 }
 td {
-  padding: 15px !important;
-  font-size: large;
-  font-weight: 700;
+  padding: 5px !important;
+  font-size: 16px;
+  font-weight: 500;
   text-align: center;
   border: 1px solid #d9d7d7;
+  vertical-align: middle !important;
 }
 
 tr {
@@ -200,28 +183,21 @@ tr:hover {
   background-color: #a9cef3;
 }
 
-th {
-  padding: 8px 12px 8px 12px;
-  background-color: #274557;
-  color: white;
-  text-align: center !important;
-}
-
 .add_button {
   transition-duration: 0.4s;
   width: 100%;
   padding: 10px;
   text-align: center;
   border-radius: 5px;
-  background-color: #274557;
-  color: white;
-  font-weight: 900;
   font-size: 15px;
-}
-.add_button:hover {
+  font-weight: 900;
   background-color: white;
   color: #274557;
   border: 1px solid #274557;
+}
+.add_button:hover {
+  background-color: #274557;
+  color: white;
 }
 
 .search_button {
@@ -466,10 +442,6 @@ th {
     display: none;
   }
 
-  .table th {
-    background-color: #274557 !important;
-  }
-
   .footer:last-of-type {
     display: block;
   }
@@ -524,4 +496,24 @@ th {
 .checkbox-label {
   color: #333; /* Label text color */
   font-size: 14px; /* Label text font size */
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 300px;
+}
+
+.card-title {
+  font-size: 2.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-text {
+  font-size: 2rem;
+  color: #6c757d;
+  margin-bottom: 0.75rem;
 }

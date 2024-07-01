@@ -4,7 +4,7 @@
 @section('content')
     <!-- resources/views/categories/index.blade.php -->
     <div class="container">
-        <div class=" MainLabel">
+        <div class=" input_label">
             <h1>اضافة مديونية</h1>
         </div>
         <div class="col-md-12 Result" id="Results"></div>
