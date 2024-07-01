@@ -11,7 +11,7 @@
         <div class = "row">
 
             <div class="form-group col-md-12">
-                {!! Form::label('', 'اسم المخزن', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('', 'اسم المخزن', ['class' => 'input_label']) !!}
                 {!! Form::text('StockName', $Stock->StockName, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل اسم المخزن',

@@ -20,20 +20,20 @@
             ?>
 
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'العملة', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'العملة', ['class' => 'input_label']) !!}
                 {!! Form::select('CurrencyID', $options, null, [
                     'class' => 'input_style GetExpensesAccounts',
                     'id' => 'CurrencyID',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('ExpensesAccountID', 'نوع المنصرف', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('ExpensesAccountID', 'نوع المنصرف', ['class' => 'input_label']) !!}
                 <select id='ExpensesAccountID' name="ExpensesAccountID" class='input_style' required>
                 </select>
 
             </div>
             <div class="form-group col-md-6">
-                <label class="ProceduresLabel">طريقة الدفع</label>
+                <label class="input_label">طريقة الدفع</label>
                 <select id='PaymentType' class='input_style'>
                     <option value='0'>اختر طريقة الدفع</option>
                     <option value='1'>نقدا</option>
@@ -42,17 +42,17 @@
                 </select>
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'input_label']) !!}
                 <select id='PaymentAccountID' name="PaymentAccountID" class='input_style' required>
                 </select>
 
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('ExpensesAmount', 'المبلغ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('ExpensesAmount', 'المبلغ', ['class' => 'input_label']) !!}
                 {!! Form::text('ExpensesAmount', null, ['class' => 'input_style', 'placeholder' => 'ادخل المبلغ ', 'required']) !!}
             </div>
             <div class="form-group col-md-12">
-                {!! Form::label('ExpensesDetails', 'التفاصيل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('ExpensesDetails', 'التفاصيل', ['class' => 'input_label']) !!}
                 {!! Form::textarea('ExpensesDetails', null, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل التفاصيل ',

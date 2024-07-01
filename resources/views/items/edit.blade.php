@@ -11,23 +11,23 @@
         <div class = "row">
 
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'اسم المنتج', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'اسم المنتج', ['class' => 'input_label']) !!}
                 {!! Form::text('ItemName', $Item->ItemName, ['class' => 'input_style', 'placeholder' => 'ادخل اسم المنتج']) !!}
                 {!! Form::hidden('ItemID', $Item->ItemID, []) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'سعر الصنف', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'سعر الصنف', ['class' => 'input_label']) !!}
                 {!! Form::text('ItemPrice', $Item->ItemPrice, ['class' => 'input_style', 'placeholder' => 'ادخل سعر المنتج']) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'سعر البيع', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'سعر البيع', ['class' => 'input_label']) !!}
                 {!! Form::text('ItemSalePrice', $Item->ItemSalePrice, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل سعر البيع',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'الحد الادنى للكمية', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'الحد الادنى للكمية', ['class' => 'input_label']) !!}
                 {!! Form::text('Minimum', $Item->Minimum, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل الحد الادنى للكمية',
@@ -38,7 +38,7 @@
             $options = collect($categories)->pluck('CategoryName', 'CategoryID');
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'اسم المنتج', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'اسم المنتج', ['class' => 'input_label']) !!}
                 {!! Form::select('CategoryID', $options, $Item->CategoryID, [
                     'class' => 'input_style',
                 ]) !!}

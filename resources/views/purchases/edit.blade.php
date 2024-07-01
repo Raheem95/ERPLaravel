@@ -45,14 +45,14 @@
             }
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'اختر المورد', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'اختر المورد', ['class' => 'input_label']) !!}
                 {!! Form::select('SupplierID', $options, $Purchase->SupplierID, [
                     'class' => 'input_style SetSupllierName',
                     'id' => 'SupplierID',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('', 'ادخل اسم المورد', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('', 'ادخل اسم المورد', ['class' => 'input_label']) !!}
                 {!! Form::text('SupplierName', $Purchase->SupplierName, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل اسم المورد',
@@ -69,7 +69,7 @@
             }
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'اختر المخزن', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'اختر المخزن', ['class' => 'input_label']) !!}
                 {!! Form::select('StockID', $options, $Purchase->StockID, [
                     'class' => 'input_style',
                     'id' => 'StockID',

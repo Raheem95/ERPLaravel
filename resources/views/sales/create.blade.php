@@ -43,14 +43,14 @@
             }
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'اختر العميل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'اختر العميل', ['class' => 'input_label']) !!}
                 {!! Form::select('CustomerID', $options, null, [
                     'class' => 'input_style SetCustomerName',
                     'id' => 'CustomerID',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('', 'ادخل اسم العميل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('', 'ادخل اسم العميل', ['class' => 'input_label']) !!}
                 {!! Form::text('CustomerName', null, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل اسم العميل',
@@ -66,7 +66,7 @@
             }
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'اختر المخزن', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'اختر المخزن', ['class' => 'input_label']) !!}
                 {!! Form::select('StockID', $options, null, [
                     'class' => 'input_style',
                     'id' => 'StockID',

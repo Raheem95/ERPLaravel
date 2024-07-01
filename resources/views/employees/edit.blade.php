@@ -22,39 +22,39 @@
         </div>
         <div class="row">
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'الاسم ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'الاسم ', ['class' => 'input_label']) !!}
                 {!! Form::text('EmployeeName', $employee->EmployeeName, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل الاسم ',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('phone', 'الهاتف ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('phone', 'الهاتف ', ['class' => 'input_label']) !!}
                 {!! Form::text('EmployeePhone', $employee->EmployeePhone, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل الهاتف ',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('address', 'العنوان ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('address', 'العنوان ', ['class' => 'input_label']) !!}
                 {!! Form::text('EmployeeAddress', $employee->EmployeeAddress, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل العنوان ',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('salary', 'الراتب ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('salary', 'الراتب ', ['class' => 'input_label']) !!}
                 {!! Form::text('EmployeeSalary', $employee->EmployeeSalary, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل الراتب ',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('hire_date', 'تاريخ التوظيف ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('hire_date', 'تاريخ التوظيف ', ['class' => 'input_label']) !!}
                 {!! Form::date('HireDate', $employee->HireDate, ['class' => 'input_style']) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('suspended', 'ايقاف', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('suspended', 'ايقاف', ['class' => 'input_label']) !!}
                 {!! Form::select('Suspended', ['0' => 'لا', '1' => 'نعم'], $employee->Suspended, ['class' => 'input_style']) !!}
             </div>
         </div>

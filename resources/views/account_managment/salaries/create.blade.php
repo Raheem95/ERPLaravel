@@ -18,42 +18,42 @@
                     $MonthsOptions[$Month['MonthID']] = $Month['MonthName'];
                 }
                 ?>
-                {!! Form::label('name', 'الشهر', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'الشهر', ['class' => 'input_label']) !!}
                 {!! Form::select('MonthID', $MonthsOptions, null, [
                     'class' => 'input_style GetNonPaidEmployees',
                     'id' => 'MonthID',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'الموظف', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'الموظف', ['class' => 'input_label']) !!}
                 <select name="EmployeeID" id="EmployeeID" class="input_style GetEmployeeSalaryDetails" required>
                     <option value="">اختر الموظف</option>
                 </select>
             </div>
 
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'الراتب/متبقي الراتب', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'الراتب/متبقي الراتب', ['class' => 'input_label']) !!}
                 <input id="SalaryAmount" name="SalaryAmount" type="text" class="input_style" readonly>
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'مجمل السلفيات', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'مجمل السلفيات', ['class' => 'input_label']) !!}
                 <input id="TotalLoans" name="TotalLoans" type="text" class="input_style" readonly>
             </div>
             <div class="form-group col-md-4">
-                {!! Form::label('name', 'خصومات السلفيات', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'خصومات السلفيات', ['class' => 'input_label']) !!}
                 <input id="PaidLoans" name="PaidLoans" type="text" class="input_style CheckPayment">
             </div>
             <div class="form-group col-md-4">
-                {!! Form::label('name', ' المبلغ المصروف', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', ' المبلغ المصروف', ['class' => 'input_label']) !!}
                 <input id="PaidAmount" name="PaidAmount" type="text" class="input_style CheckPayment">
             </div>
             <div class="form-group col-md-4">
-                {!! Form::label('name', ' المبلغ المتبقي من الراتب', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', ' المبلغ المتبقي من الراتب', ['class' => 'input_label']) !!}
                 <input id="NotPaidAmount" name="NotPaidAmount" type="text" class="input_style CheckPayment" readonly>
             </div>
 
             <div class="form-group col-md-6">
-                <label class="ProceduresLabel">طريقة الدفع</label>
+                <label class="input_label">طريقة الدفع</label>
                 <select id='PaymentType' class='input_style'>
                     <option value='0'>اختر طريقة الدفع</option>
                     <option value='1'>نقدا</option>
@@ -62,13 +62,13 @@
                 </select>
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'input_label']) !!}
                 <select id='PaymentAccountID' name="PaymentAccountID" class='input_style' required>
                 </select>
 
             </div>
             <div class="form-group col-md-12">
-                {!! Form::label('Comment', 'التفاصيل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('Comment', 'التفاصيل', ['class' => 'input_label']) !!}
                 {!! Form::textarea('Comment', null, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل التفاصيل ',

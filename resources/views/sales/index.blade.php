@@ -28,12 +28,12 @@
                     <div class='row'>
                         <div class="col-md-12 Result alert" id = "PaymentResults"></div>
                         <div class='col-md-6'>
-                            <label class="ProceduresLabel">المبلغ المدفوع</label>
+                            <label class="input_label">المبلغ المدفوع</label>
                             <input type='text' name='Amount' id="Amount" class='input_style'
                                 placeholder="ألقيمة المدفوعة">
                         </div>
                         <div class='col-md-6' style="text-align:right;">
-                            <label class="ProceduresLabel">اختر العملة</label>
+                            <label class="input_label">اختر العملة</label>
 
                             <select id='CurrencyID' class='input_style'>
                                 <option value='0'>اختر العملة</option>
@@ -43,7 +43,7 @@
                             </select>
                         </div>
                         <div class='col-md-6'>
-                            <label class="ProceduresLabel">طريقة الدفع</label>
+                            <label class="input_label">طريقة الدفع</label>
                             <select id='PaymentType' class='input_style'>
                                 <option value='0'>اختر طريقة الدفع</option>
                                 <option value='1'>نقدا</option>
@@ -52,7 +52,7 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="ProceduresLabel">اختر الحساب</label>
+                            <label class="input_label">اختر الحساب</label>
                             <select id="PaymentAccountID" class="input_style"></select>
                         </div>
                         <div class="col-md-3"></div>

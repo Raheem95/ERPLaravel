@@ -29,7 +29,7 @@
                         <td>{{ $Transfare->from_stock->StockName }}</td>
                         <td>{{ $Transfare->to_stock->StockName }}</td>
                         <td>
-                            <a href="Transfare/{{ $Transfare->TransfareID }}/" class="btn view_button">
+                            <a target="_blank" href="Transfare/{{ $Transfare->TransfareID }}/" class="btn view_button">
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i></a>
                         </td>
                         <td>

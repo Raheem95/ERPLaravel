@@ -11,7 +11,7 @@
                 <div class="modal-body ">
                     {!! Form::open(['action' => 'AccountController@store', 'method' => 'post']) !!}
                     <div class="form-group">
-                        {!! Form::label('name', 'اسم الحساب', ['class' => 'ProceduresLabel']) !!}
+                        {!! Form::label('name', 'اسم الحساب', ['class' => 'input_label']) !!}
                         {!! Form::text('AccountName', null, ['class' => 'input_style', 'placeholder' => 'ادخل اسم الحساب']) !!}
                         {!! Form::hidden('AccountParent', null, ['id' => 'AccountParent']) !!}
                         {!! Form::hidden('AccountTypeID', null, ['id' => 'AccountTypeID']) !!}

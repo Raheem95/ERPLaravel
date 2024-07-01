@@ -24,7 +24,7 @@
                         <td>{{ $Stock->StockID }}</td>
                         <td>{{ $Stock->StockName }}</td>
                         <td>
-                            <a href="StockManagment/{{ $Stock->StockID }}/" class="btn view_button">
+                            <a target="_blank" href="StockManagment/{{ $Stock->StockID }}/" class="btn view_button">
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i></a>
                         </td>
                         <td>

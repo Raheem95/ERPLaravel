@@ -19,6 +19,12 @@
   width: 100%;
   text-align: center;
 }
+.main-container {
+  padding: 20px;
+  padding-right: 120px;
+  text-align: right;
+  margin-top: 10px;
+}
 .headerLabel {
   width: 100%;
   color: #274557;
@@ -331,7 +337,7 @@ tr:hover {
   font-weight: 900;
 }
 
-.ProceduresLabel {
+.input_label {
   text-align: right;
   border-radius: 5px;
   padding: 10px;
@@ -341,11 +347,14 @@ tr:hover {
   width: 100%;
 }
 
-.SeconderyDiv,
-.modal {
+.SeconderyDiv {
   padding: 20px;
   border-radius: 10px;
   background-image: linear-gradient(to bottom, #a4d4f1, #e1efe8);
+}
+.modal {
+  padding: 20px;
+  border-radius: 10px;
 }
 
 .select2_style {
@@ -398,14 +407,12 @@ tr:hover {
   width: 100%;
   background-color: #f0f0f0;
   text-align: center;
-  padding: 0px;
+  padding: 10px;
   display: none;
 }
 
 .FooterLabel {
-  width: 100%;
-  font-size: 18px;
-  font-weight: 900;
+  font-size: 16px;
   text-align: right;
   padding: 5px;
 }
@@ -422,8 +429,8 @@ tr:hover {
 }
 .modal-dialog {
   max-width: 100%;
-  width: 100%;
-  margin: 0;
+  width: 90%;
+  margin-right: 5%;
 }
 @media print {
   .btn {
@@ -516,4 +523,43 @@ tr:hover {
   font-size: 2rem;
   color: #6c757d;
   margin-bottom: 0.75rem;
+}
+
+@media print {
+  .print_button {
+    display: none;
+  }
+
+  * {
+    visibility: visible !important;
+  }
+
+  .TdStyle {
+    background-color: #30a6f0 !important;
+    color: white !important;
+  }
+
+  .table .TdStyle {
+    background-color: #30a6f0 !important;
+    color: white !important;
+  }
+
+  th {
+    background-color: #30a6f0 !important;
+    color: white !important;
+  }
+
+  .footer {
+    display: block;
+    background: #f0f0f0 !important;
+  }
+  .footer label span {
+    color: #30a6f0 !important;
+    font-weight: 900;
+  }
+  .main-container {
+    padding: 0;
+    padding: 20px;
+    margin: 0;
+  }
 }

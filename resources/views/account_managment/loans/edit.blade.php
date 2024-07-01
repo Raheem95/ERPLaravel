@@ -18,7 +18,7 @@
             }
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'الموظف', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'الموظف', ['class' => 'input_label']) !!}
                 {!! Form::select('EmployeeID', $EmployeesOptions, $Loan->EmployeeID, [
                     'class' => 'input_style',
                     'id' => 'EmployeeID',
@@ -33,7 +33,7 @@
             ?>
 
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'العملة', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'العملة', ['class' => 'input_label']) !!}
                 {!! Form::select('CurrencyID', $options, $PaymentAccounts[0]->CurrencyID, [
                     'class' => 'input_style GetLoansAccounts',
                     'id' => 'CurrencyID',
@@ -48,14 +48,14 @@
             ?>
 
             <div class="form-group col-md-6">
-                {!! Form::label('LoanAccountID', 'حساب القرض', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('LoanAccountID', 'حساب القرض', ['class' => 'input_label']) !!}
                 {!! Form::select('LoanAccountID', $LoanAccountOptions, $Loan->LoanAccountID, [
                     'class' => 'input_style',
                     'id' => 'LoanAccountID',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                <label class="ProceduresLabel">طريقة الدفع</label>
+                <label class="input_label">طريقة الدفع</label>
                 <select id='PaymentType' class='input_style'>
                     <option value='0'>اختر طريقة الدفع</option>
                     <option value='1'>نقدا</option>
@@ -73,14 +73,14 @@
                 }
             @endphp
             <div class="form-group col-md-6">
-                {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'input_label']) !!}
                 {!! Form::select('PaymentAccountID', $PaymentAccountOptions, $Loan->PaymentAccountID, [
                     'class' => 'input_style',
                     'id' => 'PaymentAccountID',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('LoanAmount', 'المبلغ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('LoanAmount', 'المبلغ', ['class' => 'input_label']) !!}
                 {!! Form::text('LoanAmount', $Loan->LoanAmount, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل المبلغ ',
@@ -88,7 +88,7 @@
                 ]) !!}
             </div>
             <div class="form-group col-md-12">
-                {!! Form::label('LoanDetails', 'التفاصيل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('LoanDetails', 'التفاصيل', ['class' => 'input_label']) !!}
                 {!! Form::textarea('LoanDetails', $Loan->LoanDetails, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل التفاصيل ',

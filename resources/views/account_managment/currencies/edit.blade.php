@@ -16,7 +16,7 @@
                     <div>
                         {!! Form::open(['action' => ['CurrencyController@update', $Currency->CurrencyID], 'method' => 'post']) !!}
                         <div class="form-group">
-                            {!! Form::label('name', 'اسم العملة', ['class' => 'ProceduresLabel']) !!}
+                            {!! Form::label('name', 'اسم العملة', ['class' => 'input_label']) !!}
                             {!! Form::text('CurrencyName', $Currency->CurrencyName, [
                                 'class' => 'input_style',
                                 'placeholder' => 'ادخل اسم العملة',

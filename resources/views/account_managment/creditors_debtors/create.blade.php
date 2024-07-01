@@ -11,7 +11,7 @@
         {!! Form::open(['action' => 'CreditorsDebtorController@store', 'method' => 'post']) !!}
         <div class = "row">
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'توع المعاملة', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'توع المعاملة', ['class' => 'input_label']) !!}
                 {!! Form::select('OprationType', ['' => 'نوع المعاملة', '0' => 'دائن', '1' => 'مدين'], null, [
                     'class' => 'input_style RewriteLabels GetAccount',
                     'id' => 'OprationType',
@@ -27,20 +27,20 @@
             ?>
 
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'العملة', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'العملة', ['class' => 'input_label']) !!}
                 {!! Form::select('CurrencyID', $options, null, [
                     'class' => 'input_style GetAccount ',
                     'id' => 'CurrencyID',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('AccountID', 'الحساب', ['class' => 'ProceduresLabel', 'id' => 'AccountLabel']) !!}
+                {!! Form::label('AccountID', 'الحساب', ['class' => 'input_label', 'id' => 'AccountLabel']) !!}
                 <select id='AccountID' name="AccountID" class='input_style' required>
                 </select>
 
             </div>
             <div class="form-group col-md-6">
-                <label class="ProceduresLabel">طريقة الدفع</label>
+                <label class="input_label">طريقة الدفع</label>
                 <select id='PaymentType' class='input_style'>
                     <option value=''>اختر طريقة الدفع</option>
                     <option value='1'>نقدا</option>
@@ -49,16 +49,16 @@
                 </select>
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('PaymentAccountID', 'الحساب', ['class' => 'ProceduresLabel', 'id' => 'PaymentAccountLabel']) !!}
+                {!! Form::label('PaymentAccountID', 'الحساب', ['class' => 'input_label', 'id' => 'PaymentAccountLabel']) !!}
                 <select id='PaymentAccountID' name="PaymentAccountID" class='input_style' required>
                 </select>
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('Amount', 'المبلغ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('Amount', 'المبلغ', ['class' => 'input_label']) !!}
                 {!! Form::text('Amount', null, ['class' => 'input_style', 'placeholder' => 'ادخل المبلغ ', 'required']) !!}
             </div>
             <div class="form-group col-md-12">
-                {!! Form::label('OprationDetails', 'التفاصيل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('OprationDetails', 'التفاصيل', ['class' => 'input_label']) !!}
                 {!! Form::textarea('OprationDetails', null, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل التفاصيل ',

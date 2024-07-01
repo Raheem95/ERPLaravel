@@ -45,7 +45,7 @@
             }
             ?>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'من مخزن', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'من مخزن', ['class' => 'input_label']) !!}
                 {!! Form::select('FromStockID', $options, null, [
                     'class' => 'input_style',
                     'id' => 'FromStockID',
@@ -53,7 +53,7 @@
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'الى مخزن', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'الى مخزن', ['class' => 'input_label']) !!}
                 {!! Form::select('ToStockID', $options, null, [
                     'class' => 'input_style',
                     'id' => 'ToStockID',
@@ -61,7 +61,7 @@
             </div>
 
             <div class="form-group col-md-12">
-                {!! Form::label('name', 'التعليق', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('name', 'التعليق', ['class' => 'input_label']) !!}
                 {!! Form::text('Comment', null, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل  التعليق',

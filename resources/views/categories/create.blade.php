@@ -16,7 +16,7 @@
                     <div>
                         {!! Form::open(['action' => 'CategoryController@store', 'method' => 'post']) !!}
                         <div class="form-group">
-                            {!! Form::label('name', 'اسم الصنف', ['class' => 'ProceduresLabel']) !!}
+                            {!! Form::label('name', 'اسم الصنف', ['class' => 'input_label']) !!}
                             {!! Form::text('CategoryName', null, ['class' => 'input_style', 'placeholder' => 'ادخل اسم الصنف']) !!}
                         </div>
                         <!-- Add more form fields as needed -->

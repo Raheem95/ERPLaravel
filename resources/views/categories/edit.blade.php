@@ -16,7 +16,7 @@
                     <div>
                         {!! Form::open(['action' => ['CategoryController@update', $Category->CategoryID], 'method' => 'post']) !!}
                         <div class="form-group">
-                            {!! Form::label('name', 'اسم الصنف', ['class' => 'ProceduresLabel']) !!}
+                            {!! Form::label('name', 'اسم الصنف', ['class' => 'input_label']) !!}
                             {!! Form::text('CategoryName', $Category->CategoryName, [
                                 'class' => 'input_style',
                                 'placeholder' => 'ادخل اسم الصنف',

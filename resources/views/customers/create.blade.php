@@ -11,19 +11,19 @@
         <div class = "row">
 
             <div class="form-group col-md-6">
-                {!! Form::label('', 'اسم العميل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('', 'اسم العميل', ['class' => 'input_label']) !!}
                 {!! Form::text('CustomerName', null, ['class' => 'input_style', 'placeholder' => 'ادخل اسم العميل']) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('', 'رقم الهاتف', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('', 'رقم الهاتف', ['class' => 'input_label']) !!}
                 {!! Form::text('CustomerPhone', null, ['class' => 'input_style', 'placeholder' => 'ادخل رقم العميل']) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('', 'العنوان', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('', 'العنوان', ['class' => 'input_label']) !!}
                 {!! Form::text('CustomerAddress', null, ['class' => 'input_style', 'placeholder' => 'ادخل العنوان']) !!}
             </div>
             <div class="form-group col-md-6">
-                {!! Form::label('', 'هل هو مورد؟', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('', 'هل هو مورد؟', ['class' => 'input_label']) !!}
                 <label class='checkbox-container'>
                     {!! Form::checkbox('isSupplier', 1, null, ['class' => 'AddStage', 'id' => 'isSupplier']) !!}
                     <div class='custom-checkbox'>

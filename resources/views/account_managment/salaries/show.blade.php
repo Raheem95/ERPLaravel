@@ -21,59 +21,36 @@
             document.title = Tname;
         }
     </script>
-    <style>
-        @media print {
-            .print_button {
-                display: none;
-            }
 
-            * {
-                visibility: visible !important;
-            }
-
-            .table-print .TdStyle {
-                background-color: #30a6f0 !important;
-            }
-        }
-
-        .TdStyle {
-            background: #30a6f0 !important;
-            border-radius: 5px;
-            padding: 15px;
-            width: 50%;
-            text-align: center;
-            color: white;
-            font-size: 20px;
-            font-weight: 900;
-            -webkit-print-color-adjust: exact;
-        }
-    </style>
 </head>
 
 <body>
-    <img src='/images/header-logo.jpg' style='width:100%'>
-    <br>
     <div class="MainDiv"> <button class='btn print_button' onclick="printWithSpecialFileName()">
             طباعة <i class='fa-solid fa-print fa-2x'></i>
         </button>
         <div class="row">
-            <div class="col-md-6">
-                <label class="MainLabel">راتب شهر </label>
-                <label for="" class="valueLabel" id='Tname'>{{ $SalaryDetail->Month->MonthName }}</label>
+            <div class="col-md-4">
+                <label class="input_label">راتب شهر </label>
+                <label for="" class="input_style" id='Tname'>{{ $SalaryDetail->Month->MonthName }}</label>
             </div>
-            <div class="col-md-6">
-                <label class="MainLabel">المبلغ الكلي</label>
-                <label for="" class="valueLabel">{{ number_format($SalaryDetail->TotalPaidAmount, 2) }}</label>
+            <div class="col-md-4">
+                <label class="input_label">المبلغ الكلي</label>
+                <label for="" class="input_style">{{ number_format($SalaryDetail->TotalPaidAmount, 2) }}</label>
+            </div>
+            <div class="col-md-4 text-left">
+                <img src="/images/logo.jpg"
+                    style="width: 200px;height: 200px;border: 2px solid #e5dfdf;border-radius: 10px;" alt="">
             </div>
         </div>
+        <br>
         <table class="table">
             <tr>
-                <th>اسم الموظف</th>
-                <th>الراتب</th>
-                <th>اجمالي المسدد</th>
-                <th>المسدد</th>
-                <th>السلفيات</th>
-                <th>المتبقي</th>
+                <th class="TdStyle">اسم الموظف</th>
+                <th class="TdStyle">الراتب</th>
+                <th class="TdStyle">اجمالي المسدد</th>
+                <th class="TdStyle">المسدد</th>
+                <th class="TdStyle">السلفيات</th>
+                <th class="TdStyle">المتبقي</th>
             </tr>
             @php
                 $totalSalaryAmount = 0;
@@ -103,13 +80,12 @@
 
             <!-- Display totals -->
             <tr>
-                <th><strong>المجمل</strong></th>
-                <th><strong>{{ number_format($totalSalaryAmount, 2) }}</strong></th>
-                <th><strong>{{ number_format($totalPaidAmount, 2) }}</strong></th>
-                <th><strong>{{ number_format($totalCash, 2) }}</strong></th>
-                <th><strong>{{ number_format($totalLoans, 2) }}</strong></th>
-                <th>
-                    <strong>{{ number_format($totalSalaryAmount - $totalPaidAmount, 2) }}</strong>
+                <th class="TdStyle">المجمل</th>
+                <th class="TdStyle">{{ number_format($totalSalaryAmount, 2) }}</th>
+                <th class="TdStyle">{{ number_format($totalPaidAmount, 2) }}</th>
+                <th class="TdStyle">{{ number_format($totalCash, 2) }}</th>
+                <th class="TdStyle">{{ number_format($totalLoans, 2) }}</th>
+                <th class="TdStyle"> {{ number_format($totalSalaryAmount - $totalPaidAmount, 2) }}
                 </th>
             </tr>
         </table>
@@ -117,46 +93,6 @@
 </body>
 
 </html>
-<style>
-    @font-face {
-        font-family: 'MyFont';
-        src: url('/font/Changa-VariableFont_wght.ttf') format('woff2');
-        /* Add more src definitions for different font formats if necessary */
-    }
-
-    body {
-        margin: 0;
-        font-family: 'MyFont', sans-serif;
-    }
-
-    @media print {
-        .print_button {
-            display: none;
-        }
-
-        * {
-            visibility: visible !important;
-        }
-
-        th {
-            color: #274557 !important;
-            font-weight: 900;
-        }
-    }
-
-    .TdStyle {
-        background: #274557 !important;
-        border-radius: 5px;
-        padding: 15px;
-        width: 50%;
-        text-align: center;
-        color: white;
-        font-size: 20px;
-        font-weight: 900;
-        -webkit-print-color-adjust: exact;
-    }
-</style>
-
 <script>
     function printWithSpecialFileName() {
         var Tname = $("#Tname").html()

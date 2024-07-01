@@ -4,7 +4,7 @@
 @section('content')
     <!-- resources/views/categories/index.blade.php -->
     <div class="container">
-        <div class="MainLabel">
+        <div class="input_label">
             <h1>اضافة منصرف</h1>
         </div>
         <div class="col-md-12 Result" id="Results"></div>
@@ -18,7 +18,7 @@
                 }
             @endphp
             <div class="form-group col-md-6">
-                {!! Form::label('CurrencyID', 'العملة', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('CurrencyID', 'العملة', ['class' => 'input_label']) !!}
                 {!! Form::select('CurrencyID', $currencyOptions, $Expense->ExpensesAccount->CurrencyID, [
                     'class' => 'input_style GetExpensesAccounts',
                     'id' => 'CurrencyID',
@@ -33,7 +33,7 @@
                 }
             @endphp
             <div class="form-group col-md-6">
-                {!! Form::label('ExpensesAccountID', 'نوع المنصرف', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('ExpensesAccountID', 'نوع المنصرف', ['class' => 'input_label']) !!}
                 {!! Form::select('ExpensesAccountID', $expensesAccountOptions, $Expense->ExpensesAccount->AccountID, [
                     'class' => 'input_style',
                     'id' => 'ExpensesAccountID',
@@ -41,7 +41,7 @@
             </div>
 
             <div class="form-group col-md-6">
-                {!! Form::label('PaymentType', 'طريقة الدفع', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('PaymentType', 'طريقة الدفع', ['class' => 'input_label']) !!}
                 <select id='PaymentType' class='input_style'>
                     <option value='0'>اختر طريقة الدفع</option>
                     <option value='1'>نقدا</option>
@@ -58,7 +58,7 @@
                 }
             @endphp
             <div class="form-group col-md-6">
-                {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'input_label']) !!}
                 {!! Form::select('PaymentAccountID', $paymentAccountOptions, $Expense->PaymentAccount->AccountID, [
                     'class' => 'input_style',
                     'id' => 'PaymentAccountID',
@@ -66,7 +66,7 @@
             </div>
 
             <div class="form-group col-md-6">
-                {!! Form::label('ExpensesAmount', 'المبلغ', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('ExpensesAmount', 'المبلغ', ['class' => 'input_label']) !!}
                 {!! Form::text('ExpensesAmount', $Expense->ExpensesAmount, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل المبلغ',
@@ -75,7 +75,7 @@
             </div>
 
             <div class="form-group col-md-12">
-                {!! Form::label('ExpensesDetails', 'التفاصيل', ['class' => 'ProceduresLabel']) !!}
+                {!! Form::label('ExpensesDetails', 'التفاصيل', ['class' => 'input_label']) !!}
                 {!! Form::textarea('ExpensesDetails', $Expense->ExpensesDetails, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل التفاصيل',

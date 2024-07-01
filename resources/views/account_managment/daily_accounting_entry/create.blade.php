@@ -19,7 +19,7 @@
 
         {!! Form::hidden('restrictionsNum', '1', ['id' => 'restrictionsNum']) !!}
         <div class="col-md-12" style="text-align:right;">
-            <label class="MainLabel" style="font-size:25px;width:20%;"><b>بيان القيد</b></label>
+            <label class="input_label" style="font-size:25px;width:20%;"><b>بيان القيد</b></label>
             {!! Form::text('ResDetails', null, [
                 'class' => 'input_style ReRight',
                 'placeholder' => 'ادخل البيان',

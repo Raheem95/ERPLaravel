@@ -2,29 +2,42 @@
 
 @section('content')
     <div class = "maindiv">
+        <button class='btn print_button' onclick="printWithSpecialFileName()">
+            طباعة <i class='fa-solid fa-print fa-2x'></i>
+        </button>
         <div class="row">
-            <div class="col-md-6">
-                <label for="" class="MainLabel">رقم الفاتورة</label>
-                <label for="" class="valueLabel">{{ $Purchase->PurchaseNumber }}</label>
-                <label for="" class="MainLabel"> المورد</label>
-                <label for="" class="valueLabel">{{ $Purchase->SupplierName }}</label>
-                <label for="" class="MainLabel">تاريخ الفاتورة </label>
-                <label for="" class="valueLabel">{{ $Purchase->created_at }}</label>
-                <label for="" class="MainLabel">قيمة الفاتورة </label>
-                <label for="" class="valueLabel">{{ number_format($Purchase->TotalPurchase) }}</label>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="" class="input_label TdStyle">رقم الفاتورة</label>
+                        <label for="" class="input_style" id="InvoiceNumber">{{ $Purchase->PurchaseNumber }}</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="" class="input_label TdStyle"> المورد</label>
+                        <label for="" class="input_style">{{ $Purchase->SupplierName }}</label>
+                    </div>
+                    <div class="col-md-6"><label for="" class="input_label TdStyle">تاريخ الفاتورة </label>
+                        <label for="" class="input_style">{{ $Purchase->created_at }}</label>
+                    </div>
+                    <div class="col-md-6"><label for="" class="input_label TdStyle">قيمة الفاتورة </label>
+                        <label for="" class="input_style">{{ number_format($Purchase->TotalPurchase) }}</label>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-
+            <div class="col-md-4 text-left">
+                <img src="/images/logo.jpg"
+                    style="width: 300px;height: 300px;border: 2px solid #e5dfdf;border-radius: 10px;" alt="">
             </div>
         </div>
         <br>
         <table class="table">
             <tr>
-                <th>اسم المنتج</th>
-                <th>الكمية</th>
-                <th>سعر الوحدة</th>
-                <th>المجمل</th>
+                <th class="TdStyle">اسم المنتج</th>
+                <th class="TdStyle">الكمية</th>
+                <th class="TdStyle">سعر الوحدة</th>
+                <th class="TdStyle">المجمل</th>
             </tr>
+            <?php $Total = 0; ?>
             @foreach ($PurchaseDetails as $RowItem)
                 <tr>
                     <td>{{ $RowItem->item->ItemName }}</td>
@@ -32,14 +45,36 @@
                     <td>{{ number_format($RowItem->ItemPrice) }}</td>
                     <td>{{ number_format($RowItem->ItemQTY * $RowItem->ItemPrice) }}</td>
                 </tr>
+                <?php $Total += $RowItem->ItemQTY * $RowItem->ItemPrice; ?>
             @endforeach
+            <tr>
+                <th class="TdStyle" colspan="3">المجمل</th>
+                <th class="TdStyle">{{ number_format($Total) }}</th>
+            </tr>
+            <tr>
+                <th class="TdStyle" colspan="3">التخفيض</th>
+                <th class="TdStyle">{{ number_format(0, 2) }}</b></th>
+            </tr>
+            </tr>
+            <tr>
+                <th class="TdStyle" colspan="3">Vat</th>
+                <th class="TdStyle">{{ number_format(($Total * 15) / 100) }}</th>
+            </tr>
+            <tr>
+                <th class="TdStyle" colspan="3">المجمل النهائي</th>
+                <th class="TdStyle">{{ number_format($Total + ($Total * 15) / 100) }}</th>
+            </tr>
         </table>
         <br>
-        <div class="row">
-            <div class="col-md-4">
-                <label for="" class="MainLabel">مصدر الفاتورة</label>
-                <label for="" class="valueLabel">{{ $Purchase->user->name }}</label>
-            </div>
+        <div class="footer">
+            <label class="FooterLabel">مصدر الفاتورة <span>{{ $Purchase->user->name }}</span></label>
         </div>
     </div>
 @endsection
+
+<script>
+    function printWithSpecialFileName() {
+        document.title = $("#InvoiceNumber").html() + ".pdf";
+        window.print();
+    }
+</script>

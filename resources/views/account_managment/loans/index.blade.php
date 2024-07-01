@@ -25,12 +25,12 @@
                 <div class="modal-body">
                     <div class='row'>
                         <div class='col-md-6' style="text-align:right;">
-                            <label class="ProceduresLabel"> القيمة</label>
+                            <label class="input_label"> القيمة</label>
                             <input type='number' id='PaidAmount' class="input_style" placeholder="القيمة">
                         </div>
 
                         <div class='col-md-6'>
-                            <label class="ProceduresLabel">طريقة الدفع</label>
+                            <label class="input_label">طريقة الدفع</label>
                             <select id='PaymentType' class='input_style'>
                                 <option value='0'>اختر طريقة الدفع</option>
                                 <option value='1'>نقدا</option>
@@ -40,11 +40,11 @@
                         </div>
                         <div class="col-md-6"><br>
                             <input type="hidden" id="OP">
-                            <label class="ProceduresLabel">اختر الحساب</label>
+                            <label class="input_label">اختر الحساب</label>
                             <select id="PaymentAccountID" class="input_style"></select>
                         </div>
                         <div class="col-md-12" style="text-align:right;"><br>
-                            <label class="ProceduresLabel">تفاصيل السفلية</label>
+                            <label class="input_label">تفاصيل السفلية</label>
                             <textarea cols="5" class="input_style" id="LoanDetails"></textarea>
                         </div>
                     </div>

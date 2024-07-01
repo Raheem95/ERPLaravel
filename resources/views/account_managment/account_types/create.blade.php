@@ -16,7 +16,7 @@
                     <div>
                         {!! Form::open(['action' => 'AccountTypeController@store', 'method' => 'post']) !!}
                         <div class="form-group">
-                            {!! Form::label('name', 'النوع', ['class' => 'ProceduresLabel']) !!}
+                            {!! Form::label('name', 'النوع', ['class' => 'input_label']) !!}
                             {!! Form::text('AccountTypeName', null, ['class' => 'input_style', 'placeholder' => 'ادخل النوع']) !!}
                         </div>
                         <?php
@@ -26,7 +26,7 @@
                         ?>
 
                         <div class="form-group">
-                            {!! Form::label('name', 'دائن\مدين', ['class' => 'ProceduresLabel']) !!}
+                            {!! Form::label('name', 'دائن\مدين', ['class' => 'input_label']) !!}
                             {!! Form::select('AccountTypeSource', $options, null, [
                                 'class' => 'input_style',
                             ]) !!}

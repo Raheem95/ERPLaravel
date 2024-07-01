@@ -16,7 +16,7 @@
                     <div>
                         {!! Form::open(['action' => ['AccountTypeController@update', $AccountType->AccountTypeID], 'method' => 'post']) !!}
                         <div class="form-group">
-                            {!! Form::label('name', 'النوع', ['class' => 'ProceduresLabel']) !!}
+                            {!! Form::label('name', 'النوع', ['class' => 'input_label']) !!}
                             {!! Form::text('AccountTypeName', $AccountType->AccountTypeName, [
                                 'class' => 'input_style',
                                 'placeholder' => 'ادخل النوع ',
@@ -29,7 +29,7 @@
                         $options = collect($categories)->pluck('TypeName', 'TypeID');
                         ?>
                         <div class="form-group">
-                            {!! Form::label('name', 'دائن\مدين', ['class' => 'ProceduresLabel']) !!}
+                            {!! Form::label('name', 'دائن\مدين', ['class' => 'input_label']) !!}
                             {!! Form::select('AccountTypeSource', $options, $AccountType->AccountTypeSource, [
                                 'class' => 'input_style',
                             ]) !!}
