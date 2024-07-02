@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Item;
 use App\Sale;
 use App\SaleDetails;
 
@@ -15,7 +17,7 @@ class StockSaleController extends Controller
      */
     public function index()
     {
-        $Sales = Sale::where("Transfer", ">=","1")->orderBy('Transfer', 'desc')->orderBy('SaleID', 'desc')->get();
+        $Sales = Sale::where("Transfer", ">=", "1")->orderBy('Transfer', 'desc')->orderBy('SaleID', 'desc')->get();
 
         return view("stocks.sales.index")->with(['Sales' => $Sales]);
     }
@@ -87,7 +89,8 @@ class StockSaleController extends Controller
     {
         //
     }
-    public function Transfare(Request $request){
+    public function Transfare(Request $request)
+    {
         $Result = "1";
         $flag = true;
         $Sale = Sale::find($request->SaleID);
@@ -96,7 +99,7 @@ class StockSaleController extends Controller
         $Status = $request->Status;
         $StockController = new StockController;
         $SaleDetails = SaleDetails::where("SaleID", $request->SaleID)->get();
-        if ($Status == 1)
+        if ($Status == 2) {
             foreach ($SaleDetails as $SaleItem) {
                 $AvailableQTY = $StockController->getStockItemQTY($StockID, $SaleItem->ItemID);
                 if ($AvailableQTY < $SaleItem->ItemQTY) {
@@ -104,10 +107,38 @@ class StockSaleController extends Controller
                     $flag = false;
                 }
             }
+        }
+        if ($flag) {
+            foreach ($SaleDetails as $SaleItem) {
+                $SaleItemID = $SaleItem->ItemID;
+                $SaleQTY = $SaleItem->ItemQTY;
+                $ItemName = $SaleItem->item->ItemName;
+                $TransactionDetails = "صرف فاتورة مبيعات بالرقم" . $Sale->SaleNumber . " للمنتج " . $ItemName;
+                $SaleQTY *= -1;
+                if ($Status == 1) {
+                    $SaleQTY *= -1;
+                    $TransactionDetails = "الغاء صرف فاتورة مبيعات  بالرقم " . $Sale->SaleNumber . " للمنتج " . $ItemName;
+                }
+                $Result .= $StockController->AddTransaction($StockID, $SaleItemID, $SaleQTY, $TransactionDetails, $Status);
+                if ($Result > 0) {
+                    $MyItem = Item::find($SaleItemID);
+                    $MyItem->ItemQty += $SaleQTY;
+                    if (!$MyItem->save()) {
+                        $Result .= "خطاء في تعديل  كمية المنتج " . $ItemName . " <br> ";
+                        $flag = false;
+                    }
+                } else if ($Result == -1) {
+                    $flag = false;
+                    $Result .= "خطاء في تعديل كمية المنتج " . $ItemName . " في المخزن <br> ";
+                } else if ($Result == -2) {
+                    $flag = false;
+                    $Result .= "خطاء في اضافة الحركة المخزنية للمنتج " . $ItemName . " <br> ";
+                }
+            }
+        }
         if ($flag) {
             $Sale->save();
         }
-            return response()->json($Result);
+        return response()->json($Result);
     }
 }
-

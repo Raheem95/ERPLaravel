@@ -303,12 +303,14 @@ class SaleController extends Controller
         } else
             return response()->json("خطاء في حذف  القيد ");
     }
-    public function Transfare(Request $request)
+    public function sale_transfare(Request $request)
     {
         $Result = "";
         $flag = true;
         $Sale = Sale::find($request->SaleID);
         $Sale->Transfer = $request->Status;
+        $Sale->save();
+        return response()->json(1);
         $StockID = $Sale->StockID;
         $StockController = new StockController;
         $SaleDetails = SaleDetails::where("SaleID", $request->SaleID)->get();

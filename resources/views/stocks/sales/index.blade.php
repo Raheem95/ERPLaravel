@@ -10,7 +10,9 @@
         <table class="table ">
             <thead>
                 <tr>
-                    <th>الرقم </th>
+                    <th>رقم الفاتورة </th>
+                    <th>اسم العميل</th>
+                    <th>المصدر</th>
                     <th>عرض</th>
                     <th>تغذية المخزن</th>
                 </tr>
@@ -20,6 +22,8 @@
 
                     <tr>
                         <td id = "SaleNumber{{ $Sale->SaleID }}">{{ $Sale->SaleNumber }}</td>
+                        <td id = "Customer{{ $Sale->SaleID }}">{{ $Sale->CustomerName }}</td>
+                        <td id = "User{{ $Sale->SaleID }}">{{ $Sale->user->name }}</td>
                         <td>
                             <a href="Sales/{{ $Sale->SaleID }}/" class="btn view_button">
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i>
@@ -54,41 +58,44 @@
                 Status = 1;
                 var AlertMessage = " الغاء صرف"
             }
-            if (confirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + SaleNumber)) {
-                var form_data = new FormData();
-                form_data.append('SaleID', SaleID);
-                form_data.append('Status', Status);
-                $.ajax({
-                    url: "{{ route('stock_sale_transfare') }}",
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data,
-                    type: 'post',
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                            'content'));
-                    },
-                    success: function(result) {
-                        if (!isNaN(result)) {
-                            $("#Results").removeClass("alert-danger").addClass(
-                                    "alert-success")
-                                .html(
-                                    "تم  " + AlertMessage + " الفاتورة بنجاح");
-                            $("#Transfer" + SaleID).val(Status)
+            customConfirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + SaleNumber, function(result) {
+                if (result) {
+                    var form_data = new FormData();
+                    form_data.append('SaleID', SaleID);
+                    form_data.append('Status', Status);
+                    $.ajax({
+                        url: "{{ route('stock_sale_transfare') }}",
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        type: 'post',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]')
+                                .attr(
+                                    'content'));
+                        },
+                        success: function(result) {
+                            if (!isNaN(result)) {
+                                customAlert("تم  " + AlertMessage + " الفاتورة بنجاح",
+                                    "success");
+                                $("#Transfer" + SaleID).val(Status)
 
-                            resetButtons(SaleID)
-                        } else
-                            $("#Results").removeClass("alert-success").addClass(
-                                "alert-danger").html(
-                                result);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error
-                    }
-                });
-            }
+                                resetButtons(SaleID)
+                            } else
+                                $("#Results").removeClass("alert-success").addClass(
+                                    "alert-danger").html(
+                                    result);
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                } else {
+                    customAlert("تم إلغاء العملية", "info");
+                }
+            });
         });
 
         function resetButtons(SaleID) {

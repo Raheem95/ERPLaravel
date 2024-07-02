@@ -315,7 +315,7 @@
                 form_data.append('SaleID', SaleID);
                 form_data.append('Status', Status);
                 $.ajax({
-                    url: "{{ route('transfare_sale_payment') }}",
+                    url: "{{ route('pay_sale') }}",
                     dataType: 'json',
                     cache: false,
                     contentType: false,

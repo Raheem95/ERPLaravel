@@ -10,7 +10,9 @@
         <table class="table ">
             <thead>
                 <tr>
-                    <th>الرقم </th>
+                    <th>رقم الفاتورة </th>
+                    <th>اسم المورد</th>
+                    <th>مصدر الفاتورة</th>
                     <th>عرض</th>
                     <th>تغذية المخزن</th>
                 </tr>
@@ -20,6 +22,8 @@
 
                     <tr>
                         <td id = "PurchaseNumber{{ $Purchase->PurchaseID }}">{{ $Purchase->PurchaseNumber }}</td>
+                        <td id = "SupplierName{{ $Purchase->PurchaseID }}">{{ $Purchase->SupplierName }}</td>
+                        <td id = "User{{ $Purchase->PurchaseID }}">{{ $Purchase->user->name }}</td>
                         <td>
                             <a href="Purchases/{{ $Purchase->PurchaseID }}/" class="btn view_button">
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i>
@@ -55,41 +59,44 @@
                 Status = 1;
                 var AlertMessage = " الغاء صرف"
             }
-            if (confirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + PurchaseNumber)) {
-                var form_data = new FormData();
-                form_data.append('PurchaseID', PurchaseID);
-                form_data.append('Status', Status);
-                $.ajax({
-                    url: "{{ route('stock_purchase_transfare') }}",
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data,
-                    type: 'post',
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                            'content'));
-                    },
-                    success: function(result) {
-                        if (!isNaN(result)) {
-                            $("#Results").removeClass("alert-danger").addClass(
-                                    "alert-success")
-                                .html(
-                                    "تم  " + AlertMessage + " الفاتورة بنجاح");
-                            $("#Transfer" + PurchaseID).val(Status)
+            customConfirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + PurchaseNumber, function(result) {
+                if (result) {
+                    var form_data = new FormData();
+                    form_data.append('PurchaseID', PurchaseID);
+                    form_data.append('Status', Status);
+                    $.ajax({
+                        url: "{{ route('stock_purchase_transfare') }}",
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        type: 'post',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]')
+                                .attr(
+                                    'content'));
+                        },
+                        success: function(result) {
+                            if (!isNaN(result)) {
+                                customAlert(
+                                    "تم  " + AlertMessage + " الفاتورة بنجاح", "success");
+                                $("#Transfer" + PurchaseID).val(Status)
 
-                            resetButtons(PurchaseID)
-                        } else
-                            $("#Results").removeClass("alert-success").addClass(
-                                "alert-danger").html(
-                                result);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error
-                    }
-                });
-            }
+                                resetButtons(PurchaseID)
+                            } else
+                                $("#Results").removeClass("alert-success").addClass(
+                                    "alert-danger").html(
+                                    result);
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                } else {
+                    customAlert("تم إلغاء العملية", "info");
+                }
+            });
         });
 
         function resetButtons(PurchaseID) {

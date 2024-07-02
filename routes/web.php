@@ -59,7 +59,7 @@ Route::middleware('auth')->group(
         Route::post('pay_sale', 'SaleController@AddPayment')->name('pay_sale');
         Route::get('get_sale_payment_details/{salesID}', 'SaleController@payment_details');
         Route::post('delete_sale_payment', 'SaleController@DeletePayment')->name('delete_sale_payment');
-        Route::post('transfare_sales_payment', 'SaleController@Transfare')->name('transfare_sale_payment');
+        Route::post('sale_transfare', 'SaleController@sale_transfare')->name('sale_transfare');
         Route::post('get_item_details', 'SaleController@GetItemDetails')->name('get_item_details');
 
         // Stock Routs

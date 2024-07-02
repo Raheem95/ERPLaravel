@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Supplier;
 use App\Account;
+use App\Purchase;
 use Illuminate\Validation\Rule;
 
 class SupplierController extends Controller
@@ -138,6 +139,9 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
+        $CheckSupplierInvoices = Purchase::where(["SupplierID" => $id])->get();
+        if (count($CheckSupplierInvoices) > 0)
+            return redirect("/suppliers")->with("error", "لا يمكن حذف المورد لوجود  فواتير مشتريات مرتبطة به");
         $Supplier = Supplier::find($id);
         $Supplier->delete();
         return redirect("/suppliers")->with("success", "تمت  حذف  المورد بنجاح");

@@ -129,7 +129,6 @@
                         @if ($Sale->Transfer == 0 && $Sale->PaidAmount == 0)
                             <?php $display = 'block'; ?>
                         @endif
-
                         <td>
                             <a style="display: {{ $display }}" id="EditButton{{ $Sale->SaleID }}"
                                 href="sales/{{ $Sale->SaleID }}/edit" class="btn edit_button">
@@ -160,4 +159,69 @@
         <div class="alert alert-danger Result">لا يوجد فواتير مبيعات</div>
     @endif
 
+    <script>
+        $(document).on('click', '.Transfare', function() {
+            var SaleID = $(this).val()
+            var SaleNumber = $("#SaleNumber" + SaleID).html()
+            var Status = 1;
+            var AlertMessage = "صرف"
+            if ($(this).hasClass("UnTransfareButton")) {
+                Status = 0;
+                var AlertMessage = " الغاء صرف"
+            }
+            customConfirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + SaleNumber, function(result) {
+                if (result) {
+                    var form_data = new FormData();
+                    form_data.append('SaleID', SaleID);
+                    form_data.append('Status', Status);
+                    $.ajax({
+                        url: "{{ route('sale_transfare') }}",
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        type: 'post',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]')
+                                .attr(
+                                    'content'));
+                        },
+                        success: function(result) {
+                            if (!isNaN(result)) {
+                                customAlert("تم  " + AlertMessage + " الفاتورة بنجاح",
+                                    "success");
+                                $("#Transfer" + SaleID).val(Status)
+
+                                resetButtons(SaleID)
+                            } else
+                                $("#Results").removeClass("alert-success").addClass(
+                                    "alert-danger").html(
+                                    result);
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                } else {
+                    customAlert("تم إلغاء العملية", "info");
+                }
+            });
+        });
+
+        function resetButtons(SaleID) {
+            $("#EditButton" + SaleID).css("display", "block");
+            $("#DeleteButton" + SaleID).css("display", "block");
+            if ($("#Transfer" + SaleID).val() == 1) {
+                $("#EditButton" + SaleID).css("display", "none");
+                $("#DeleteButton" + SaleID).css("display", "none");
+            }
+            $("#TransfareButton" + SaleID).removeClass("TransfareButton").addClass("UnTransfareButton");
+            $("#TransfareButton" + SaleID).css("color", "red")
+            if ($("#Transfer" + SaleID).val() == 0) {
+                $("#TransfareButton" + SaleID).removeClass("UnTransfareButton").addClass("TransfareButton");
+                $("#TransfareButton" + SaleID).css("color", "blue")
+            }
+        }
+    </script>
 @endsection

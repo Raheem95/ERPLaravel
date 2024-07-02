@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Customer;
 use App\Account;
+use App\Sale;
 use Illuminate\Validation\Rule;
 
 
@@ -142,6 +143,10 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
+        $CheckCustomerInvoices = Sale::where(["CustomerID" => $id])->get();
+        if (count($CheckCustomerInvoices) > 0)
+            return redirect("/customers")->with("error", "لا يمكن حذف العميل لوجود  فواتير مبيعات مرتبطة به");
+
         $Customer = Customer::find($id);
         $Customer->delete();
         return redirect("/customers")->with("success", "تمت  حذف العميل بنجاح");

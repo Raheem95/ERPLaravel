@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Item;
 use App\Category;
+use App\PurchaseDetails;
+use App\SaleDetails;
+use App\StockItems;
 use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
@@ -154,6 +157,16 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
+        $CheckItemStock = StockItems::where(["ItemID" => $id])->where("ItemQTY", ">", 0)->get();
+        if (count($CheckItemStock) > 0)
+            return redirect("/items")->with("error", "لا يمكن حذف المنتج لوجود كميات بالمخزن ");
+        $CheckItemInvoices = SaleDetails::where(["ItemID" => $id])->get();
+        if (count($CheckItemInvoices) > 0)
+            return redirect("/items")->with("error", "المنتج مرتبط بفواتير مبيعات ");
+        $CheckItemInvoices = PurchaseDetails::where(["ItemID" => $id])->get();
+        if (count($CheckItemInvoices) > 0)
+            return redirect("/items")->with("error", "المنتج مرتبط بفواتير مشتريات ");
+
         $Item = Item::find($id);
         $Item->delete();
         return redirect("/items")->with("success", "تمت حذف المنتج بنجاح");

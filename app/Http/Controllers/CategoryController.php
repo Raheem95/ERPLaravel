@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Category;
+use App\Item;
 use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
@@ -107,6 +108,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+        $CheckCategoryItems = Item::where(["CategoryID" => $id])->get();
+        if (count($CheckCategoryItems) > 0)
+            return redirect("/categories")->with("error", "الصنف مرتبط بمنتجات ");
         $Category = Category::find($id);
         $Category->delete();
         return redirect("/categories")->with("success", "تمت حذف الصنف بنجاح");
