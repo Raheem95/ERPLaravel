@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="input_label">
+        <h1>فاتورة مشتريات </h1>
+    </div>
     <div class = "maindiv">
         <button class='btn print_button' onclick="printWithSpecialFileName()">
             طباعة <i class='fa-solid fa-print fa-2x'></i>

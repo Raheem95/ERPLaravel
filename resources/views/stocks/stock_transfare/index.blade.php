@@ -59,12 +59,13 @@
                             {!! Form::open([
                                 'action' => ['StockTransfareController@destroy', $Transfare->TransfareID],
                                 'method' => 'post',
+                                'id' => 'deleteForm' . $Transfare->TransfareID,
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف المخزن  $Transfare->TransfareName ')",
+                                'onclick' => "confirmDelete('تاكيد حذف  النحويل   {$Transfare->Comment}','deleteForm{$Transfare->TransfareID}')",
                             ]) !!}
 
                             {!! Form::close() !!}

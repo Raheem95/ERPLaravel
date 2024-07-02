@@ -5,12 +5,10 @@
 @endif
 
 @if (session('success'))
-    <div class="alert alert-success Result">
-        {{ session('success') }}
-    </div>
+    <input type="hidden" id="ResultText" value="{{ session('success') }}">
+    <input type="hidden" id="ResultType" value="success">
 @endif
 @if (session('error'))
-    <div class="alert alert-danger  Result">
-        {{ session('error') }}
-    </div>
+    <input type="hidden" id="ResultText" value="{{ session('error') }}">
+    <input type="hidden" id="ResultType" value="danger">
 @endif

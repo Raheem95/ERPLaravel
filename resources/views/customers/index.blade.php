@@ -32,12 +32,13 @@
                             {!! Form::open([
                                 'action' => ['CustomerController@destroy', $Customers->CustomerID],
                                 'method' => 'post',
+                                'id' => 'deleteForm' . $Customers->CustomerID,
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف العميل  $Customers->CustomersName ')",
+                                'onclick' => "confirmDelete('تاكيد حذف  العميل   {$Customers->CustomerName}','deleteForm{$Customers->CustomerID}')",
                             ]) !!}
 
                             {!! Form::close() !!}

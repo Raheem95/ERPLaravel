@@ -2,9 +2,13 @@
 
 @section('content')
     <div class = "maindiv">
+
         <button class='btn print_button' onclick="printWithSpecialFileName()">
             طباعة <i class='fa-solid fa-print fa-2x'></i>
         </button>
+        <div class="input_label">
+            <h1>فاتورة مبيعات </h1>
+        </div>
         <div class="row">
             <div class="col-md-8">
                 <div class="row">

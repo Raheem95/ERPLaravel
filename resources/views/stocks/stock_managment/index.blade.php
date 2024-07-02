@@ -34,13 +34,13 @@
                         <td>
                             {!! Form::open([
                                 'action' => ['StockController@destroy', $Stock->StockID],
-                                'method' => 'post',
+                                'id' => 'deleteForm' . $Stock->StockID,
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف المخزن  $Stock->StockName ')",
+                                'onclick' => "confirmDelete('تاكيد حذف  المخزن   {$Stock->StockName}','deleteForm{$Stock->StockID}')",
                             ]) !!}
 
                             {!! Form::close() !!}

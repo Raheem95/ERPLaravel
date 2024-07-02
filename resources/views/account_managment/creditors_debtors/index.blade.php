@@ -39,12 +39,13 @@
                                     {!! Form::open([
                                         'action' => ['CreditorsDebtorController@destroy', $Creditor->OprationID],
                                         'method' => 'post',
+                                        'id' => 'deleteForm' . $Creditor->OprationID,
                                     ]) !!}
                                     {!! Form::hidden('_method', 'DELETE') !!}
                                     {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                        'type' => 'submit',
+                                        'type' => 'button',
                                         'class' => 'btn delete_button',
-                                        'onclick' => "return confirm('تاكيد حذف العملية  $Creditor->OprationDetails ')",
+                                        'onclick' => "confirmDelete('تاكيد حذف المديونية الحساب {$Creditor->Account->AccountName}','deleteForm$Creditor->OprationID')",
                                     ]) !!}
 
                                     {!! Form::close() !!}
@@ -90,12 +91,13 @@
                                     {!! Form::open([
                                         'action' => ['CreditorsDebtorController@destroy', $Debtor->OprationID],
                                         'method' => 'post',
+                                        'id' => 'deleteForm' . $Debtor->OprationID,
                                     ]) !!}
                                     {!! Form::hidden('_method', 'DELETE') !!}
                                     {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                        'type' => 'submit',
+                                        'type' => 'button',
                                         'class' => 'btn delete_button',
-                                        'onclick' => "return confirm('تاكيد حذف العملية  $Debtor->OprationDetails ')",
+                                        'onclick' => "confirmDelete('تاكيد حذف مديونية الحساب {$Debtor->Account->AccountName}','deleteForm$Debtor->OprationID')",
                                     ]) !!}
 
                                     {!! Form::close() !!}

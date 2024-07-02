@@ -44,12 +44,13 @@
                                 {!! Form::open([
                                     'action' => ['ExpenseController@destroy', $Expense->ExpensesID],
                                     'method' => 'post',
+                                    'id' => 'deleteForm' . $Expense->ExpensesID,
                                 ]) !!}
                                 {!! Form::hidden('_method', 'DELETE') !!}
                                 {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                    'type' => 'submit',
+                                    'type' => 'button',
                                     'class' => 'btn delete_button',
-                                    'onclick' => "return confirm('تاكيد حذف العملة  $Expense->ExpenseName ')",
+                                    'onclick' => "confirmDelete('تاكيد حذف  المنصرف {$Expense->ExpensesDetails}','deleteForm$Expense->ExpensesID')",
                                 ]) !!}
 
                                 {!! Form::close() !!}

@@ -34,6 +34,21 @@
         ]) !!}
         <div class="row">
             <?php
+            $PurchaseAccounts = json_decode($PurchaseAccounts, true);
+            
+            foreach ($PurchaseAccounts as $PurchaseAccount) {
+                $PurchaseAccountsOptions[$PurchaseAccount['AccountID']] = $PurchaseAccount['AccountName'];
+            }
+            ?>
+            <div class="form-group col-md-6">
+                {!! Form::label('name', 'اختر الحساب', ['class' => 'input_label']) !!}
+                {!! Form::select('PurchaseAccountID', $PurchaseAccountsOptions, null, [
+                    'class' => 'input_style',
+                    'id' => 'PurchaseAccountID',
+                    'required' => 'required',
+                ]) !!}
+            </div>
+            <?php
             $Suppliers = json_decode($Suppliers, true);
             
             $options = ['0' => 'اختر المورد'];

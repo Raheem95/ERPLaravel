@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Purchase;
+use App\Sale;
 use Illuminate\Http\Request;
 use App\Stock;
 use App\StockItems;
@@ -111,15 +113,19 @@ class StockController extends Controller
     public function destroy($id)
     {
         $Stock = Stock::find($id);
-        $MyStockItem = StockItems::where(["StockID" => $id])->get();
-        if(count($MyStockItem) > 0)
+        $CheckStockItem = StockItems::where(["StockID" => $id])->get();
+        if (count($CheckStockItem) > 0)
             return redirect("/Stocks/StockManagment")->with("error", "المحزن يحتوي على منتجات");
-        else{
-            if($Stock->delete())
+        $CheckStockInvoice = Sale::where(["StockID" => $id])->get();
+        if (count($CheckStockInvoice) > 0)
+            return redirect("/Stocks/StockManagment")->with("error", "المحزن مرتبط بفواتير مبيعات");
+        $CheckStockPurchase = Purchase::where(["StockID" => $id])->get();
+        if (count($CheckStockPurchase) > 0)
+            return redirect("/Stocks/StockManagment")->with("error", "المحزن مرتبط بفواتير مشتريات");
+        if ($Stock->delete())
             return redirect("/Stocks/StockManagment")->with("success", "تم حذف المخزن بنجاح");
-            else
+        else
             return redirect("/Stocks/StockManagment")->with("error", "خظاء في حذف المخزن");
-        }
     }
 
     public function AddTransaction($StockID, $ItemID, $QTY, $TransactionDetails, $Status)

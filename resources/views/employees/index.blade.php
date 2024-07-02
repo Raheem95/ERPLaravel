@@ -2,45 +2,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="modal fade" id="DeleteModel" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                    <i class="fa-regular fa-circle-xmark fa-9x" style="color: #aa3232;"></i>
-                    <br>
-                    <br>
-                    <br>
-                    <label style="font-size: 25px;color: #6b6969;">هل انت متاكد من حذف الموظف <label
-                            id="DeletedEmployeeName"></label></label>
-                    <br>
-                    <br>
-                    <p class="card-text">سيتم حذف الموظف بجميع التفاصيل المالية</p>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            {!! Form::open([
-                                'action' => ['EmployeeController@destroy', 'PLACEHOLDER_ITEM_ID'],
-                                'method' => 'post',
-                                'class' => 'delete-form',
-                            ]) !!}
-                            {!! Form::hidden('_method', 'DELETE') !!}
-                            {!! Form::button('حذف', [
-                                'type' => 'submit',
-                                'class' => 'delete_button',
-                                'style' => 'width:100%',
-                            ]) !!}
-                            {!! Form::close() !!}
-                        </div>
-                        <div class="col-md-6">
-                            <button class="delete_button" data-dismiss="modal"
-                                style="background:#6b6969;color:white;width:100%;">الغاء</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <h1>الموظفين</h1>
     <br>
     <div class="row">
@@ -83,10 +44,20 @@
                                 </a>
                             </div>
                             <div class="col-md-6">
-                                <button style="width: 100%" type="button" class="delete_button DeleteEmployee"
-                                    data-toggle="modal" data-target="#DeleteModel" value="{{ $employee->EmployeeID }}">
-                                    حذف <i class="fa-solid fa-trash-can"></i>
-                                </button>
+                                {!! Form::open([
+                                    'action' => ['EmployeeController@destroy', $employee->EmployeeID],
+                                    'method' => 'post',
+                                    'id' => 'deleteForm' . $employee->EmployeeID,
+                                ]) !!}
+                                {!! Form::hidden('_method', 'DELETE') !!}
+                                {!! Form::button('حذف <i class="fas fa-trash-alt fa-2x"></i> ', [
+                                    'type' => 'button',
+                                    'class' => 'delete_button',
+                                    'style' => 'width:100%;',
+                                    'onclick' => "confirmDelete('تاكيد حذف  الموظف   {$employee->EmployeeName}','deleteForm{$employee->EmployeeID}')",
+                                ]) !!}
+
+                                {!! Form::close() !!}
                             </div>
                         </div>
                     </div>
@@ -155,11 +126,6 @@
                             "<div class = 'col-md-12 alert alert-danger Result'>لا توجد نتائج</div>")
                 }
             });
-        });
-
-        $(document).on('click', '.DeleteEmployee', function() {
-            $("#DeletedEmployeeName").html($("#EmployeeName" + $(this).val()).html())
-            $('.delete-form').attr('action', '/Employees/' + $(this).val());
         });
     </script>
 @endsection

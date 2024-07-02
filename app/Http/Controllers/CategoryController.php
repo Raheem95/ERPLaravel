@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
-   
+
     /**
      * Display a listing of the resource.
      *
@@ -109,6 +109,6 @@ class CategoryController extends Controller
     {
         $Category = Category::find($id);
         $Category->delete();
-        return redirect("/categories")->with("success", "تمت جذف الصنف بنجاح");
+        return redirect("/categories")->with("success", "تمت حذف الصنف بنجاح");
     }
 }

@@ -30,12 +30,13 @@
                             {!! Form::open([
                                 'action' => ['CategoryController@destroy', $category->CategoryID],
                                 'method' => 'post',
+                                'id' => 'deleteForm' . $category->CategoryID,
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف الصنف  $category->CategoryName ')",
+                                'onclick' => "confirmDelete('تاكيد حذف  الصنف   {$category->CategoryName}','deleteForm{$category->CategoryID}')",
                             ]) !!}
 
                             {!! Form::close() !!}

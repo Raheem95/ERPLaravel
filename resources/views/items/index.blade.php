@@ -40,12 +40,13 @@
                             {!! Form::open([
                                 'action' => ['ItemController@destroy', $item->ItemID],
                                 'method' => 'post',
+                                'id' => 'deleteForm' . $item->ItemID,
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف المنتج  $item->ItemName ')",
+                                'onclick' => "confirmDelete('تاكيد حذف  الصنف   {$item->ItemName}','deleteForm{$item->ItemID}')",
                             ]) !!}
 
                             {!! Form::close() !!}

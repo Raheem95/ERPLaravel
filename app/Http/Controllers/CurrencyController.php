@@ -108,6 +108,6 @@ class CurrencyController extends Controller
     {
         $Currency = Currency::find($id);
         $Currency->delete();
-        return redirect("/AccountManagment/Currencies")->with("success", "تمت جذف  العملة بنجاح");
+        return redirect("/AccountManagment/Currencies")->with("success", "تمت حذف  العملة بنجاح");
     }
 }

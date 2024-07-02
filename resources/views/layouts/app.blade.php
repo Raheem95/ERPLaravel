@@ -13,6 +13,7 @@
 
     <!-- Styles -->
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
 
     <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
 
@@ -26,52 +27,6 @@
 
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var label = document.querySelector('h1');
-            if (label) {
-                document.title = label.textContent || label.innerText;
-            }
-        });
-    </script>
-    <script>
-        function handleClickOutside(event) {
-            var div = document.getElementById('ContainerNav');
-            var sidebar = document.getElementById('sidebar');
-            var icon = document.getElementById('icon');
-            var arrowIcon = document.getElementById('ArrorIcon');
-            // Check if the click is outside the sidebar and not on the arrow icon
-            if (!div.contains(event.target) && event.target.id != "ArrorIcon") {
-                sidebar.style.right = "-200px";
-                icon.style.right = "25px";
-                $("#icon").empty().append($('<i id="ArrorIcon" class="fa-solid fa-circle-arrow-left"></i>'));
-            }
-        }
-        // Add event listener to the document to detect clicks
-        document.addEventListener('click', handleClickOutside);
-
-        function toggleSidebar(Type) {
-            var sidebar = document.getElementById("sidebar");
-            var icon = document.getElementById("icon");
-            if (sidebar.style.right === "0px") {
-                if (Type != 1) {
-                    sidebar.style.right = "-200px";
-                    icon.style.right = "25px";
-                    $("#icon").empty().append($('<i id="ArrorIcon"  class="fa-solid fa-circle-arrow-left "></i>'))
-                }
-            } else {
-                sidebar.style.right = "0px";
-                icon.style.right = "225px";
-                $("#icon").empty().append($('<i id="ArrorIcon" class="fa-solid fa-circle-xmark"></i>'));
-            }
-        }
-        $(document).on('click', '.ViewSubMenu', function() {
-            if ($("#" + $(this).attr("id") + "Div").css("display") == "grid")
-                $("#" + $(this).attr("id") + "Div").css("display", "none")
-            else
-                $("#" + $(this).attr("id") + "Div").css("display", "grid")
-        });
-    </script>
     <style>
         @font-face {
             font-family: 'MyFont';
@@ -187,10 +142,10 @@
         ?>
     @else
         <div id="app" class="content" style="width:100%">
+            <!-- Add this structure somewhere in your HTML -->
+            <div id="customAlertContainer"></div>
+            <div id="customConfirmContainer"></div>
 
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                {{ csrf_field() }}
-            </form>
             <div id="ContainerNav">
                 <button class="toggle-btn notPrint" id="icon" onclick="toggleSidebar(0)">
                     <i id="ArrorIcon" class="fa-solid fa-circle-arrow-left"></i>
@@ -308,6 +263,7 @@
 
                 <!-- Scripts -->
                 <script src="{{ asset('js/app.js') }}"></script>
+
 
 </body>
 @endif

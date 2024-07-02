@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
 use App\Http\Controllers\StockController;
 use App\Supplier;
 use Illuminate\Http\Request;
 use App\Purchase;
 use App\Item;
 use App\Currency;
+use App\DailyAccountingEntryDetails;
 use App\PurchaseDetails;
 use App\PurchasePayment;
 use App\Stock;
-use App\StockItems;
 
 class PurchaseController extends Controller
 {
@@ -35,10 +36,16 @@ class PurchaseController extends Controller
      */
     public function create()
     {
+        $PurchaseAccounts = Account::where("AccountTypeID", "10")->where("lastChildNum", "0")->get();
         $Suppliers = Supplier::orderBy('SupplierID', 'asc')->get();
         $Items = Item::orderBy('ItemID', 'asc')->get();
         $Stocks = Stock::orderBy('StockID', 'asc')->get();
-        return view("purchases.create")->with(["Suppliers" => $Suppliers, "Items" => $Items, "Stocks" => $Stocks]);
+        return view("purchases.create")->with([
+            "PurchaseAccounts" => $PurchaseAccounts,
+            "Suppliers" => $Suppliers,
+            "Items" => $Items,
+            "Stocks" => $Stocks
+        ]);
     }
 
     /**
@@ -62,13 +69,14 @@ class PurchaseController extends Controller
         $Supplier = Supplier::find($SupplierID);
         $AccountID = $Supplier->AccountID;
         $TotalPurchase = $request->TotalPurchase;
+        $PurchaseAccountID = $request->PurchaseAccountID;
         $DailyAccountingEntryController = new DailyAccountingEntryController;
-        $restrictionDetails = "فاتورة مشتريات بالرقم " . $maxPurchaseNumber . " خاصة بالعميل " . $SupplierName;
+        $restrictionDetails = "فاتورة مشتريات بالرقم " . $maxPurchaseNumber . " خاصة بالمورد " . $SupplierName;
         $RestrictionID = $DailyAccountingEntryController->saveDaily($restrictionDetails, $UserID, 1, 0);
         if ($RestrictionID > 0) {
             $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, $AccountID, $TotalPurchase, 1, 1, $restrictionDetails, $UserID);
             if ($Result == 1)
-                $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, 20, $TotalPurchase, 2, 1, $restrictionDetails, $UserID);
+                $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, $PurchaseAccountID, $TotalPurchase, 2, 1, $restrictionDetails, $UserID);
             if ($Result == 1) {
                 $Purchace = new Purchase;
                 $Purchace->PurchaseNumber = $maxPurchaseNumber;
@@ -129,12 +137,22 @@ class PurchaseController extends Controller
      */
     public function edit($id)
     {
+        $PurchaseAccounts = Account::where("AccountTypeID", "10")->where("lastChildNum", "0")->get();
         $Purchase = Purchase::find($id);
+        $PurchaseAccountID = DailyAccountingEntryDetails::where("RestrictionID", $Purchase->RestrictionID)->where("TransactionType", "2")->first();
         $PurchaseDetails = $Purchase->purchase_details;
         $Suppliers = Supplier::orderBy('SupplierID', 'asc')->get();
         $Items = Item::orderBy('ItemID', 'asc')->get();
         $Stocks = Stock::orderBy('StockID', 'asc')->get();
-        return view("purchases.edit")->with(['Suppliers' => $Suppliers, 'Items' => $Items, "Stocks" => $Stocks, 'Purchase' => $Purchase, "PurchaseDetails" => $PurchaseDetails]);
+        return view("purchases.edit")->with([
+            'PurchaseAccounts' => $PurchaseAccounts,
+            'Suppliers' => $Suppliers,
+            'Items' => $Items,
+            "Stocks" => $Stocks,
+            'Purchase' => $Purchase,
+            'PurchaseAccountID' => $PurchaseAccountID->AccountID,
+            "PurchaseDetails" => $PurchaseDetails
+        ]);
     }
 
     /**
@@ -151,16 +169,17 @@ class PurchaseController extends Controller
         $Purchase = Purchase::find($id);
         $RestrictionID = $Purchase->RestrictionID;
         $Supplier = Supplier::find($request->SupplierID);
+        $PurchaseAccountID = $request->PurchaseAccountID;
         $DailyAccountingEntryController = new DailyAccountingEntryController;
         $DeletingOldRestrictionIDResult = $DailyAccountingEntryController->deleteDaily($RestrictionID);
         if ($DeletingOldRestrictionIDResult) {
             $DailyAccountingEntryController = new DailyAccountingEntryController;
-            $restrictionDetails = "تعديل فاتورة مشتريات بالرقم " . $Purchase->PurchaseNumber . " خاصة بالعميل " . $request->SupplierName;
+            $restrictionDetails = "تعديل فاتورة مشتريات بالرقم " . $Purchase->PurchaseNumber . " خاصة بالمورد " . $request->SupplierName;
             $RestrictionID = $DailyAccountingEntryController->saveDaily($restrictionDetails, $UserID, 1, 0);
             if ($RestrictionID > 0) {
                 $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, $Supplier->AccountID, $request->TotalPurchase, 1, 1, $restrictionDetails, $UserID);
                 if ($Result == 1)
-                    $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, 20, $request->TotalPurchase, 2, 1, $restrictionDetails, $UserID);
+                    $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, $PurchaseAccountID, $request->TotalPurchase, 2, 1, $restrictionDetails, $UserID);
                 if ($Result == 1) {
                     $PurchaseDetails = PurchaseDetails::where("PurchaseID", $id);
                     $PurchaseDetails->delete();
@@ -193,7 +212,7 @@ class PurchaseController extends Controller
             } else
                 return redirect("/purchases")->with("error", "خطاء في حفظ القيد");
         } else {
-            return redirect("/purchases")->with("error", "خطاء في في جذف القيد السابق للفاتورة");
+            return redirect("/purchases")->with("error", "خطاء في في حذف القيد السابق للفاتورة");
         }
     }
 
@@ -215,7 +234,7 @@ class PurchaseController extends Controller
             if ($Purchase->delete())
                 return redirect("/purchases")->with("success", "تمت حذف  الفاتورة بنجاح");
         }
-        return redirect("/purchases")->with("error", "خطاء في جذف الفاتورة");
+        return redirect("/purchases")->with("error", "خطاء في حذف الفاتورة");
     }
 
     public function AddPayment(Request $request)
@@ -281,9 +300,10 @@ class PurchaseController extends Controller
         $Purchase->Transfer = $request->Status;
         $StockID = $Purchase->StockID;
         $Status = $request->Status;
+        $From = $request->From;
         $StockController = new StockController;
         $PurchaseDetails = PurchaseDetails::where("PurchaseID", $request->PurchaseID)->get();
-        if ($Status == 0){
+        if ($Status == 0 && $From != "Invoice") {
             foreach ($PurchaseDetails as $PurchaseItem) {
                 $AvailableQTY = $StockController->getStockItemQTY($StockID, $PurchaseItem->ItemID);
                 if ($AvailableQTY < $PurchaseItem->ItemQTY) {
@@ -292,11 +312,10 @@ class PurchaseController extends Controller
                 }
             }
         }
-        if($flag){
+        if ($flag) {
             $Purchase->save();
             return response()->json(1);
-        }
-        else
+        } else
             return response()->json($Result);
     }
 }

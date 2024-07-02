@@ -144,6 +144,6 @@ class CustomerController extends Controller
     {
         $Customer = Customer::find($id);
         $Customer->delete();
-        return redirect("/customers")->with("success", "تمت  جذف العميل بنجاح");
+        return redirect("/customers")->with("success", "تمت  حذف العميل بنجاح");
     }
 }

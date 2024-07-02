@@ -34,7 +34,21 @@
             'style' => 'margin-right:50px;',
         ]) !!}
         <div class = "row">
-
+            <?php
+            $SalesAccounts = json_decode($SalesAccounts, true);
+            
+            foreach ($SalesAccounts as $SalesAccount) {
+                $SalesAccountsOptions[$SalesAccount['AccountID']] = $SalesAccount['AccountName'];
+            }
+            ?>
+            <div class="form-group col-md-6">
+                {!! Form::label('name', 'اختر الحساب', ['class' => 'input_label']) !!}
+                {!! Form::select('SalesAccountID', $SalesAccountsOptions, null, [
+                    'class' => 'input_style',
+                    'id' => 'SalesAccountID',
+                    'required' => 'required',
+                ]) !!}
+            </div>
             <?php
             $Customers = json_decode($Customers, true);
             $options = ['0' => 'اختر العميل']; // Initialize with default option
@@ -337,13 +351,22 @@
                     if (parseFloat($("#ItemQTY" + i).val()) > parseFloat($("#AvailableQTY" + i).html()))
                         flag2 = false;
                 }
-                if (!flag2)
-                    if (!confirm("توجد منتجات غير متوقرة الكمية هل تريد المتابعة ؟"))
-                        flag = false;
+                if (!flag2) {
+                    customConfirm('توجد منتجات غير متوفرة بالكمية، هل تريد المتابعة؟', function(result) {
+                        if (result) {
+                            // Proceed with form submission
+                            document.forms[0].submit(); // Replace with your form submission code
+                        } else {
+                            alert('تم إلغاء العملية');
+                        }
+                    });
+
+                    // Prevent form from submitting automatically
+                    return false;
+                }
             }
             document.getElementById('Results').scrollIntoView();
             $("#Results").html(Result)
-            return flag;
         }
 
         function GetAllItemsAvailableQTY() {

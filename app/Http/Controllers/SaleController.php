@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
 use App\Http\Controllers\StockController;
 use App\Customer;
 use Illuminate\Http\Request;
 use App\Sale;
 use App\Item;
 use App\Currency;
+use App\DailyAccountingEntryDetails;
 use App\SaleDetails;
 use App\SalePayment;
 use App\Stock;
-use App\StockItems;
 
 class SaleController extends Controller
 {
@@ -35,10 +36,16 @@ class SaleController extends Controller
      */
     public function create()
     {
+        $SalesAccounts = Account::where("AccountTypeID", "11")->where("lastChildNum", "0")->get();
         $Customers = Customer::orderBy('CustomerID', 'asc')->get();
         $Items = Item::orderBy('ItemID', 'asc')->get();
         $Stocks = Stock::orderBy('StockID', 'asc')->get();
-        return view("sales.create")->with(["Customers" => $Customers, "Items" => $Items, "Stocks" => $Stocks]);
+        return view("sales.create")->with([
+            "SalesAccounts" => $SalesAccounts,
+            "Customers" => $Customers,
+            "Items" => $Items,
+            "Stocks" => $Stocks
+        ]);
     }
 
     /**
@@ -62,13 +69,14 @@ class SaleController extends Controller
         $Customer = Customer::find($CustomerID);
         $AccountID = $Customer->AccountID;
         $TotalSale = $request->TotalSale;
+        $SalesAccountID = $request->SalesAccountID;
         $DailyAccountingEntryController = new DailyAccountingEntryController;
         $restrictionDetails = "فاتورة مبيعات بالرقم " . $maxSaleNumber . " خاصة بالعميل " . $CustomerName;
         $RestrictionID = $DailyAccountingEntryController->saveDaily($restrictionDetails, $UserID, 1, 0);
         if ($RestrictionID > 0) {
             $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, $AccountID, $TotalSale, 2, 1, $restrictionDetails, $UserID);
             if ($Result == 1)
-                $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, 4, $TotalSale, 1, 1, $restrictionDetails, $UserID);
+                $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, $SalesAccountID, $TotalSale, 1, 1, $restrictionDetails, $UserID);
             if ($Result == 1) {
                 $Sale = new Sale;
                 $Sale->SaleNumber = $maxSaleNumber;
@@ -129,12 +137,22 @@ class SaleController extends Controller
      */
     public function edit($id)
     {
+        $SalesAccounts = Account::where("AccountTypeID", "11")->where("lastChildNum", "0")->get();
         $Sale = Sale::find($id);
+        $SalesAccountID  = DailyAccountingEntryDetails::where("RestrictionID", $Sale->RestrictionID)->where("TransactionType", "1")->first();
         $SaleDetails = $Sale->Sale_details;
         $Customers = Customer::orderBy('CustomerID', 'asc')->get();
         $Items = Item::orderBy('ItemID', 'asc')->get();
         $Stocks = Stock::orderBy('StockID', 'asc')->get();
-        return view("sales.edit")->with(['Customers' => $Customers, 'Items' => $Items, "Stocks" => $Stocks, 'Sale' => $Sale, "SaleDetails" => $SaleDetails]);
+        return view("sales.edit")->with([
+            "SalesAccounts" => $SalesAccounts,
+            "SalesAccountID" => $SalesAccountID,
+            'Customers' => $Customers,
+            'Items' => $Items,
+            "Stocks" => $Stocks,
+            'Sale' => $Sale,
+            "SaleDetails" => $SaleDetails
+        ]);
     }
 
     /**
@@ -151,6 +169,7 @@ class SaleController extends Controller
         $Sale = Sale::find($id);
         $RestrictionID = $Sale->RestrictionID;
         $Customer = Customer::find($request->CustomerID);
+        $SalesAccountID = $request->SalesAccountID;
         $DailyAccountingEntryController = new DailyAccountingEntryController;
         $DeletingOldRestrictionIDResult = $DailyAccountingEntryController->deleteDaily($RestrictionID);
         if ($DeletingOldRestrictionIDResult) {
@@ -160,7 +179,7 @@ class SaleController extends Controller
             if ($RestrictionID > 0) {
                 $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, $Customer->AccountID, $request->TotalSale, 2, 1, $restrictionDetails, $UserID);
                 if ($Result == 1)
-                    $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, 4, $request->TotalSale, 1, 1, $restrictionDetails, $UserID);
+                    $Result = $DailyAccountingEntryController->saveDailyDetails($RestrictionID, $SalesAccountID, $request->TotalSale, 1, 1, $restrictionDetails, $UserID);
                 if ($Result == 1) {
                     $SaleDetails = SaleDetails::where("SaleID", $id);
                     $SaleDetails->delete();
@@ -193,7 +212,7 @@ class SaleController extends Controller
             } else
                 return redirect("/sales")->with("error", "خطاء في حفظ القيد");
         } else {
-            return redirect("/sales")->with("error", "خطاء في في جذف القيد السابق للفاتورة");
+            return redirect("/sales")->with("error", "خطاء في في حذف القيد السابق للفاتورة");
         }
     }
 
@@ -215,7 +234,7 @@ class SaleController extends Controller
             if ($Sale->delete())
                 return redirect("/sales")->with("success", "تمت حذف  الفاتورة بنجاح");
         }
-        return redirect("/sales")->with("error", "خطاء في جذف الفاتورة");
+        return redirect("/sales")->with("error", "خطاء في حذف الفاتورة");
     }
 
     public function GetItemDetails(Request $request)

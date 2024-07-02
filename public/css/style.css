@@ -13,6 +13,74 @@
 ::-webkit-scrollbar-thumb {
   background: #e7eef1;
 }
+.custom-alert {
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  padding: 20px;
+  width: 500px;
+  font-size: 20px;
+  text-align: center;
+  margin: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.custom-alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.custom-alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.custom-alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
+.custom-confirm {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  width: 500px;
+  font-size: 20px;
+  text-align: center;
+  margin: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-confirm .btn {
+  margin: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-confirm {
+  background-color: #5cb85c;
+  color: #fff;
+  border: 1px solid #4cae4c;
+}
+
+.btn-cancel {
+  background-color: #d9534f;
+  color: #fff;
+  border: 1px solid #d43f3a;
+}
 .Result {
   font-size: 18px;
   font-weight: 900;

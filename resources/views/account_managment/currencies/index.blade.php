@@ -30,12 +30,13 @@
                             {!! Form::open([
                                 'action' => ['CurrencyController@destroy', $Currency->CurrencyID],
                                 'method' => 'post',
+                                'id' => 'deleteForm' . $Currency->CurrencyID,
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف العملة  $Currency->CurrencyName ')",
+                                'onclick' => "confirmDelete('تاكيد حذف  العملة {$Currency->CurrencyName}','deleteForm$Currency->CurrencyID')",
                             ]) !!}
 
                             {!! Form::close() !!}

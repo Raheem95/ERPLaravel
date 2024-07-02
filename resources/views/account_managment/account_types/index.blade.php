@@ -37,12 +37,13 @@
                             {!! Form::open([
                                 'action' => ['AccountTypeController@destroy', $AccountType->AccountTypeID],
                                 'method' => 'post',
+                                'id' => 'deleteForm' . $AccountType->AccountTypeID,
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف الصنف  $AccountType->AccountTypeName ')",
+                                'onclick' => "confirmDelete('تاكيد حذف نوع الحساب $AccountType->AccountTypeName','deleteForm$AccountType->AccountTypeID')",
                             ]) !!}
 
                             {!! Form::close() !!}

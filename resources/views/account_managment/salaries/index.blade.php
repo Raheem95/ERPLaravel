@@ -42,12 +42,13 @@
                                     {!! Form::open([
                                         'action' => ['SalaryController@destroy', $Salary->Month->MonthID],
                                         'method' => 'post',
+                                        'id' => 'deleteForm' . $Salary->Month->MonthID,
                                     ]) !!}
                                     {!! Form::hidden('_method', 'DELETE') !!}
                                     {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                        'type' => 'submit',
+                                        'type' => 'button',
                                         'class' => 'btn delete_button',
-                                        'onclick' => "return confirm('تاكيد حذف رواتب شهر   {$Salary->Month->MonthName}')",
+                                        'onclick' => "confirmDelete('تاكيد حذف  راتب شهر  {$Salary->Month->MonthName}','deleteForm{$Salary->Month->MonthID}')",
                                     ]) !!}
                                     {!! Form::close() !!}
                                 </td>

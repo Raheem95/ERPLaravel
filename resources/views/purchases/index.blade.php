@@ -100,7 +100,7 @@
                         <td dir="ltr">{{ date('Y-m-d', strtotime($Purchase->created_at)) }}
                         </td>
                         <td>
-                            <a href="purchases/{{ $Purchase->PurchaseID }}/" class="btn view_button">
+                            <a target="_blank" href="purchases/{{ $Purchase->PurchaseID }}/" class="btn view_button">
                                 <i class='fa-solid  fa-clipboard-list fa-2x'></i>
                         </td>
                         <td>
@@ -137,14 +137,16 @@
                             {!! Form::open([
                                 'action' => ['PurchaseController@destroy', $Purchase->PurchaseID],
                                 'method' => 'post',
+                                'id' => 'deleteForm' . $Purchase->PurchaseID,
+                                'style' => 'display: inline;',
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
                                 'style' => 'display:' . $display, // Corrected style assignment
+                                'onclick' => "confirmDelete('تاكيد حذف  الفاتورة رقم   {$Purchase->PurchaseNumber}','deleteForm$Purchase->PurchaseID')",
                                 'id' => 'DeleteButton' . $Purchase->PurchaseID,
-                                'onclick' => "return confirm('تاكيد حذف العميل  $Purchase->PurchaseName ')",
                             ]) !!}
                             {!! Form::close() !!}
                         </td>
@@ -168,41 +170,45 @@
                 Status = 0;
                 var AlertMessage = " الغاء صرف"
             }
-            if (confirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + PurchaseNumber)) {
-                var form_data = new FormData();
-                form_data.append('PurchaseID', PurchaseID);
-                form_data.append('Status', Status);
-                $.ajax({
-                    url: "{{ route('purchase_transfare') }}",
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data,
-                    type: 'post',
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                            'content'));
-                    },
-                    success: function(result) {
-                        if (!isNaN(result)) {
-                            $("#Results").removeClass("alert-danger").addClass(
-                                    "alert-success")
-                                .html(
-                                    "تم  " + AlertMessage + " الفاتورة بنجاح");
-                            $("#Transfer" + PurchaseID).val(Status)
+            customConfirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + PurchaseNumber, function(result) {
+                if (result) {
+                    var form_data = new FormData();
+                    form_data.append('PurchaseID', PurchaseID);
+                    form_data.append('From', "Invoice");
+                    form_data.append('Status', Status);
+                    $.ajax({
+                        url: "{{ route('purchase_transfare') }}",
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        type: 'post',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]')
+                                .attr(
+                                    'content'));
+                        },
+                        success: function(result) {
+                            if (!isNaN(result)) {
+                                customAlert("تم  " + AlertMessage + " الفاتورة بنجاح",
+                                    "success");
+                                $("#Transfer" + PurchaseID).val(Status)
 
-                            resetButtons(PurchaseID)
-                        } else
-                            $("#Results").removeClass("alert-success").addClass(
-                                "alert-danger").html(
-                                result);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error
-                    }
-                });
-            }
+                                resetButtons(PurchaseID)
+                            } else
+                                $("#Results").removeClass("alert-success").addClass(
+                                    "alert-danger").html(
+                                    result);
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                } else {
+                    customAlert("تم إلغاء العملية", "info");
+                }
+            });
         });
 
         function resetButtons(PurchaseID) {

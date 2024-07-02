@@ -115,12 +115,13 @@
                                 {!! Form::open([
                                     'action' => ['LoanController@destroy', $Loan->LoanID],
                                     'method' => 'post',
+                                    'id' => 'deleteForm' . $Loan->LoanID,
                                 ]) !!}
                                 {!! Form::hidden('_method', 'DELETE') !!}
                                 {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                    'type' => 'submit',
+                                    'type' => 'button',
                                     'class' => 'btn delete_button',
-                                    'onclick' => "return confirm('تاكيد حذف السلفية الخاصة  {$Loan->Employee->EmployeeName} بقيمة {$Loan->LoanAmount}')",
+                                    'onclick' => "confirmDelete('تاكيد حذف  سلفية الموظف {$Loan->Employee->EmployeeName}','deleteForm$Loan->LoanID')",
                                 ]) !!}
                                 {!! Form::close() !!}
                             </td>

@@ -32,12 +32,13 @@
                             {!! Form::open([
                                 'action' => ['SupplierController@destroy', $Supplier->SupplierID],
                                 'method' => 'post',
+                                'id' => 'deleteForm' . $Supplier->SupplierID,
                             ]) !!}
                             {!! Form::hidden('_method', 'DELETE') !!}
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                'type' => 'submit',
+                                'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "return confirm('تاكيد حذف المورد  $Supplier->SupplierName ')",
+                                'onclick' => "confirmDelete('تاكيد حذف  المورد   {$Supplier->SupplierName}','deleteForm{$Supplier->SupplierID}')",
                             ]) !!}
 
                             {!! Form::close() !!}

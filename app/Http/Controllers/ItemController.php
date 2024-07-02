@@ -156,6 +156,6 @@ class ItemController extends Controller
     {
         $Item = Item::find($id);
         $Item->delete();
-        return redirect("/items")->with("success", "تمت جذف المنتج بنجاح");
+        return redirect("/items")->with("success", "تمت حذف المنتج بنجاح");
     }
 }

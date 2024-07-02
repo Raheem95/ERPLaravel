@@ -4,7 +4,7 @@
     <!-- resources/views/categories/index.blade.php -->
     <div class="container">
         <div class=" input_label">
-            <h1>اضافة منتج</h1>
+            <h1>اضافة مورد</h1>
         </div>
 
         {!! Form::open(['action' => 'SupplierController@store', 'method' => 'post']) !!}
