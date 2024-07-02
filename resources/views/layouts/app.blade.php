@@ -27,6 +27,14 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var label = document.querySelector('h1');
+            if (label) {
+                document.title = label.textContent || label.innerText;
+            }
+        });
+    </script>
+    <script>
         function handleClickOutside(event) {
             var div = document.getElementById('ContainerNav');
             var sidebar = document.getElementById('sidebar');

@@ -9,7 +9,6 @@
         background: #1aebdd;
         border-radius: 15px;
         padding: 5px;
-
     }
 
     .PriceLabel {
@@ -25,7 +24,7 @@
         <div class=" input_label">
             <h1>فاتورة مشتريات</h1>
         </div>
-        <div class="col-md-12 Result" id = "Results"></div>
+        <div class="col-md-12 Result" id="Results"></div>
 
         {!! Form::open([
             'action' => ['PurchaseController@update', $Purchase->PurchaseID],
@@ -34,8 +33,7 @@
             'style' => 'margin-right:50px;',
         ]) !!}
 
-        <div class = "row">
-
+        <div class="row">
             <?php
             $Suppliers = json_decode($Suppliers, true);
             
@@ -49,6 +47,7 @@
                 {!! Form::select('SupplierID', $options, $Purchase->SupplierID, [
                     'class' => 'input_style SetSupllierName',
                     'id' => 'SupplierID',
+                    'required' => 'required',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
@@ -57,6 +56,7 @@
                     'class' => 'input_style',
                     'placeholder' => 'ادخل اسم المورد',
                     'id' => 'SupplierName',
+                    'required' => 'required',
                 ]) !!}
             </div>
             <?php
@@ -73,6 +73,7 @@
                 {!! Form::select('StockID', $options, $Purchase->StockID, [
                     'class' => 'input_style',
                     'id' => 'StockID',
+                    'required' => 'required',
                 ]) !!}
             </div>
         </div>
@@ -86,9 +87,9 @@
         {!! Form::hidden('NumberOfItems', count($PurchaseDetails), [
             'id' => 'NumberOfItems',
         ]) !!}
-        <div class="col-md-2" style="float: right;margin:10px;"><button type="button" class="btn add_button AddRow"><i
-                    class="fas fa-plus"></i></button></div>
-        <table class = "table" id = "ItemsTable">
+        <button type="button" class="btn add_button AddRow" style="width: 100px;margin: 10px 0;"><i
+                class="fas fa-plus"></i></button>
+        <table class="table" id="ItemsTable">
             <tr>
                 <th>-</th>
                 <th width="40%">المنتج</th>
@@ -106,28 +107,31 @@
             }
             ?>
             @foreach ($PurchaseDetails as $RowItem)
-                {{ $i++ }}
+                <?php $i++; ?>
                 <tr id="Row{{ $i }}">
-                    <td><button type='button' class='btn delete_button RemoveRow' id='RemoveButton1' value='1'><i
+                    <td><button type='button' class='btn delete_button RemoveRow' id='RemoveButton{{ $i }}'
+                            value='{{ $i }}' style="{{ count($PurchaseDetails) > 1 ? '' : 'display:none' }}"><i
                                 class='fa-solid fa-trash-can'></i></button></td>
                     <td>
-
                         {!! Form::select('ItemID' . $i, $options, $RowItem->ItemID, [
                             'class' => 'input_style',
                             'id' => 'ItemID' . $i,
+                            'required' => 'required',
                         ]) !!}
                     </td>
                     <td>{!! Form::number('ItemQTY' . $i, $RowItem->ItemQTY, [
-                        'class' => 'input_style',
+                        'class' => 'input_style CheckPositive',
                         'placeholder' => 'ادخل الكمية',
                         'id' => 'ItemQTY' . $i,
                         'oninput' => 'CalculateRow(' . $i . ')',
+                        'required' => 'required',
                     ]) !!}</td>
                     <td>{!! Form::number('ItemPrice' . $i, $RowItem->ItemPrice, [
-                        'class' => 'input_style',
+                        'class' => 'input_style CheckPositive',
                         'placeholder' => 'ادخل السعر',
                         'id' => 'ItemPrice' . $i,
                         'oninput' => 'CalculateRow(' . $i . ')',
+                        'required' => 'required',
                     ]) !!}</td>
                     <td><label id="TotalRow{{ $i }}">{{ $RowItem->ItemPrice * $RowItem->ItemQTY }}</label></td>
                 </tr>
@@ -141,7 +145,7 @@
                 {!! Form::submit('حفظ', ['class' => 'btn save_button']) !!}
                 {!! Form::close() !!}
             </div>
-            <div class="col-md-3"><a href = "/purchases"><button type="button" class="btn cancel_button">رجوع</button></a>
+            <div class="col-md-3"><a href="/purchases"><button type="button" class="btn cancel_button">رجوع</button></a>
             </div>
         </div>
     </div>
@@ -150,19 +154,20 @@
             $("#SupplierName").val($(this).find('option:selected').text())
         });
         $(document).on('click', '.AddRow', function() {
+            $("#RemoveButton1").css("display", "inline")
             var myrowCount = $("#NumberOfItems").val()
             var Items = <?php echo json_encode($options); ?>;
             console.log(Items)
             var table = $("#ItemsTable")
             myrowCount++
             $("#NumberOfItems").val(myrowCount)
-            var tr = $('<tr id = "Row' + myrowCount + '"></tr>')
+            var tr = $('<tr id="Row' + myrowCount + '"></tr>')
             tr.append($("<td><button type='button' class='btn delete_button RemoveRow' id='RemoveButton" +
                 myrowCount + "' value='" + myrowCount + "'>" +
                 "<i class='fa-solid fa-trash-can'></i></button></td>"));
 
             var Select = $("<select class='input_style' id='ItemID" + myrowCount +
-                "'  name='ItemID" + myrowCount + "'></select>");
+                "'  name='ItemID" + myrowCount + "' required></select>");
             $.each(Items, function(key, value) {
                 Select.append($("<option value='" + key + "'>" + value + "</option>"));
             });
@@ -170,24 +175,27 @@
             td.append(Select)
             tr.append(td)
             tr.append($(
-                "<td><input type = 'number' value = '0' id = 'ItemQTY" + myrowCount +
-                "' name = 'ItemQTY" + myrowCount +
-                "' placeholder = 'ادخل الكمية' class = 'input_style ' value = '0' oninput = (CalculateRow(" +
-                myrowCount + "))></td>"
+                "<td><input type='number' value='0' id='ItemQTY" + myrowCount +
+                "' name='ItemQTY" + myrowCount +
+                "' placeholder='ادخل الكمية' class='input_style CheckPositive' value='0' oninput='CalculateRow(" +
+                myrowCount + ")' required></td>"
             ))
             tr.append($(
-                "<td><input type = 'number' value = '0' id = 'ItemPrice" + myrowCount +
-                "' name = 'ItemPrice" + myrowCount +
-                "' placeholder = 'ادخل السعر' class = 'input_style ' value = '0' oninput = (CalculateRow(" +
-                myrowCount + "))></td>"
+                "<td><input type='number' value='0' id='ItemPrice" + myrowCount +
+                "' name='ItemPrice" + myrowCount +
+                "' placeholder='ادخل السعر' class='input_style CheckPositive' value='0' oninput='CalculateRow(" +
+                myrowCount + ")' required></td>"
             ))
-            tr.append($("<td><label id = 'TotalRow" + myrowCount + "'>0</label></td>"))
+            tr.append($("<td><label id='TotalRow" + myrowCount + "'>0</label></td>"))
             tr.appendTo(table)
             if (myrowCount > 1)
                 $("#RemoveButton1").show()
             else
                 $("#RemoveButton1").hide()
 
+        });
+        $(document).on('input', '.CheckPositive', function() {
+            if ($(this).val() < 0) $(this).val(0)
         });
         $(document).on('click', '.RemoveRow', function() {
             var ItemID = $(this).val()
@@ -252,38 +260,38 @@
             var Result = "";
             if ($("#SupplierID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المورد </div>"
+                var Result = Result + "<div class='alert alert-danger Result'> الرجاء اختيار المورد </div>"
             }
             if ($("#SupplierName").val() == "") {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء ادخال اسم المورد </div>"
+                var Result = Result + "<div class='alert alert-danger Result'> الرجاء ادخال اسم المورد </div>"
             }
             if ($("#StockID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المخزن </div>"
+                var Result = Result + "<div class='alert alert-danger Result'> الرجاء اختيار المخزن </div>"
             }
             if ($("#NumberOfItems").val() == 0) {
                 flag = false;
                 var Result = Result +
-                    "<div class = 'alert alert-danger Result'> يجب ان تحتوي الفاتورة على منتج واحد على الاقل </div>"
+                    "<div class='alert alert-danger Result'> يجب ان تحتوي الفاتورة على منتج واحد على الاقل </div>"
             }
             for (var i = 1; i <= $("#NumberOfItems").val(); i++) {
                 if ($("#ItemID" + i).val() == 0) {
                     flag = false;
-                    var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المنتج رقم " + i +
+                    var Result = Result + "<div class='alert alert-danger Result'> الرجاء اختيار المنتج رقم " + i +
                         "</div>"
                 }
                 var ItemQTY = $("#ItemQTY" + i).val();
                 if (isNaN(ItemQTY) || parseFloat(ItemQTY) <= 0) {
                     flag = false;
                     var Result = Result +
-                        "<div class = 'alert alert-danger Result'> الرجاء ادخال كمية صحيحة للمنتج رقم " + i + "</div>"
+                        "<div class='alert alert-danger Result'> الرجاء ادخال كمية صحيحة للمنتج رقم " + i + "</div>"
                 }
                 var ItemPrice = $("#ItemPrice" + i).val();
                 if (isNaN(ItemPrice) || parseFloat(ItemPrice) <= 0) {
                     flag = false;
                     var Result = Result +
-                        "<div class = 'alert alert-danger Result'> الرجاء ادخال سعر صحيح للمنتج رقم " + i + "</div>"
+                        "<div class='alert alert-danger Result'> الرجاء ادخال سعر صحيح للمنتج رقم " + i + "</div>"
                 }
             }
             document.getElementById('Results').scrollIntoView();

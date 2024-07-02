@@ -44,8 +44,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if (
+            $exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException ||
+            $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+        )
+            return response()->view('404', [], 404);
         return parent::render($request, $exception);
     }
+
 
     /**
      * Convert an authentication exception into an unauthenticated response.

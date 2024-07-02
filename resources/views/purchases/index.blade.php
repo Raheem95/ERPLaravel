@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="input_label">
+        <h1>فواتير مشتريات</h1>
+    </div>
     <!-- resources/views/Purchases/index.blade.php -->
     <input type = 'hidden' id = "PurchaseID">
     <div class="modal fade" id="PaymentDetailsModel" role="dialog">
@@ -67,7 +70,6 @@
             </div>
         </div>
     </div>
-    <h1>فواتير المشتريات</h1>
     <div class="col-md-12 alert Result" id = "Results"></div>
     <a style="width: 20%;" href="/purchases/create" class="btn add_button mb-3">اضافة فاتورة</a>
     @if (count($Purchases) > 0)
