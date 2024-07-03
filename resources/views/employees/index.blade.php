@@ -109,10 +109,13 @@
                                                     </a>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <button style="width: 100%" type="button" class="delete_button DeleteEmployee"
-                                                        data-toggle="modal" data-target="#DeleteModel" value="${employee.EmployeeID}">
-                                                        حذف <i class="fa-solid fa-trash-can"></i>
-                                                    </button>
+                                                    <form action="Employees/${employee.EmployeeID}" method="post" id="deleteForm${employee.EmployeeID}" style="display: inline;">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                        <button type="button" style="width: 100%" class=" delete_button" onclick="confirmDelete('تاكيد حذف الموظف ${employee.EmployeeName}', 'deleteForm${employee.EmployeeID}')">
+                                                            حذف <i class="fas fa-trash-alt fa-2x"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

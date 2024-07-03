@@ -69,8 +69,12 @@
     </div>
     <h1>فواتير المشتريات</h1>
     <div class="col-md-12 alert Result" id = "Results"></div>
+    <div class="row">
+        <input type='text' id='Keyword' class='input_style' oninput="Search()"
+            placeholder='ادخل كلمات مفتاحية للبحث'><br>
+    </div>
     @if (count($Purchases) > 0)
-        <table class="table ">
+        <table class="table " id="PurchaseTable">
             <thead>
                 <tr>
                     <th>الرقم </th>
@@ -83,9 +87,8 @@
                     <th>سداد</th>
                 </tr>
             </thead>
-            @foreach ($Purchases as $Purchase)
-                <tbody>
-
+            <tbody>
+                @foreach ($Purchases as $Purchase)
                     <tr>
                         <td id = "PurchaseNumber{{ $Purchase->PurchaseID }}">{{ $Purchase->PurchaseNumber }}</td>
                         <td id = "SupplierName{{ $Purchase->PurchaseID }}">{{ $Purchase->SupplierName }}
@@ -127,13 +130,63 @@
 
 
                     </tr>
-            @endforeach
+                @endforeach
             </tbody>
         </table>
     @else
         <div class="alert alert-danger Result"> لا يوجد فواتير مشتريات</div>
     @endif
     <script>
+        function Search() {
+            var Keyword = $("#Keyword").val();
+            if (!Keyword) Keyword = 0;
+            $.ajax({
+                url: '{{ url('purchase_search') }}/' + Keyword,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    // Clear existing table body
+                    $('#PurchaseTable tbody').empty();
+
+                    var formatter = new Intl.NumberFormat();
+                    // Iterate over the response data and create rows
+                    response.forEach(function(purchase) {
+                        var notPaidAmount = purchase.TotalPurchase - purchase.PaidAmount;
+                        var display = (purchase.PaidAmount < purchase.TotalPurchase) ? 'block' : 'none';
+
+                        var row = `
+                    <tr>
+                        <td id="PurchaseNumber${purchase.PurchaseID}">${purchase.PurchaseNumber}</td>
+                        <td id="SupplierName${purchase.PurchaseID}">${purchase.SupplierName}</td>
+                        <td>
+                            <label id="TotalPurchase${purchase.PurchaseID}">${formatter.format(purchase.TotalPurchase)}</label>
+                            <input type="hidden" id="TotalPurchaseValue${purchase.PurchaseID}" value="${purchase.TotalPurchase}">
+                        </td>
+                        <td data-toggle="modal" data-target="#PaymentDetailsModel" onclick="viewPaymentDetails(${purchase.PurchaseID})">
+                            <label id="PaidAmount${purchase.PurchaseID}">${formatter.format(purchase.PaidAmount)}</label>
+                            <input type="hidden" id="PaidAmountValue${purchase.PurchaseID}" value="${purchase.PaidAmount}">
+                        </td>
+                        <td id="NotPaidAmount${purchase.PurchaseID}">${formatter.format(notPaidAmount)}</td>
+                        <td dir="ltr">${new Date(purchase.created_at).toISOString().slice(0, 10)}</td>
+                        <td>
+                            <a href="/purchases/${purchase.PurchaseID}/" class="btn view_button">
+                                <i class='fa-solid fa-clipboard-list fa-2x'></i></a>
+                        </td>
+                        <td>
+                            <button style="display:${display}" class="btn SetID edit_button" data-toggle="modal" data-target="#PaymentModel" id="PayButton${purchase.PurchaseID}" value="${purchase.PurchaseID}">
+                                <i class='fa-solid fa-sack-dollar fa-2x'></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                        $('#PurchaseTable tbody').append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    customAlert("حدث خطأ أثناء الاتصال بالخادم", "danger");
+                }
+            });
+        }
         $(document).on('change', '#PaymentType', function() {
             $("#PaymentResults").removeClass("alert-danger").html("")
             var CurrencyID = $("#CurrencyID").val()
@@ -211,16 +264,7 @@
                                     success: function(result) {
                                         if (result == 1) {
                                             customAlert("تم الدفع بنجاح", "success");
-                                            PaidAmount = parseFloat($("#PaidAmountValue" +
-                                                    PurchaseID).val()) +
-                                                Amount;
-                                            $("#PaidAmountValue" + PurchaseID).val(PaidAmount)
-                                            var formatter = new Intl.NumberFormat();
-                                            $("#PaidAmount" + PurchaseID).html(formatter.format(
-                                                PaidAmount))
-                                            $("#NotPaidAmount" + PurchaseID).html(formatter.format(
-                                                TotalPurchase - PaidAmount))
-                                            resetButtons(PurchaseID)
+                                            Search()
                                         } else {
                                             customAlert(result, "danger");
                                         }

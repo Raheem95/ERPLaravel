@@ -146,4 +146,11 @@ class SupplierController extends Controller
         $Supplier->delete();
         return redirect("/suppliers")->with("success", "تمت  حذف  المورد بنجاح");
     }
+    public function supplier_search($Keyword)
+    {
+        if ($Keyword == "0")
+            return response()->json(Supplier::orderBy('SupplierID', 'desc')->get());
+        return response()->json(Supplier::where('SupplierName', "like", "%$Keyword%")
+        ->orwhere('SupplierPhone', "like", "%$Keyword%")->get());
+    }
 }

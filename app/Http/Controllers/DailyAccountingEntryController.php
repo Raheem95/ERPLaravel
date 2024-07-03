@@ -51,7 +51,6 @@ class DailyAccountingEntryController extends Controller
             $TransactionType = $request->input("TransactionType{$i}");
             $CurrencyValue = $request->input("val{$i}");
             $Result = $this->saveDailyDetails($RestrictionID, $AccountID, $TransactionAmount, $TransactionType, $CurrencyValue, $TransactionDetails, $UserID);
-
         }
         return redirect("/AccountManagment/DailyAccountingEntries")->with("success", "تمت اضافة  القيد بنجاح");
         // return $Rest;
@@ -102,7 +101,6 @@ class DailyAccountingEntryController extends Controller
             'details' => $resource,
             'user' => $user
         ]);
-
     }
 
     /**
@@ -141,6 +139,15 @@ class DailyAccountingEntryController extends Controller
             return redirect("/AccountManagment/DailyAccountingEntries")->with("success", "تمت حذف  القيد بنجاح");
         else
             return redirect("/AccountManagment/DailyAccountingEntries")->with("success", "خطاء في الحذف");
+    }
+
+    public function restriction_search($Keyword)
+    {
+        if ($Keyword == "0")
+            return response()->json(DailyAccountingEntry::where("Deleted", "0")->orderBy('RestrictionID', 'desc')->get());
+        return response()->json(DailyAccountingEntry::where("Deleted", "0")
+            ->where('RestrictionDetails', 'like', "%$Keyword%")
+            ->get());
     }
 
     public function saveDaily($restrictionDetails, $userID, $Deletable, $Deleted)
@@ -237,5 +244,4 @@ class DailyAccountingEntryController extends Controller
 
         return $flag;
     }
-
 }

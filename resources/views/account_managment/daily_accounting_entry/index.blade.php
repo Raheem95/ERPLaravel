@@ -34,9 +34,18 @@
             </div>
         </div>
     </div>
-    <a style="width: 20%;" href="DailyAccountingEntries/create" class="btn add_button mb-3">اضافة قيد</a>
+    <div class="row">
+        <div class="col-md-2">
+            <a href="DailyAccountingEntries/create" class="btn add_button mb-3">اضافة قيد</a>
+
+        </div>
+        <div class="col-md-10">
+            <input type='text' id='Keyword' class='input_style' oninput="Search()"
+                placeholder='ادخل كلمات مفتاحية للبحث'><br>
+        </div>
+    </div>
     @if (count($DailyAccountingEntries) > 0)
-        <table class="table ">
+        <table class="table " id="DailyAccountingEntriesTable">
             <thead>
                 <tr>
                     <th>#</th>
@@ -46,9 +55,8 @@
                     <th>حذف</th>
                 </tr>
             </thead>
-            @foreach ($DailyAccountingEntries as $DailyAccountingEntry)
-                <tbody>
-
+            <tbody>
+                @foreach ($DailyAccountingEntries as $DailyAccountingEntry)
                     <tr>
                         <td>{{ $DailyAccountingEntry->RestrictionID }}</td>
                         <td>{{ $DailyAccountingEntry->RestrictionDetails }}</td>
@@ -79,13 +87,66 @@
                             @endif
                         </td>
                     </tr>
-            @endforeach
+                @endforeach
             </tbody>
         </table>
     @else
         <div class="alert alert-danger Result"> لا توجد قيود يومية </div>
     @endif
     <script>
+        function Search() {
+            var Keyword = $("#Keyword").val();
+            if (!Keyword) Keyword = 0;
+            $.ajax({
+                url: '{{ url('restriction_search') }}/' + Keyword,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    // Clear existing table rows
+                    $('#DailyAccountingEntriesTable tbody').empty();
+
+                    // Iterate over each restriction in the response and append rows to table
+                    response.forEach(function(restriction) {
+                        const row = `
+                    <tr>
+                        <td>${restriction.RestrictionID}</td>
+                        <td>${restriction.RestrictionDetails}</td>
+                        <td style="direction: ltr;">${restriction.created_at}</td>
+                        <td>
+                            <button data-toggle='modal' data-target='#RestrictionModel'
+                                class="btn view_button viewRestrictionDetails"
+                                value="${restriction.RestrictionID}">
+                                <i class='fa-solid fa-clipboard-list fa-2x'></i>
+                            </button>
+                        </td>
+                        <td>
+                            ${restriction.Deletable == 0 ?
+                                `<form action="restrictions/${restriction.RestrictionID}" method="post" style="display: inline;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn delete_button" onclick="return confirm('تأكيد حذف القيد ${restriction.RestrictionID}')">
+                                            <i class="fas fa-trash-alt fa-2x"></i>
+                                        </button>
+                                    </form>` :
+                                'NotDeletable'}
+                        </td>
+                    </tr>
+                `;
+                        $('#DailyAccountingEntriesTable tbody').append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    customAlert("حدث خطأ أثناء الاتصال بالخادم", "danger");
+                }
+            });
+        }
+
+
+        function number_format(number) {
+            var formatter = new Intl.NumberFormat();
+            return formatter.format(number)
+
+        }
         $(document).on('click', '.viewRestrictionDetails', function() {
             var RestrictionID = $(this).val()
             $("#RTransactions").empty()

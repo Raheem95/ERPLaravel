@@ -69,8 +69,12 @@
     </div>
     <h1>فواتير المبيعات</h1>
     <div class="col-md-12 alert Result" id = "Results"></div>
+    <div class="row">
+        <input type='text' id='Keyword' class='input_style' oninput="Search()"
+            placeholder='ادخل كلمات مفتاحية للبحث'><br>
+    </div>
     @if (count($Sales) > 0)
-        <table class="table ">
+        <table class="table " id="SalesTable">
             <thead>
                 <tr>
                     <th>الرقم </th>
@@ -82,9 +86,8 @@
                     <th>سداد</th>
                 </tr>
             </thead>
-            @foreach ($Sales as $Sale)
-                <tbody>
-
+            <tbody>
+                @foreach ($Sales as $Sale)
                     <tr>
                         <td id = "SaleNumber{{ $Sale->SaleID }}">{{ $Sale->SaleNumber }}</td>
                         <td id = "CustomerName{{ $Sale->SaleID }}">{{ $Sale->CustomerName }}
@@ -120,13 +123,66 @@
 
 
                     </tr>
-            @endforeach
+                @endforeach
             </tbody>
         </table>
     @else
         <div class="alert alert-danger Result"> لا يوجد فواتير مبيعات</div>
     @endif
     <script>
+        function Search() {
+            var Keyword = $("#Keyword").val();
+            if (!Keyword) Keyword = 0;
+            $.ajax({
+                url: '{{ url('sales_search') }}/' + Keyword,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    // Clear existing table body
+                    $('#SalesTable tbody').empty();
+
+                    // Iterate over the response data and create rows
+                    response.forEach(function(sale) {
+                        var display = (sale.PaidAmount < sale.TotalSale) ? 'block' : 'none';
+
+                        var row = `
+                    <tr>
+                        <td id="SaleNumber${sale.SaleID}">${sale.SaleNumber}</td>
+                        <td id="CustomerName${sale.SaleID}">${sale.CustomerName}</td>
+                        <td>
+                            <label id="TotalSale${sale.SaleID}">${number_format(sale.TotalSale)}</label>
+                            <input type="hidden" id="TotalSaleValue${sale.SaleID}" value="${sale.TotalSale}">
+                        </td>
+                        <td data-toggle="modal" data-target="#PaymentDetailsModel" onclick="viewPaymentDetails(${sale.SaleID})">
+                            <label id="PaidAmount${sale.SaleID}">${number_format(sale.PaidAmount)}</label>
+                            <input type="hidden" id="PaidAmountValue${sale.SaleID}" value="${sale.PaidAmount}">
+                        </td>
+                        <td dir="ltr">${new Date(sale.created_at).toISOString().slice(0, 10)}</td>
+                        <td>
+                            <a href="/sales/${sale.SaleID}/" class="btn view_button">
+                                <i class='fa-solid fa-clipboard-list fa-2x'></i></a>
+                        </td>
+                        <td>
+                            <button style="display:${display}" class="btn SetID edit_button" data-toggle="modal" data-target="#PaymentModel" id="PayButton${sale.SaleID}" value="${sale.SaleID}">
+                                <i class='fa-solid fa-sack-dollar fa-2x'></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                        $('#SalesTable tbody').append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    customAlert("حدث خطأ أثناء الاتصال بالخادم", "danger");
+                }
+            });
+        }
+
+        function number_format(number) {
+            var formatter = new Intl.NumberFormat();
+            return formatter.format(number)
+
+        }
         $(document).on('change', '#PaymentType', function() {
             $("#PaymentResults").removeClass("alert-danger").html("")
             var CurrencyID = $("#CurrencyID").val()
@@ -281,16 +337,7 @@
                         },
                         success: function(result) {
                             if (!isNaN(result)) {
-                                var formatter = new Intl.NumberFormat();
-                                var SaleID = $("#SaleID").val()
-                                var formatter = new Intl.NumberFormat();
-                                $("#PaidAmount" + SaleID).html(formatter.format(parseFloat($(
-                                    "#PaidAmountValue" +
-                                    SaleID).val()) - parseFloat(result)))
-                                $("#PaidAmountValue" + SaleID).val(parseFloat($(
-                                    "#PaidAmountValue" +
-                                    SaleID).val()) - parseFloat(result))
-
+                                Search()
                                 customAlert("تم حذف السداد بنجاح", "success");
                                 $("#PaymentNo" + PaymentID).remove()
                                 resetButtons(SaleID)

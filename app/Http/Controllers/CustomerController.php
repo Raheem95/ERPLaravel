@@ -151,4 +151,11 @@ class CustomerController extends Controller
         $Customer->delete();
         return redirect("/customers")->with("success", "تمت  حذف العميل بنجاح");
     }
+    public function customers_search($Keyword)
+    {
+        if ($Keyword == "0")
+            return response()->json(Customer::orderBy('CustomerID', 'desc')->get());
+        return response()->json(Customer::where('CustomerName', "like", "%$Keyword%")
+            ->orwhere('CustomerPhone', "like", "%$Keyword%")->get());
+    }
 }

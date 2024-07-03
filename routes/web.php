@@ -20,9 +20,13 @@ Route::middleware('auth')->group(
         Route::resource('/', 'HomeController');
         Route::resource('home', 'HomeController');
         Route::resource('categories', 'CategoryController');
+        Route::get('categories_search/{keyword}', 'CategoryController@categories_search');
         Route::resource('items', 'ItemController');
+        Route::get('items_search/{keyword}', 'ItemController@items_search');
         Route::resource('customers', 'CustomerController');
+        Route::get('customers_search/{keyword}', 'CustomerController@customers_search');
         Route::resource('suppliers', 'SupplierController');
+        Route::get('supplier_search/{keyword}', 'SupplierController@supplier_search');
 
         // Account Routs
         Route::resource('AccountManagment/AccountTypes', 'AccountTypeController');
@@ -30,9 +34,11 @@ Route::middleware('auth')->group(
         Route::get('get_account/{CurrencyID}/{AccountType}', 'AccountController@getAccount');
         Route::resource('AccountManagment/Currencies', 'CurrencyController');
         Route::resource('AccountManagment/DailyAccountingEntries', 'DailyAccountingEntryController');
+        Route::get('restriction_search/{keyword}', 'DailyAccountingEntryController@restriction_search');
         Route::resource('AccountManagment/Purchase', 'AccountPurchaseController');
         Route::resource('AccountManagment/Sale', 'AccountSaleController');
         Route::resource('AccountManagment/Expenses', 'ExpenseController');
+        Route::get('expenses_search/{keyword}', 'ExpenseController@expenses_search');
         Route::resource('AccountManagment/Loans', 'LoanController');
         Route::post('/AccountManagment/Loan/Payment', 'LoanController@Payment');
         Route::get('/AccountManagment/Loans/GetPayments/{LoanID}', 'LoanController@GetPayments');

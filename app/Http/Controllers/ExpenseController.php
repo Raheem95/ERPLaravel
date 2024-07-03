@@ -181,4 +181,14 @@ class ExpenseController extends Controller
                 return redirect("/AccountManagment/Expenses")->with("success", "تم حذف المنصرف بنجاح");
         return redirect("/AccountManagment/Expenses")->with("success", "حدث خطاء في حذف المنصرف");
     }
+    public function expenses_search($Keyword)
+    {
+        if ($Keyword == "0")
+            return response()->json(Expense::with('ExpensesAccount', 'PaymentAccount', 'User')->orderBy('ExpensesID', 'desc')->get());
+        $expenses = Expense::with('ExpensesAccount', 'PaymentAccount', 'User')
+            ->where('ExpensesDetails', 'like', "%$Keyword%")
+            ->get();
+
+        return response()->json($expenses);
+    }
 }

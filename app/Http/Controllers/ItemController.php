@@ -171,4 +171,11 @@ class ItemController extends Controller
         $Item->delete();
         return redirect("/items")->with("success", "تمت حذف المنتج بنجاح");
     }
+    public function items_search($Keyword)
+    {
+        if ($Keyword == "0")
+            return response()->json(Item::with("categories")->orderBy('ItemID', 'desc')->get());
+        return response()->json(Item::with("categories")->where('ItemPartNumber', "like", "%$Keyword%")
+            ->orwhere('ItemName', "like", "%$Keyword%")->get());
+    }
 }

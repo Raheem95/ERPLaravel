@@ -66,6 +66,7 @@
             transition: 0.5s;
             z-index: 2;
             overflow-y: scroll;
+            overflow-x: hidden;
             /* Smooth transition effect */
         }
 

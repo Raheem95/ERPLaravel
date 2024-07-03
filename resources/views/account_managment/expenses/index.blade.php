@@ -5,7 +5,17 @@
     <!-- resources/views/Accounts/index.blade.php -->
     <h1>المنصرفات</h1>
 
-    <a style="width: 20%;" href="Expenses/create" class="btn add_button mb-3">اضافة منصرف</a>
+    <div class="row">
+        <div class="col-md-2">
+            <a href="Expenses/create" class="btn add_button mb-3">اضافة منصرف</a>
+
+        </div>
+        <div class="col-md-6">
+
+            <input type='text' id='Keyword' class='input_style' oninput="Search()"
+                placeholder='ادخل كلمات مفتاحية للبحث'><br>
+        </div>
+    </div>
     <div class="row">
         @if (count($TotalExpenses) > 0)
             <div class="col-md-8">
@@ -13,7 +23,7 @@
                 <div class="col-md-12">
         @endif
         @if (count($Expenses) > 0)
-            <table class="table ">
+            <table class="table " id="ExpensesTable">
                 <thead>
                     <tr>
                         <th>التاريخ</th>
@@ -103,4 +113,59 @@
         </div>
     @endif
     </div>
+    <script>
+        function Search() {
+            var Keyword = $("#Keyword").val();
+            if (!Keyword) Keyword = 0;
+            $.ajax({
+                url: '{{ url('expenses_search') }}/' + Keyword,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    // Assuming you handle the response here to update the table content
+                    // Example: Clear existing table rows
+                    $('#ExpensesTable tbody').empty();
+
+                    // Iterate over each expense in the response and append rows to table
+                    response.forEach(function(expense) {
+                        const row = `
+                            <tr>
+                                <td>${expense.created_at}</td>
+                                <td>${expense.expenses_account.AccountName}</td>
+                                <td>${number_format(expense.ExpensesAmount)}</td>
+                                <td>${expense.ExpensesDetails}</td>
+                                <td>${expense.payment_account.AccountName}</td>
+                                <td>${expense.user.name}</td>
+                                <td>
+                                    <a href="expenses/${expense.ExpensesID}/edit" class="btn edit_button">
+                                        <i class='fa-solid fa-file-pen fa-2x'></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <form action="expenses/${expense.ExpensesID}" method="post" id="deleteForm${expense.ExpensesID}" style="display: inline;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <button type="button" class="btn delete_button" onclick="confirmDelete('تاكيد حذف المنصرف ${expense.ExpensesDetails}', 'deleteForm${expense.ExpensesID}')" id="DeleteButton${expense.ExpensesID}">
+                                            <i class="fas fa-trash-alt fa-2x"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        `;
+                        $('#ExpensesTable tbody').append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    customAlert("حدث خطأ أثناء الاتصال بالخادم", "danger");
+                }
+            });
+        }
+
+
+        function number_format(number) {
+            var formatter = new Intl.NumberFormat();
+            return formatter.format(number)
+
+        }
+    </script>
 @endsection

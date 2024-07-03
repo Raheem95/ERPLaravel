@@ -115,4 +115,11 @@ class CategoryController extends Controller
         $Category->delete();
         return redirect("/categories")->with("success", "تمت حذف الصنف بنجاح");
     }
+    public function categories_search($Keyword)
+    {
+        if ($Keyword == "0")
+            return response()->json(Category::orderBy('CategoryID', 'desc')->get());
+        return response()->json(Category::where('CategoryName', "like", "%$Keyword%")
+            ->get());
+    }
 }
