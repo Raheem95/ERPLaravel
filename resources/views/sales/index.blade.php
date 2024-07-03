@@ -72,10 +72,17 @@
 
     <div class="col-md-12 alert Result" id="Results"></div>
 
-    <a style="width: 20%;" href="/sales/create" class="btn add_button mb-3">اضافة فاتورة</a>
-
+    <div class="row">
+        <div class="col-md-2">
+            <a href="/sales/create" class="btn add_button mb-3">اضافة فاتورة</a>
+        </div>
+        <div class="col-md-8">
+            <input type='text' id='Keyword' class='input_style' oninput="Search()"
+                placeholder='ادخل كلمات مفتاحية للبحث'><br>
+        </div>
+    </div>
     @if (count($Sales) > 0)
-        <table class="table">
+        <table class="table" id="SalesTable">
             <thead>
                 <tr>
                     <th>الرقم</th>
@@ -160,6 +167,69 @@
     @endif
 
     <script>
+        function Search() {
+            var Keyword = $("#Keyword").val();
+            if (!Keyword) Keyword = 0;
+            $.ajax({
+                url: '{{ url('sales_search') }}/' + Keyword,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    // Clear existing table body
+                    $('#SalesTable tbody').empty();
+
+                    // Iterate over the response data and create rows
+                    response.forEach(function(sale) {
+                        var transferButton = '';
+                        var editButton = 'style="display: none"';
+                        var deleteButton = 'style="display: none"';
+
+                        if (sale.Transfer < 2) {
+                            var classType = 'UnTransfareButton';
+                            var color = 'red';
+                            if (sale.Transfer == 0) {
+                                classType = 'TransfareButton';
+                                color = 'blue';
+                            }
+                            transferButton =
+                                `<button id="TransfareButton${sale.SaleID}" class="btn view_button Transfare ${classType}" style="color:${color}" value='${sale.SaleID}'><i class="fa-solid fa-shuffle fa-2x "></i></button>`;
+                        } else {
+                            transferButton = 'تم صرف الفاتورة من المخزن';
+                        }
+
+                        if (sale.Transfer == 0 && sale.PaidAmount == 0) {
+                            editButton = '';
+                            deleteButton = '';
+                        }
+
+                        var row = `
+                    <tr>
+                        <td id="SaleNumber${sale.SaleID}">${sale.SaleNumber}</td>
+                        <td id="CustomerName${sale.SaleID}">${sale.CustomerName}</td>
+                        <td><label id="TotalSale${sale.SaleID}">${Number(sale.TotalSale).toLocaleString()}</label></td>
+                        <td dir="ltr">${new Date(sale.created_at).toISOString().split('T')[0]}</td>
+                        <td><a target="_blank" href="sales/${sale.SaleID}/" class="btn view_button"><i class='fa-solid fa-clipboard-list fa-2x'></i></a></td>
+                        <td>${transferButton}<input type="hidden" id="Transfer${sale.SaleID}" value="${sale.Transfer}"></td>
+                        <td><a id="EditButton${sale.SaleID}" href="sales/${sale.SaleID}/edit" class="btn edit_button" ${editButton}><i class='fa-solid fa-file-pen fa-2x'></i></a></td>
+                        <td>
+                            <form action="sales/${sale.SaleID}" method="post" id="deleteForm${sale.SaleID}" style="display: inline;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <button type="button" class="btn delete_button" ${deleteButton} onclick="confirmDelete('تاكيد حذف الفاتورة رقم ${sale.SaleNumber}', 'deleteForm${sale.SaleID}')" id="DeleteButton${sale.SaleID}">
+                                    <i class="fas fa-trash-alt fa-2x"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                `;
+                        $('#SalesTable tbody').append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    customAlert("حدث خطأ أثناء الاتصال بالخادم", "danger");
+                }
+            });
+        }
         $(document).on('click', '.Transfare', function() {
             var SaleID = $(this).val()
             var SaleNumber = $("#SaleNumber" + SaleID).html()
@@ -191,9 +261,7 @@
                             if (!isNaN(result)) {
                                 customAlert("تم  " + AlertMessage + " الفاتورة بنجاح",
                                     "success");
-                                $("#Transfer" + SaleID).val(Status)
-
-                                resetButtons(SaleID)
+                                Search()
                             } else
                                 $("#Results").removeClass("alert-success").addClass(
                                     "alert-danger").html(
@@ -208,20 +276,5 @@
                 }
             });
         });
-
-        function resetButtons(SaleID) {
-            $("#EditButton" + SaleID).css("display", "block");
-            $("#DeleteButton" + SaleID).css("display", "block");
-            if ($("#Transfer" + SaleID).val() == 1) {
-                $("#EditButton" + SaleID).css("display", "none");
-                $("#DeleteButton" + SaleID).css("display", "none");
-            }
-            $("#TransfareButton" + SaleID).removeClass("TransfareButton").addClass("UnTransfareButton");
-            $("#TransfareButton" + SaleID).css("color", "red")
-            if ($("#Transfer" + SaleID).val() == 0) {
-                $("#TransfareButton" + SaleID).removeClass("UnTransfareButton").addClass("TransfareButton");
-                $("#TransfareButton" + SaleID).css("color", "blue")
-            }
-        }
     </script>
 @endsection

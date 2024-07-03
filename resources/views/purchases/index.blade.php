@@ -6,74 +6,18 @@
     </div>
     <!-- resources/views/Purchases/index.blade.php -->
     <input type = 'hidden' id = "PurchaseID">
-    <div class="modal fade" id="PaymentDetailsModel" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="col-md-12 Result alert" id = "DeletePaymentResults"></div>
-                    <table class = "table" id = "PaymentDetailsTable">
-                    </table>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <button type="button" class="btn cancel_button" data-dismiss="modal">اغلاق</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="PaymentModel" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class='row'>
-                        <div class="col-md-12 Result alert" id = "PaymentResults"></div>
-                        <div class='col-md-6'>
-                            <label class="input_label">المبلغ المدفوع</label>
-                            <input type='text' name='Amount' id="Amount" class='input_style'
-                                placeholder="ألقيمة المدفوعة">
-                        </div>
-                        <div class='col-md-6' style="text-align:right;">
-                            <label class="input_label">اختر العملة</label>
-
-                            <select id='CurrencyID' class='input_style'>
-                                <option value='0'>اختر العملة</option>
-                                @foreach ($Currencies as $Currency)
-                                    <option value = '{{ $Currency->CurrencyID }}'>{{ $Currency->CurrencyName }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class='col-md-6'>
-                            <label class="input_label">طريقة الدفع</label>
-                            <select id='PaymentType' class='input_style'>
-                                <option value='0'>اختر طريقة الدفع</option>
-                                <option value='1'>نقدا</option>
-                                <option value='2'>تحويل</option>
-                                <option value='3'>شيك</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="input_label">اختر الحساب</label>
-                            <select id="PaymentAccountID" class="input_style"></select>
-                        </div>
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3">
-                            <button data-dismiss="modal" type='button' class='btn save_button SavePayment'>حفظ</button>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" class="btn cancel_button" data-dismiss="modal">اغلاق</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="col-md-12 alert Result" id = "Results"></div>
-    <a style="width: 20%;" href="/purchases/create" class="btn add_button mb-3">اضافة فاتورة</a>
+    <div class="row">
+        <div class="col-md-2">
+            <a href="/purchases/create" class="btn add_button mb-3">اضافة فاتورة</a>
+        </div>
+        <div class="col-md-8">
+            <input type='text' id='Keyword' class='input_style' oninput="Search()"
+                placeholder='ادخل كلمات مفتاحية للبحث'><br>
+        </div>
+    </div>
     @if (count($Purchases) > 0)
-        <table class="table ">
+        <table class="table" id="PurchaseTable">
             <thead>
                 <tr>
                     <th>الرقم </th>
@@ -86,9 +30,8 @@
                     <th>حذف</th>
                 </tr>
             </thead>
-            @foreach ($Purchases as $Purchase)
-                <tbody>
-
+            <tbody>
+                @foreach ($Purchases as $Purchase)
                     <tr>
                         <td id = "PurchaseNumber{{ $Purchase->PurchaseID }}">{{ $Purchase->PurchaseNumber }}</td>
                         <td id = "SupplierName{{ $Purchase->PurchaseID }}">{{ $Purchase->SupplierName }}
@@ -154,13 +97,76 @@
 
 
                     </tr>
-            @endforeach
+                @endforeach
             </tbody>
         </table>
     @else
         <div class="alert alert-danger Result"> لا يوجد فواتير مشتريات</div>
     @endif
     <script>
+        function Search() {
+            var Keyword = $("#Keyword").val();
+            if (!Keyword)
+                Keyword = 0
+            $.ajax({
+                url: '{{ url('purchase_search') }}/' + Keyword,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    // Clear existing table body
+                    $('#PurchaseTable tbody').empty();
+
+                    // Iterate over the response data and create rows
+                    response.forEach(function(purchase) {
+                        var transferButton = '';
+                        var editButton = 'style="display: none"';
+                        var deleteButton = 'style="display: none"';
+                        if (purchase.Transfer <= 1) {
+                            var classType = 'UnTransfareButton';
+                            var color = 'red';
+                            if (purchase.Transfer == 0) {
+                                classType = 'TransfareButton';
+                                color = 'blue';
+                            }
+                            transferButton =
+                                `<button id="TransfareButton${purchase.PurchaseID}" class="btn view_button Transfare ${classType}" style="color:${color}" value='${purchase.PurchaseID}'><i class="fa-solid fa-shuffle fa-2x "></i></button><input type="hidden" id="Transfer${purchase.PurchaseID}" value="${purchase.Transfer}">`;
+                        } else {
+                            transferButton = 'تم تغذية الفاتورة في المخزن';
+                        }
+
+                        if (purchase.Transfer == 0 && purchase.PaidAmount == 0) {
+                            editButton = '';
+                            deleteButton = '';
+                        }
+
+                        var row = `
+                    <tr>
+                        <td id="PurchaseNumber${purchase.PurchaseID}">${purchase.PurchaseNumber}</td>
+                        <td id="SupplierName${purchase.PurchaseID}">${purchase.SupplierName}</td>
+                        <td><label id="TotalPurchase${purchase.PurchaseID}">${Number(purchase.TotalPurchase).toLocaleString()}</label></td>
+                        <td dir="ltr">${new Date(purchase.created_at).toISOString().split('T')[0]}</td>
+                        <td><a target="_blank" href="purchases/${purchase.PurchaseID}/" class="btn view_button"><i class='fa-solid fa-clipboard-list fa-2x'></i></a></td>
+                        <td>${transferButton}</td>
+                        <td><a id="EditButton${purchase.PurchaseID}" href="purchases/${purchase.PurchaseID}/edit" class="btn edit_button" ${editButton}><i class='fa-solid fa-file-pen fa-2x'></i></a></td>
+                        <td>
+                            <form action="purchases/${purchase.PurchaseID}" method="post" id="deleteForm${purchase.PurchaseID}" style="display: inline;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <button type="button" class="btn delete_button" ${deleteButton} onclick="confirmDelete('تاكيد حذف الفاتورة رقم ${purchase.PurchaseNumber}', 'deleteForm${purchase.PurchaseID}')" id="DeleteButton${purchase.PurchaseID}">
+                                    <i class="fas fa-trash-alt fa-2x"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                `;
+                        $('#PurchaseTable tbody').append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    customAlert("حدث خطأ أثناء الاتصال بالخادم", "danger");
+                }
+            });
+        }
         $(document).on('click', '.Transfare', function() {
             var PurchaseID = $(this).val()
             var PurchaseNumber = $("#PurchaseNumber" + PurchaseID).html()
@@ -193,9 +199,7 @@
                             if (!isNaN(result)) {
                                 customAlert("تم  " + AlertMessage + " الفاتورة بنجاح",
                                     "success");
-                                $("#Transfer" + PurchaseID).val(Status)
-
-                                resetButtons(PurchaseID)
+                                Search()
                             } else
                                 $("#Results").removeClass("alert-success").addClass(
                                     "alert-danger").html(
@@ -210,20 +214,5 @@
                 }
             });
         });
-
-        function resetButtons(PurchaseID) {
-            $("#EditButton" + PurchaseID).css("display", "block");
-            $("#DeleteButton" + PurchaseID).css("display", "block");
-            if ($("#Transfer" + PurchaseID).val() == 1) {
-                $("#EditButton" + PurchaseID).css("display", "none");
-                $("#DeleteButton" + PurchaseID).css("display", "none");
-            }
-            $("#TransfareButton" + PurchaseID).removeClass("TransfareButton").addClass("UnTransfareButton");
-            $("#TransfareButton" + PurchaseID).css("color", "red")
-            if ($("#Transfer" + PurchaseID).val() == 0) {
-                $("#TransfareButton" + PurchaseID).removeClass("UnTransfareButton").addClass("TransfareButton");
-                $("#TransfareButton" + PurchaseID).css("color", "blue")
-            }
-        }
     </script>
 @endsection

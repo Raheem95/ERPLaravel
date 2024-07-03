@@ -272,6 +272,13 @@ class PurchaseController extends Controller
         } else
             return response()->json("خطاء في انشاء  القيد ");
     }
+    public function purchase_search($Keyword)
+    {
+        if ($Keyword == "0")
+            return response()->json($Purchases = Purchase::orderBy('PurchaseID', 'desc')->get());
+        return response()->json($Purchases = Purchase::where('PurchaseNumber', "like", "%$Keyword%")
+            ->orwhere('SupplierName', "like", "%$Keyword%")->get());
+    }
     public function payment_details($PurchaseID)
     {
         $PurchasePaymentDetails = PurchasePayment::where('PurchaseID', $PurchaseID)->get();

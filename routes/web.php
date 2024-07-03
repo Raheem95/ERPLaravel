@@ -51,6 +51,7 @@ Route::middleware('auth')->group(
         Route::resource('purchases', 'PurchaseController');
         Route::post('pay_purchase', 'PurchaseController@AddPayment')->name('pay_purchase');
         Route::get('get_purchase_payment_details/{PurchaseID}', 'PurchaseController@payment_details');
+        Route::get('purchase_search/{keyword}', 'PurchaseController@purchase_search');
         Route::post('delete_purchase_payment', 'PurchaseController@DeletePayment')->name('delete_purchase_payment');
         Route::post('purchase_transfare', 'PurchaseController@Transfare')->name('purchase_transfare');
 
@@ -61,7 +62,7 @@ Route::middleware('auth')->group(
         Route::post('delete_sale_payment', 'SaleController@DeletePayment')->name('delete_sale_payment');
         Route::post('sale_transfare', 'SaleController@sale_transfare')->name('sale_transfare');
         Route::post('get_item_details', 'SaleController@GetItemDetails')->name('get_item_details');
-
+        Route::get('sales_search/{keyword}', 'SaleController@sales_search');
         // Stock Routs
 
         Route::resource('Stocks/StockManagment', 'StockController');

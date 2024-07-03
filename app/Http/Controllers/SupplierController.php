@@ -62,7 +62,7 @@ class SupplierController extends Controller
         $maxAccountNumber .= $lastChildNum;
         $Parent->lastChildNum = $lastChildNum;
         $Parent->save();
-        $AccountID = $Account->CreateAccount($maxAccountNumber, $request->input('SupplierName'), 5, $Parent->CurrencyID, 0, auth()->user()->id, $Parent->AccountID, 0);
+        $AccountID = $Account->CreateAccount($maxAccountNumber, $request->input('SupplierName'), $Parent->AccountTypeID, $Parent->CurrencyID, 0, auth()->user()->id, $Parent->AccountID, 0);
         $Supplier->AccountID = $AccountID;
         $Supplier->isCustomer = $request->has('isCustomer') ? 1 : 0;
         $Supplier->AddedBy = auth()->user()->id;

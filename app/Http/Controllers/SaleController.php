@@ -283,6 +283,13 @@ class SaleController extends Controller
         } else
             return response()->json("خطاء في انشاء  القيد ");
     }
+    public function sales_search($Keyword)
+    {
+        if ($Keyword == "0")
+            return response()->json(Sale::orderBy('SaleID', 'desc')->get());
+        return response()->json(Sale::where('SaleNumber', "like", "%$Keyword%")
+            ->orwhere('CustomerName', "like", "%$Keyword%")->get());
+    }
     public function payment_details($SaleID)
     {
         $SalePaymentDetails = SalePayment::where('SaleID', $SaleID)->get();
