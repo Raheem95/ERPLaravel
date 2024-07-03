@@ -65,7 +65,7 @@
                             {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
                                 'type' => 'button',
                                 'class' => 'btn delete_button',
-                                'onclick' => "confirmDelete('تاكيد حذف  النحويل   {$Transfare->Comment}','deleteForm{$Transfare->TransfareID}')",
+                                'onclick' => "confirmDelete('تاكيد حذف  التحويل   {$Transfare->Comment}','deleteForm{$Transfare->TransfareID}')",
                             ]) !!}
 
                             {!! Form::close() !!}
@@ -88,41 +88,42 @@
                 Status = 0;
                 var AlertMessage = " الغاء صرف"
             }
-            if (confirm("تاكيد " + AlertMessage + "  التحويل " + TransfareDetsils)) {
-                var form_data = new FormData();
-                form_data.append('TransfareID', TransfareID);
-                form_data.append('Status', Status);
-                $.ajax({
-                    url: "{{ route('stock_transfare') }}",
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data,
-                    type: 'post',
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                            'content'));
-                    },
-                    success: function(result) {
-                        if (!isNaN(result)) {
-                            $("#Results").removeClass("alert-danger").addClass(
-                                    "alert-success")
-                                .html(
-                                    "تم  " + AlertMessage + " الفاتورة بنجاح");
-                            $("#Transfer" + TransfareID).val(Status)
+            customConfirm("تاكيد " + AlertMessage + "  التحويل " + TransfareDetsils, function(result) {
+                if (result) {
+                    var form_data = new FormData();
+                    form_data.append('TransfareID', TransfareID);
+                    form_data.append('Status', Status);
+                    $.ajax({
+                        url: "{{ route('stock_transfare') }}",
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        type: 'post',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]')
+                                .attr(
+                                    'content'));
+                        },
+                        success: function(result) {
+                            if (!isNaN(result)) {
+                                customAlert("تم  " + AlertMessage + " التحويل  بنجاح",
+                                    "success");
+                                $("#Transfer" + TransfareID).val(Status)
 
-                            resetButtons(TransfareID)
-                        } else
-                            $("#Results").removeClass("alert-success").addClass(
-                                "alert-danger").html(
-                                result);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error
-                    }
-                });
-            }
+                                resetButtons(TransfareID)
+                            } else
+                                customAlert(result, "danger");
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                } else {
+                    customAlert("تم إلغاء العملية", "info");
+                }
+            });
         });
 
         function resetButtons(TransfareID) {

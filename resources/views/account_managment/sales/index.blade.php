@@ -176,51 +176,54 @@
             var TotalSale = parseFloat($("#TotalSaleValue" + SaleID).val())
             var PaidAmount = parseFloat($("#PaidAmountValue" + SaleID).val())
             if (Amount > (TotalSale - PaidAmount))
-                $("#Results").removeClass("alert-success").addClass("alert-danger").html(
-                    " عذرا لا يمكنك سداد مبلغ اكبر من المبلغ المتبقي ")
+                customAlert(" عذرا لا يمكنك سداد مبلغ اكبر من المبلغ المتبقي ", "danger")
             else {
                 if (PaymentType != 0) {
-                    if (confirm("تأكيد دفع " + $("#CustomerName" + SaleID).html() + " لقيمة " + Amount +
-                            " جنيه ")) {
-                        var form_data = new FormData();
-                        form_data.append('SaleID', SaleID);
-                        form_data.append('PaidAmount', Amount);
-                        form_data.append('FromAccount', PaymentAccountID);
+                    customConfirm("تأكيد دفع " + $("#CustomerName" + SaleID).html() + " لقيمة " + Amount +
+                        " جنيه ",
+                        function(result) {
+                            if (result) {
+                                var form_data = new FormData();
+                                form_data.append('SaleID', SaleID);
+                                form_data.append('PaidAmount', Amount);
+                                form_data.append('FromAccount', PaymentAccountID);
 
-                        $.ajax({
-                            url: "{{ route('pay_sale') }}",
-                            dataType: 'json',
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            data: form_data,
-                            type: 'post',
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                                    'content'));
-                            },
-                            success: function(result) {
-                                if (result == 1) {
-                                    $("#Results").removeClass("alert-danger").addClass("alert-success")
-                                        .html(
-                                            "تم الدفع بنجاح");
-                                    PaidAmount = parseFloat($("#PaidAmountValue" + SaleID).val()) +
-                                        Amount;
-                                    $("#PaidAmountValue" + SaleID).val(PaidAmount)
-                                    var formatter = new Intl.NumberFormat();
-                                    $("#PaidAmount" + SaleID).html(formatter.format(PaidAmount))
-                                    resetButtons(SaleID)
-                                } else {
-                                    $("#Results").removeClass("alert-success").addClass("alert-danger")
-                                        .html(result);
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                // Handle error
+                                $.ajax({
+                                    url: "{{ route('pay_sale') }}",
+                                    dataType: 'json',
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    data: form_data,
+                                    type: 'post',
+                                    beforeSend: function(xhr) {
+                                        xhr.setRequestHeader('X-CSRF-TOKEN', $(
+                                            'meta[name="csrf-token"]').attr(
+                                            'content'));
+                                    },
+                                    success: function(result) {
+                                        if (result == 1) {
+                                            customAlert("تم الدفع بنجاح", "success");
+                                            PaidAmount = parseFloat($("#PaidAmountValue" + SaleID)
+                                                    .val()) +
+                                                Amount;
+                                            $("#PaidAmountValue" + SaleID).val(PaidAmount)
+                                            var formatter = new Intl.NumberFormat();
+                                            $("#PaidAmount" + SaleID).html(formatter.format(
+                                                PaidAmount))
+                                            resetButtons(SaleID)
+                                        } else {
+                                            customAlert(result, "danger");
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        // Handle error
+                                    }
+                                });
+                            } else {
+                                customAlert("تم إلغاء العملية", "info");
                             }
                         });
-
-                    }
                 } else {
                     $("#Results").removeClass("alert-success").addClass("alert-danger").html(
                         "الرجاء تحديد طريقة الدفع")
@@ -230,7 +233,8 @@
 
         function viewPaymentDetails(SaleID) {
             $("#SaleID").val(SaleID)
-            $("#PaymentDetailsTable").empty().append("<tr><th>المبلغ</th><th>تاريخ السداد</th><th>حذف</th></tr>")
+            $("#PaymentDetailsTable").empty().append(
+                "<tr><th>المبلغ</th><th>تاريخ السداد</th><th>حذف</th></tr>")
             $.ajax({
                 url: '{{ url('get_sale_payment_details') }}/' + SaleID,
                 method: 'GET',
@@ -257,114 +261,58 @@
             });
         }
         $(document).on('click', '.DeletePayment', function() {
-            if (confirm("تاكيد حذف السداد")) {
-                var form_data = new FormData();
-                var PaymentID = $(this).val();
-                form_data.append('PaymentID', PaymentID);
-                $.ajax({
-                    url: "{{ route('delete_sale_payment') }}",
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data,
-                    type: 'post',
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                            'content'));
-                    },
-                    success: function(result) {
-                        if (!isNaN(result)) {
-                            var formatter = new Intl.NumberFormat();
-                            var SaleID = $("#SaleID").val()
-                            var formatter = new Intl.NumberFormat();
-                            $("#PaidAmount" + SaleID).html(formatter.format(parseFloat($(
-                                "#PaidAmountValue" +
-                                SaleID).val()) - parseFloat(result)))
-                            $("#PaidAmountValue" + SaleID).val(parseFloat($("#PaidAmountValue" +
-                                SaleID).val()) - parseFloat(result))
+            customConfirm("تاكيد حذف السداد", function(result) {
+                if (result) {
+                    var form_data = new FormData();
+                    var PaymentID = $(this).val();
+                    form_data.append('PaymentID', PaymentID);
+                    $.ajax({
+                        url: "{{ route('delete_sale_payment') }}",
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,
+                        type: 'post',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]')
+                                .attr(
+                                    'content'));
+                        },
+                        success: function(result) {
+                            if (!isNaN(result)) {
+                                var formatter = new Intl.NumberFormat();
+                                var SaleID = $("#SaleID").val()
+                                var formatter = new Intl.NumberFormat();
+                                $("#PaidAmount" + SaleID).html(formatter.format(parseFloat($(
+                                    "#PaidAmountValue" +
+                                    SaleID).val()) - parseFloat(result)))
+                                $("#PaidAmountValue" + SaleID).val(parseFloat($(
+                                    "#PaidAmountValue" +
+                                    SaleID).val()) - parseFloat(result))
 
-                            $("#DeletePaymentResults").removeClass("alert-danger").addClass(
-                                    "alert-success")
-                                .html(
-                                    "تم حذف السداد بنجاح");
-                            $("#PaymentNo" + PaymentID).remove()
-                            resetButtons(SaleID)
-                        } else
-                            $("#DeletePaymentResults").removeClass("alert-success").addClass(
-                                "alert-danger").html(
-                                result);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error
-                    }
-                });
-            }
+                                customAlert("تم حذف السداد بنجاح", "success");
+                                $("#PaymentNo" + PaymentID).remove()
+                                resetButtons(SaleID)
+                            } else
+                                customAlert(result, "danger");
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle error
+                        }
+                    });
+                } else {
+                    customAlert("تم إلغاء العملية", "info");
+                }
+            });
         });
-        $(document).on('click', '.Transfare', function() {
-            var SaleID = $(this).val()
-            var SaleNumber = $("#SaleNumber" + SaleID).html()
-            var Status = 1;
-            var AlertMessage = "صرف"
-            if ($(this).hasClass("UnTransfareButton")) {
-                Status = 0;
-                var AlertMessage = " الغاء صرف"
-            }
-            if (confirm("تاكيد " + AlertMessage + "  الفاتورة رقم" + SaleNumber)) {
-                var form_data = new FormData();
-                form_data.append('SaleID', SaleID);
-                form_data.append('Status', Status);
-                $.ajax({
-                    url: "{{ route('pay_sale') }}",
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: form_data,
-                    type: 'post',
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                            'content'));
-                    },
-                    success: function(result) {
-                        if (!isNaN(result)) {
-                            $("#Results").removeClass("alert-danger").addClass(
-                                    "alert-success")
-                                .html(
-                                    "تم  " + AlertMessage + " الفاتورة بنجاح");
-                            $("#Transfer" + SaleID).val(Status)
 
-                            resetButtons(SaleID)
-                        } else
-                            $("#Results").removeClass("alert-success").addClass(
-                                "alert-danger").html(
-                                result);
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error
-                    }
-                });
-            }
-        });
 
         function resetButtons(SaleID) {
             $("#PayButton" + SaleID).css("display", "none");
             if (parseFloat($("#TotalSaleValue" + SaleID).val()) > parseFloat($("#PaidAmountValue" + SaleID)
                     .val()))
                 $("#PayButton" + SaleID).css("display", "block");
-
-            $("#EditButton" + SaleID).css("display", "block");
-            $("#DeleteButton" + SaleID).css("display", "block");
-            if ($("#PaidAmountValue" + SaleID).val() > 0 || $("#Transfer" + SaleID).val() == 1) {
-                $("#EditButton" + SaleID).css("display", "none");
-                $("#DeleteButton" + SaleID).css("display", "none");
-            }
-            $("#TransfareButton" + SaleID).removeClass("TransfareButton").addClass("UnTransfareButton");
-            $("#TransfareButton" + SaleID).css("color", "red")
-            if ($("#Transfer" + SaleID).val() == 0) {
-                $("#TransfareButton" + SaleID).removeClass("UnTransfareButton").addClass("TransfareButton");
-                $("#TransfareButton" + SaleID).css("color", "blue")
-            }
         }
     </script>
 @endsection

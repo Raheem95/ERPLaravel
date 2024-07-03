@@ -103,7 +103,8 @@
                             <input type="hidden" id = "PaidAmountValue{{ $Purchase->PurchaseID }}"
                                 value={{ $Purchase->PaidAmount }}>
                         </td>
-                        <td>{{ number_format($Purchase->TotalPurchase - $Purchase->PaidAmount) }}</td>
+                        <td id = "NotPaidAmount{{ $Purchase->PurchaseID }}">
+                            {{ number_format($Purchase->TotalPurchase - $Purchase->PaidAmount) }}</td>
                         <td dir="ltr">{{ date('Y-m-d', strtotime($Purchase->created_at)) }}
                         </td>
                         <td>
@@ -175,60 +176,66 @@
             $("#PurchaseID").val($(this).val())
         });
         $(document).on('click', '.SavePayment', function() {
+            var PaymentType = parseFloat($("#PaymentType").val())
             var Amount = parseFloat($("#Amount").val())
             var PurchaseID = $("#PurchaseID").val()
             var PaymentAccountID = $("#PaymentAccountID").val()
             var TotalPurchase = parseFloat($("#TotalPurchaseValue" + PurchaseID).val())
             var PaidAmount = parseFloat($("#PaidAmountValue" + PurchaseID).val())
             if (Amount > (TotalPurchase - PaidAmount))
-                $("#Results").removeClass("alert-success").addClass("alert-danger").html(
-                    " عذرا لا يمكنك سداد مبلغ اكبر من المبلغ المتبقي ")
+                customAlert(" عذرا لا يمكنك سداد مبلغ اكبر من المبلغ المتبقي ", "danger")
             else {
                 if (PaymentType != 0) {
-                    if (confirm("تأكيد دفع " + $("#SupplierName" + PurchaseID).html() + " لقيمة " + Amount +
-                            " جنيه ")) {
-                        var form_data = new FormData();
-                        form_data.append('PurchaseID', PurchaseID);
-                        form_data.append('PaidAmount', Amount);
-                        form_data.append('FromAccount', PaymentAccountID);
+                    customConfirm("تأكيد دفع " + $("#SupplierName" + PurchaseID).html() + " لقيمة " + Amount +
+                        " جنيه ",
+                        function(result) {
+                            if (result) {
+                                var form_data = new FormData();
+                                form_data.append('PurchaseID', PurchaseID);
+                                form_data.append('PaidAmount', Amount);
+                                form_data.append('FromAccount', PaymentAccountID);
 
-                        $.ajax({
-                            url: "{{ route('pay_purchase') }}",
-                            dataType: 'json',
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            data: form_data,
-                            type: 'post',
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                                    'content'));
-                            },
-                            success: function(result) {
-                                if (result == 1) {
-                                    $("#Results").removeClass("alert-danger").addClass("alert-success")
-                                        .html(
-                                            "تم الدفع بنجاح");
-                                    PaidAmount = parseFloat($("#PaidAmountValue" + PurchaseID).val()) +
-                                        Amount;
-                                    $("#PaidAmountValue" + PurchaseID).val(PaidAmount)
-                                    var formatter = new Intl.NumberFormat();
-                                    $("#PaidAmount" + PurchaseID).html(formatter.format(PaidAmount))
-                                    resetButtons(PurchaseID)
-                                } else {
-                                    $("#Results").removeClass("alert-success").addClass("alert-danger")
-                                        .html(result);
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                // Handle error
+                                $.ajax({
+                                    url: "{{ route('pay_purchase') }}",
+                                    dataType: 'json',
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    data: form_data,
+                                    type: 'post',
+                                    beforeSend: function(xhr) {
+                                        xhr.setRequestHeader('X-CSRF-TOKEN', $(
+                                            'meta[name="csrf-token"]').attr(
+                                            'content'));
+                                    },
+                                    success: function(result) {
+                                        if (result == 1) {
+                                            customAlert("تم الدفع بنجاح", "success");
+                                            PaidAmount = parseFloat($("#PaidAmountValue" +
+                                                    PurchaseID).val()) +
+                                                Amount;
+                                            $("#PaidAmountValue" + PurchaseID).val(PaidAmount)
+                                            var formatter = new Intl.NumberFormat();
+                                            $("#PaidAmount" + PurchaseID).html(formatter.format(
+                                                PaidAmount))
+                                            $("#NotPaidAmount" + PurchaseID).html(formatter.format(
+                                                TotalPurchase - PaidAmount))
+                                            resetButtons(PurchaseID)
+                                        } else {
+                                            customAlert(result, "danger");
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        // Handle error
+                                    }
+                                });
+
+                            } else {
+                                customAlert("تم إلغاء العملية", "info");
                             }
                         });
-
-                    }
                 } else {
-                    $("#Results").removeClass("alert-success").addClass("alert-danger").html(
-                        "الرجاء تحديد طريقة الدفع")
+                    customAlert("الرجاء تحديد طريقة الدفع", "danger")
                 }
             }
         });
