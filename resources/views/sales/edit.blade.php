@@ -1,5 +1,33 @@
 @extends('layouts.app')
 <style>
+    .SelectItem {
+
+        width: 400px;
+        position: absolute;
+        background: #fdfeff;
+        padding: 10 30px;
+        text-align: left;
+        display: none;
+        z-index: 3;
+        max-height: 300px;
+        overflow: scroll;
+    }
+
+
+
+    .SelectItem li {
+        list-style: none;
+        padding: 5px;
+        border-bottom: 1px solid #3498db;
+        text-align: right;
+    }
+
+    .SelectItem li:hover {
+        background: #3498db;
+        color: white;
+        font-weight: 600;
+    }
+
     .PriceDiv {
         width: 140px;
         display: inline-block;
@@ -111,11 +139,6 @@
             </tr>
             <?php
             $i = 0;
-            $options = collect(['0' => 'اختر المنتج']); // Creating a collection with default option
-            
-            foreach ($Items as $item) {
-                $options[$item['ItemID']] = $item['ItemName'];
-            }
             ?>
             @foreach ($SaleDetails as $RowItem)
                 {{ $i++ }}
@@ -133,11 +156,17 @@
 
                     </td>
                     <td>
-
-                        {!! Form::select('ItemID' . $i, $options, $RowItem->ItemID, [
-                            'class' => 'input_style GetItemDetails',
-                            'id' => 'ItemID' . $i,
+                        {!! Form::text('ItemName' . $i, $RowItem->item->ItemName, [
+                            'class' => 'input_style getItems GetItemDetails',
+                            'id' => 'ItemName1',
+                            'placeholder' => 'اختر المنتج',
+                            'autocomplete' => 'off',
+                            'required' => 'required',
                         ]) !!}
+                        <input type="hidden" name="ItemID{{ $i }}" id="ItemID{{ $i }}"
+                            value="{{ $RowItem->item->ItemID }}">
+                        <div class="SelectItem" id="SelectItem{{ $i }}">
+                        </div>
                     </td>
                     <td><label id="AvailableQTY{{ $i }}">0</label></td>
                     <td>{!! Form::number('ItemQTY' . $i, $RowItem->ItemQTY, [
@@ -169,9 +198,43 @@
     </div>
     {!! Form::close() !!}
     </div>
+
     <script>
-        $(document).on('change', '.SetCustomerName', function() {
-            $("#CustomerName").val($(this).find('option:selected').text())
+        function setItem(RowID, ItemID, ItemName) {
+            $("#SelectItem" + RowID).css("display", "none")
+            $("#ItemName" + RowID).val(ItemName)
+            $("#ItemID" + RowID).val(ItemID)
+            GetItemDetails(RowID)
+        }
+        $(document).on('input', '.getItems', function() {
+            var RowID = $(this).attr('id').replace("ItemName", "")
+            $("#ItemID" + RowID).val(0)
+            var Keyword = $(this).val()
+            if (!Keyword) Keyword = "!!!!!"
+            $.ajax({
+                url: '{{ url('items_search') }}/' + Keyword,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    $("#SelectItem" + RowID).empty()
+                    $("#SelectItem" + RowID).css("display", "block")
+
+                    if (response.length > 0) {
+                        var ul = $("<ul></ul>")
+                        response.forEach(function(item) {
+                            ul.append("<li onclick='setItem(" + RowID + ", " + item.ItemID +
+                                ", \"" + item.ItemName + "\")'>" + item.ItemName + "</li>");
+                        });
+                        $("#SelectItem" + RowID).append(ul)
+                    } else {
+                        $("#SelectItem" + RowID).append($(
+                            "<div class = 'col-md-12 aler alert-daner'>لا توجد منتجات</div>"))
+                    }
+                },
+                error: function(xhr, status, error) {
+                    customAlert("حدث خطأ أثناء الاتصال بالخادم", "danger");
+                }
+            });
         });
         $(document).on('click', '.AddRow', function() {
             var myrowCount = $("#NumberOfItems").val()
@@ -180,20 +243,16 @@
             var table = $("#ItemsTable")
             myrowCount++
             $("#NumberOfItems").val(myrowCount)
-
             var tr = $('<tr id = "Row' + myrowCount + '"></tr>')
             tr.append($("<td><button type='button' class='btn delete_button RemoveRow' id='RemoveButton" +
                 myrowCount + "' value='" + myrowCount + "'>" +
-                "<i class='fa-solid fa-trash-can'></i></button></td>"));
-
-            var Select = $("<select class='input_style GetItemDetails' id='ItemID" + myrowCount +
-                "'  name='ItemID" + myrowCount + "'></select>");
-            $.each(Items, function(key, value) {
-                Select.append($("<option value='" + key + "'>" + value + "</option>"));
-            });
-            var td = $("<td></td>")
-            td.append(Select)
-            tr.append(td)
+                "<i class='fa-solid fa-trash-can'></i></button></td>"))
+            tr.append($("<td><input class='input_style getItems GetItemDetails' id='ItemName" + myrowCount +
+                "' name='ItemName" + myrowCount +
+                "' placeholder='اختر المنتج' required autocomplete='off'>" +
+                "<input type='hidden' name='ItemID" + myrowCount + "' id='ItemID" + myrowCount + "'>" +
+                "<div class='SelectItem' id='SelectItem" + myrowCount + "'>" +
+                "</div></td>"));
             tr.append($("<td><label id='AvailableQTY" + myrowCount + "'>0</label></td>"))
             tr.append($(
                 "<td><input type = 'number' value = '0' id = 'ItemQTY" + myrowCount +
@@ -227,21 +286,27 @@
                 $("#ItemID" + i).attr("id", "ItemID" + myCurrentID)
                 $("#ItemID" + myCurrentID).attr("name", "ItemID" + myCurrentID)
 
+                $("#ItemName" + i).attr("id", "ItemName" + myCurrentID)
+                $("#ItemName" + myCurrentID).attr("name", "ItemName" + myCurrentID)
 
+                $("#SelectItem" + i).attr("id", "SelectItem" + myCurrentID)
 
                 $("#ItemQTY" + i).attr("id", "ItemQTY" + myCurrentID)
                 $("#ItemQTY" + myCurrentID).attr("name", "ItemQTY" + myCurrentID)
-                $("#ItemQTY" + myCurrentID).on('input', function() {
-                    CalculateRow(myCurrentID);
-                });
+                $("#ItemQTY" + myCurrentID).on('input',
+                    function() {
+                        CalculateRow(myCurrentID);
+                    });
+
 
                 $("#AvailableQTY" + i).attr("id", "AvailableQTY" + myCurrentID)
 
                 $("#ItemPrice" + i).attr("id", "ItemPrice" + myCurrentID)
                 $("#ItemPrice" + myCurrentID).attr("name", "ItemPrice" + myCurrentID)
-                $("#ItemPrice" + myCurrentID).on('input', function() {
-                    CalculateRow(myCurrentID);
-                });
+                $("#ItemPrice" + myCurrentID).on('input',
+                    function() {
+                        CalculateRow(myCurrentID);
+                    });
 
                 $("#TotalRow" + i).attr("id", "TotalRow" + myCurrentID)
                 $("#TotalRow" + myCurrentID).attr("name", "TotalRow" + myCurrentID)
@@ -257,10 +322,13 @@
             else
                 $("#RemoveButton1").css("display", "none")
         });
-        $(document).on('change', '.GetItemDetails', function() {
-            var ItemID = $(this).val()
+        $(document).on('change', '.SetCustomerName', function() {
+            $("#CustomerName").val($(this).find('option:selected').text())
+        });
+
+        function GetItemDetails(RowID) {
+            var ItemID = $("#ItemID" + RowID).val()
             var StockID = $("#StockID").val()
-            var RowID = $(this).attr("id").replace("ItemID", "");
             if (StockID > 0) {
                 $("#Results").html("")
                 var form_data = new FormData();
@@ -282,6 +350,7 @@
                     success: function(result) {
                         $("#ItemPrice" + RowID).val(result.SalesPrice)
                         $("#AvailableQTY" + RowID).html(result.AvailableQTY)
+                        CalculateRow(RowID)
                     },
                     error: function(xhr, status, error) {
                         // Handle error
@@ -289,9 +358,10 @@
                 });
             } else {
                 $("#Results").html("<div class = 'alert alert-danger Result'> الرجاء تحديد المخزن </div>")
-                $(this).val(0)
+                $("#ItemID" + RowID).val(0)
+                $("#ItemName" + RowID).val("")
             }
-        });
+        }
 
         $(document).on('change', '.CheckQTY', function() {
             var ItemQTY = $(this).val()
@@ -320,7 +390,7 @@
 
             $("#TotalSale").val(Total)
         }
-
+        CalculateTotal()
 
         function validateForm() {
             var flag = true
@@ -374,7 +444,7 @@
                             // Proceed with form submission
                             document.forms[0].submit(); // Replace with your form submission code
                         } else {
-                            alert('تم إلغاء العملية');
+                            customAlert('تم إلغاء العملية', 'info');
                         }
                     });
 
@@ -384,6 +454,7 @@
             }
             document.getElementById('Results').scrollIntoView();
             $("#Results").html(Result)
+            return flag;
         }
 
         function GetAllItemsAvailableQTY() {
@@ -395,36 +466,36 @@
                     var form_data = new FormData();
                     form_data.append('ItemID', ItemID);
                     form_data.append('StockID', StockID);
-                    $.ajax({
-                        url: "{{ route('get_item_details') }}",
-                        dataType: 'json',
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        data: form_data,
-                        type: 'post',
-                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
-                                'content'));
-                        },
-                        success: function(result) {
-                            $("#AvailableQTY" + index).html(result.AvailableQTY);
-                            if (parseFloat($("#ItemQTY" + index).val()) > parseFloat(result.AvailableQTY))
-                                $("#ItemQTY" + index).removeClass("right_input_style").addClass(
-                                    "wrong_input_style")
-                            else
-                                $("#ItemQTY" + index).removeClass("wrong_input_style").addClass(
-                                    "right_input_style")
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle error
-                        }
-                    });
+                    if (ItemID > 0)
+                        $.ajax({
+                            url: "{{ route('get_item_details') }}",
+                            dataType: 'json',
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            data: form_data,
+                            type: 'post',
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(
+                                    'content'));
+                            },
+                            success: function(result) {
+                                $("#AvailableQTY" + index).html(result.AvailableQTY);
+                                if (parseFloat($("#ItemQTY" + index).val()) > parseFloat(result.AvailableQTY))
+                                    $("#ItemQTY" + index).removeClass("right_input_style").addClass(
+                                        "wrong_input_style")
+                                else
+                                    $("#ItemQTY" + index).removeClass("wrong_input_style").addClass(
+                                        "right_input_style")
+                            },
+                            error: function(xhr, status, error) {
+                                // Handle error
+                            }
+                        });
                 })(i);
             }
 
         }
-
 
         GetAllItemsAvailableQTY();
     </script>
