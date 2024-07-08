@@ -8,14 +8,17 @@
             <h1>اضافة مديونية</h1>
         </div>
         <div class="col-md-12 Result" id="Results"></div>
-        {!! Form::open(['action' => 'CreditorsDebtorController@store', 'method' => 'post']) !!}
+        {!! Form::open([
+            'action' => 'CreditorsDebtorController@store',
+            'method' => 'post',
+            'onsubmit' => 'return validateForm()',
+        ]) !!}
         <div class = "row">
             <div class="form-group col-md-6">
-                {!! Form::label('name', 'توع المعاملة', ['class' => 'input_label']) !!}
+                {!! Form::label('name', 'نوع المعاملة', ['class' => 'input_label']) !!}
                 {!! Form::select('OprationType', ['' => 'نوع المعاملة', '0' => 'دائن', '1' => 'مدين'], null, [
                     'class' => 'input_style RewriteLabels GetAccount',
                     'id' => 'OprationType',
-                    'required' => 'required',
                 ]) !!}
             </div>
             <?php
@@ -35,7 +38,7 @@
             </div>
             <div class="form-group col-md-6">
                 {!! Form::label('AccountID', 'الحساب', ['class' => 'input_label', 'id' => 'AccountLabel']) !!}
-                <select id='AccountID' name="AccountID" class='input_style' required>
+                <select id='AccountID' name="AccountID" class='input_style'>
                 </select>
 
             </div>
@@ -50,19 +53,19 @@
             </div>
             <div class="form-group col-md-6">
                 {!! Form::label('PaymentAccountID', 'الحساب', ['class' => 'input_label', 'id' => 'PaymentAccountLabel']) !!}
-                <select id='PaymentAccountID' name="PaymentAccountID" class='input_style' required>
+                <select id='PaymentAccountID' name="PaymentAccountID" class='input_style'>
                 </select>
             </div>
             <div class="form-group col-md-6">
                 {!! Form::label('Amount', 'المبلغ', ['class' => 'input_label']) !!}
-                {!! Form::text('Amount', null, ['class' => 'input_style', 'placeholder' => 'ادخل المبلغ ', 'required']) !!}
+                {!! Form::text('Amount', null, ['class' => 'input_style', 'placeholder' => 'ادخل المبلغ ', 'id' => 'Amount']) !!}
             </div>
             <div class="form-group col-md-12">
                 {!! Form::label('OprationDetails', 'التفاصيل', ['class' => 'input_label']) !!}
                 {!! Form::textarea('OprationDetails', null, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل التفاصيل ',
-                    'required',
+                    'id' => 'OprationDetails',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
@@ -153,5 +156,50 @@
                 }
             });
         });
+
+        function validateForm() {
+            var RestrictionsRowsNumber = $("#RestrictionsRowsNumber").val()
+            var amount = 0
+            $(".error-label").remove();
+            $(".error_input").removeClass("error_input");
+            var flag = true
+
+            if ($('#OprationType').val() == '') {
+                $("#OprationType").addClass("error_input");
+                CreateErrorLabel("OprationType", "الرجاء تحديد نوع المعاملة  ")
+                flag = false
+            }
+            if ($('#CurrencyID').val() == 0) {
+                $("#CurrencyID").addClass("error_input");
+                CreateErrorLabel("CurrencyID", "الرجاء تحديد العملة  ")
+                flag = false
+            }
+            if ($('#AccountID').val() == 0) {
+                $("#AccountID").addClass("error_input");
+                CreateErrorLabel("AccountID", "الرجاء تحديد الحساب  ")
+                flag = false
+            }
+            if ($('#PaymentType').val() == 0) {
+                $("#PaymentType").addClass("error_input");
+                CreateErrorLabel("PaymentType", "الرجاء تحديد طريقة الدفع  ")
+                flag = false
+            }
+            if ($('#PaymentAccountID').val() == 0) {
+                $("#PaymentAccountID").addClass("error_input");
+                CreateErrorLabel("PaymentAccountID", "الرجاء تحديد الحساب  ")
+                flag = false
+            }
+            if (!$('#Amount').val() || isNaN($('#Amount').val()) || $('#Amount').val() < 0) {
+                $("#Amount").addClass("error_input");
+                CreateErrorLabel("Amount", "الرجاء ادخال المبلغ بصورة صحيحة  ")
+                flag = false
+            }
+            if ($('#OprationDetails').val() == 0) {
+                $("#OprationDetails").addClass("error_input");
+                CreateErrorLabel("OprationDetails", "الرجاء كتابة التفاصيل   ")
+                flag = false
+            }
+            return flag
+        }
     </script>
 @endsection

@@ -4,7 +4,7 @@
 @section('content')
 
     <!-- resources/views/AccountTypes/index.blade.php -->
-    <h1>انواع الحسابات</h1>
+    <h1>قيود اليومية </h1>
     <div class="modal fade" id="RestrictionModel" role="dialog">
         <div class="modal-dialog modal-lg">
             <!-- Modal content-->
@@ -123,12 +123,12 @@
                         <td>
                             ${restriction.Deletable == 0 ?
                                 `<form action="DailyAccountingEntries/${restriction.RestrictionID}" method="post" style="display: inline;" id='deleteForm${restriction.RestrictionID}'>
-                                                                <input type="hidden" name="_method" value="DELETE">
-                                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                                <button type="button" class="btn delete_button" onclick="return confirmDelete('تأكيد حذف القيد ${restriction.RestrictionDetails}','deleteForm${restriction.RestrictionID}')">
-                                                                    <i class="fas fa-trash-alt fa-2x"></i>
-                                                                </button>
-                                                            </form>` :
+                                                                    <input type="hidden" name="_method" value="DELETE">
+                                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                                    <button type="button" class="btn delete_button" onclick="return confirmDelete('تأكيد حذف القيد ${restriction.RestrictionDetails}','deleteForm${restriction.RestrictionID}')">
+                                                                        <i class="fas fa-trash-alt fa-2x"></i>
+                                                                    </button>
+                                                                </form>` :
                                 'NotDeletable'}
                         </td>
                     </tr>

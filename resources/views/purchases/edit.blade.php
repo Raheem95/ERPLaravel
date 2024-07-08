@@ -89,7 +89,6 @@
                 {!! Form::select('SupplierID', $options, $Purchase->SupplierID, [
                     'class' => 'input_style SetSupllierName',
                     'id' => 'SupplierID',
-                    'required' => 'required',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
@@ -98,7 +97,6 @@
                     'class' => 'input_style',
                     'placeholder' => 'ادخل اسم المورد',
                     'id' => 'SupplierName',
-                    'required' => 'required',
                 ]) !!}
             </div>
             <?php
@@ -154,7 +152,6 @@
                             'id' => 'ItemName' . $i,
                             'placeholder' => 'اختر المنتج',
                             'autocomplete' => 'off',
-                            'required' => 'required',
                         ]) !!}
                         <input type="hidden" name="ItemID{{ $i }}" value="{{ $RowItem->ItemID }}"
                             id="ItemID{{ $i }}">
@@ -248,7 +245,7 @@
 
             tr.append($("<td><input class='input_style getItems' id='ItemName" + myrowCount +
                 "' name='ItemName" + myrowCount +
-                "' placeholder='اختر المنتج' required autocomplete='off'>" +
+                "' placeholder='اختر المنتج'  autocomplete='off'>" +
                 "<input type='hidden' name='ItemID" + myrowCount + "' id='ItemID" + myrowCount + "'>" +
                 "<div class='SelectItem' id='SelectItem" + myrowCount + "'>" +
                 "</div></td>"));

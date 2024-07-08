@@ -8,7 +8,11 @@
             <h1>اضافة منصرف</h1>
         </div>
         <div class="col-md-12 Result" id="Results"></div>
-        {!! Form::open(['action' => ['ExpenseController@update', $Expense->ExpensesID], 'method' => 'post']) !!}
+        {!! Form::open([
+            'action' => ['ExpenseController@update', $Expense->ExpensesID],
+            'method' => 'post',
+            'onsubmit' => 'return validateForm()',
+        ]) !!}
         <div class="row">
             @php
                 $Currencies = json_decode($Currencies, true);
@@ -70,7 +74,7 @@
                 {!! Form::text('ExpensesAmount', $Expense->ExpensesAmount, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل المبلغ',
-                    'required',
+                    'id' => 'ExpensesAmount',
                 ]) !!}
             </div>
 
@@ -79,7 +83,7 @@
                 {!! Form::textarea('ExpensesDetails', $Expense->ExpensesDetails, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل التفاصيل',
-                    'required',
+                    'id' => 'ExpensesDetails',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
@@ -101,30 +105,31 @@
             $("#PaymentAccountID").empty().append($("<option value = ''>اختر الحساب</option>"))
             var CurrencyID = $("#CurrencyID").val()
             var AccountType = 2
-            $.ajax({
-                url: '{{ url('get_account') }}/' + CurrencyID + '/' + AccountType,
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response != 1 && response != 2) {
-                        $("#ExpensesAccountID").empty().append(
-                            "<option value=''>اختر الحساب</option>");
-                        for (var i = 0; i < response.length; i++) {
-                            $("#ExpensesAccountID").append("<option value='" + response[i][
-                                "AccountID"
-                            ] + "'>" + response[i]["AccountName"] + "</option>");
+            if (CurrencyID > 0)
+                $.ajax({
+                    url: '{{ url('get_account') }}/' + CurrencyID + '/' + AccountType,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response != 1 && response != 2) {
+                            $("#ExpensesAccountID").empty().append(
+                                "<option value=''>اختر الحساب</option>");
+                            for (var i = 0; i < response.length; i++) {
+                                $("#ExpensesAccountID").append("<option value='" + response[i][
+                                    "AccountID"
+                                ] + "'>" + response[i]["AccountName"] + "</option>");
+                            }
+                        } else {
+                            $("#Results").addClass("alert-danger")
+                                .html("خطاء في النظام");
                         }
-                    } else {
-                        $("#Results").addClass("alert-danger")
-                            .html("خطاء في النظام");
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        $("#Results").addClass("alert-danger").html(
+                            "حدث خطأ أثناء الاتصال بالخادم");
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                    $("#Results").addClass("alert-danger").html(
-                        "حدث خطأ أثناء الاتصال بالخادم");
-                }
-            });
+                });
         });
         $(document).on('change', '#PaymentType', function() {
             $("#Results").removeClass("alert-danger").html("")
@@ -157,5 +162,45 @@
                 }
             });
         });
+
+        function validateForm() {
+            var RestrictionsRowsNumber = $("#RestrictionsRowsNumber").val()
+            var amount = 0
+            $(".error-label").remove();
+            $(".error_input").removeClass("error_input");
+            var flag = true
+
+            if ($('#CurrencyID').val() == 0) {
+                $("#CurrencyID").addClass("error_input");
+                CreateErrorLabel("CurrencyID", "الرجاء تحديد العملة  ")
+                flag = false
+            }
+            if ($('#ExpensesAccountID').val() == 0) {
+                $("#ExpensesAccountID").addClass("error_input");
+                CreateErrorLabel("ExpensesAccountID", "الرجاء تحديد الحساب  ")
+                flag = false
+            }
+            if ($('#PaymentType').val() == 0) {
+                $("#PaymentType").addClass("error_input");
+                CreateErrorLabel("PaymentType", "الرجاء تحديد طريقة الدفع  ")
+                flag = false
+            }
+            if ($('#PaymentAccountID').val() == 0) {
+                $("#PaymentAccountID").addClass("error_input");
+                CreateErrorLabel("PaymentAccountID", "الرجاء تحديد الحساب  ")
+                flag = false
+            }
+            if (isNaN($('#ExpensesAmount').val()) || $('#ExpensesAmount').val() < 0) {
+                $("#ExpensesAmount").addClass("error_input");
+                CreateErrorLabel("ExpensesAmount", "الرجاء ادخال المبلغ بصورة صحيحة  ")
+                flag = false
+            }
+            if ($('#ExpensesDetails').val() == 0) {
+                $("#ExpensesDetails").addClass("error_input");
+                CreateErrorLabel("ExpensesDetails", "الرجاء كتابة التفاصيل   ")
+                flag = false
+            }
+            return flag
+        }
     </script>
 @endsection

@@ -8,7 +8,11 @@
             <h1>اضافة منصرف</h1>
         </div>
         <div class="col-md-12 Result" id="Results"></div>
-        {!! Form::open(['action' => 'ExpenseController@store', 'method' => 'post']) !!}
+        {!! Form::open([
+            'action' => 'ExpenseController@store',
+            'method' => 'post',
+            'onsubmit' => 'return validateForm()',
+        ]) !!}
         <div class = "row">
 
             <?php
@@ -28,7 +32,7 @@
             </div>
             <div class="form-group col-md-6">
                 {!! Form::label('ExpensesAccountID', 'نوع المنصرف', ['class' => 'input_label']) !!}
-                <select id='ExpensesAccountID' name="ExpensesAccountID" class='input_style' required>
+                <select id='ExpensesAccountID' name="ExpensesAccountID" class='input_style'>
                 </select>
 
             </div>
@@ -43,20 +47,24 @@
             </div>
             <div class="form-group col-md-6">
                 {!! Form::label('PaymentAccountID', 'الحساب المسدد منه', ['class' => 'input_label']) !!}
-                <select id='PaymentAccountID' name="PaymentAccountID" class='input_style' required>
+                <select id='PaymentAccountID' name="PaymentAccountID" class='input_style'>
                 </select>
 
             </div>
             <div class="form-group col-md-6">
                 {!! Form::label('ExpensesAmount', 'المبلغ', ['class' => 'input_label']) !!}
-                {!! Form::text('ExpensesAmount', null, ['class' => 'input_style', 'placeholder' => 'ادخل المبلغ ', 'required']) !!}
+                {!! Form::text('ExpensesAmount', null, [
+                    'class' => 'input_style',
+                    'placeholder' => 'ادخل المبلغ ',
+                    'id' => 'ExpensesAmount',
+                ]) !!}
             </div>
             <div class="form-group col-md-12">
                 {!! Form::label('ExpensesDetails', 'التفاصيل', ['class' => 'input_label']) !!}
                 {!! Form::textarea('ExpensesDetails', null, [
                     'class' => 'input_style',
                     'placeholder' => 'ادخل التفاصيل ',
-                    'required',
+                    'id' => 'ExpensesDetails',
                 ]) !!}
             </div>
             <div class="form-group col-md-6">
@@ -134,5 +142,45 @@
                 }
             });
         });
+
+        function validateForm() {
+            var RestrictionsRowsNumber = $("#RestrictionsRowsNumber").val()
+            var amount = 0
+            $(".error-label").remove();
+            $(".error_input").removeClass("error_input");
+            var flag = true
+
+            if ($('#CurrencyID').val() == 0) {
+                $("#CurrencyID").addClass("error_input");
+                CreateErrorLabel("CurrencyID", "الرجاء تحديد العملة  ")
+                flag = false
+            }
+            if ($('#ExpensesAccountID').val() == 0) {
+                $("#ExpensesAccountID").addClass("error_input");
+                CreateErrorLabel("ExpensesAccountID", "الرجاء تحديد الحساب  ")
+                flag = false
+            }
+            if ($('#PaymentType').val() == 0) {
+                $("#PaymentType").addClass("error_input");
+                CreateErrorLabel("PaymentType", "الرجاء تحديد طريقة الدفع  ")
+                flag = false
+            }
+            if ($('#PaymentAccountID').val() == 0) {
+                $("#PaymentAccountID").addClass("error_input");
+                CreateErrorLabel("PaymentAccountID", "الرجاء تحديد الحساب  ")
+                flag = false
+            }
+            if (isNaN($('#ExpensesAmount').val()) || $('#ExpensesAmount').val() < 0) {
+                $("#ExpensesAmount").addClass("error_input");
+                CreateErrorLabel("ExpensesAmount", "الرجاء ادخال المبلغ بصورة صحيحة  ")
+                flag = false
+            }
+            if ($('#ExpensesDetails').val() == 0) {
+                $("#ExpensesDetails").addClass("error_input");
+                CreateErrorLabel("ExpensesDetails", "الرجاء كتابة التفاصيل   ")
+                flag = false
+            }
+            return flag
+        }
     </script>
 @endsection
