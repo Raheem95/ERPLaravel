@@ -339,49 +339,71 @@
             $("#TotalPurchase").val(Total)
         }
 
+        function CreateErrorLabel(AfterID, Message) {
+            // Check if the error label already exists
+            if (!$("#" + AfterID + "Error").length) {
+                // Create a new label element for the error message
+                var ErrorLabel = $("<label class = 'error-label' style='color:red;font-size:16px'>").attr("id", AfterID +
+                    "Error").text(
+                    Message);
+
+                // Insert the error label after the element with ID 'AfterID'
+                $("#" + AfterID).after(ErrorLabel);
+            }
+        }
+
         function validateForm() {
-            var flag = true
-            var Result = "";
+            var flag = true; // Initialize flag to true
+
+            // Reset existing error labels and remove error classes
+            $(".error-label").remove();
+            $(".error_input").removeClass("error_input");
+
             if ($("#SupplierID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class='alert alert-danger Result'> الرجاء اختيار المورد </div>"
+                $("#SupplierID").addClass("error_input");
+                CreateErrorLabel("SupplierID", "الرجاء اختيار المورد");
             }
             if ($("#SupplierName").val() == "") {
                 flag = false;
-                var Result = Result + "<div class='alert alert-danger Result'> الرجاء ادخال اسم المورد </div>"
+                $("#SupplierName").addClass("error_input");
+                CreateErrorLabel("SupplierName", "الرجاء ادخال اسم المورد");
             }
             if ($("#StockID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class='alert alert-danger Result'> الرجاء اختيار المخزن </div>"
+                $("#StockID").addClass("error_input");
+                CreateErrorLabel("StockID", "الرجاء اختيار المخزن");
             }
             if ($("#NumberOfItems").val() == 0) {
                 flag = false;
-                var Result = Result +
-                    "<div class='alert alert-danger Result'> يجب ان تحتوي الفاتورة على منتج واحد على الاقل </div>"
+                CreateErrorLabel("NumberOfItems", "يجب أن تحتوي الفاتورة على منتج واحد على الأقل");
             }
             for (var i = 1; i <= $("#NumberOfItems").val(); i++) {
                 if ($("#ItemID" + i).val() == 0) {
                     flag = false;
-                    var Result = Result + "<div class='alert alert-danger Result'> الرجاء اختيار المنتج رقم " + i +
-                        "</div>"
+                    $("#ItemName" + i).addClass("error_input");
+                    CreateErrorLabel("ItemID" + i, "الرجاء اختيار المنتج");
                 }
                 var ItemQTY = $("#ItemQTY" + i).val();
                 if (isNaN(ItemQTY) || parseFloat(ItemQTY) <= 0) {
                     flag = false;
-                    var Result = Result +
-                        "<div class='alert alert-danger Result'> الرجاء ادخال كمية صحيحة للمنتج رقم " + i + "</div>"
+                    $("#ItemQTY" + i).addClass("error_input");
+                    CreateErrorLabel("ItemQTY" + i, "الرجاء ادخال كمية صحيحة للمنتج");
                 }
                 var ItemPrice = $("#ItemPrice" + i).val();
                 if (isNaN(ItemPrice) || parseFloat(ItemPrice) <= 0) {
                     flag = false;
-                    var Result = Result +
-                        "<div class='alert alert-danger Result'> الرجاء ادخال سعر صحيح للمنتج رقم " + i + "</div>"
+                    $("#ItemPrice" + i).addClass("error_input");
+                    CreateErrorLabel("ItemPrice" + i, "الرجاء ادخال سعر صحيح للمنتج");
                 }
             }
-            document.getElementById('Results').scrollIntoView();
 
-            $("#Results").html(Result)
-            return flag;
+            return flag; // Return the flag indicating form validity
         }
     </script>
 @endsection
+<style>
+    .error_input {
+        border: 1px solid red !important;
+    }
+</style>
