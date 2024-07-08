@@ -170,16 +170,14 @@
                     </td>
                     <td><label id="AvailableQTY{{ $i }}">0</label></td>
                     <td>{!! Form::number('ItemQTY' . $i, $RowItem->ItemQTY, [
-                        'class' => 'input_style',
+                        'class' => 'input_style Calculate',
                         'placeholder' => 'ادخل الكمية',
                         'id' => 'ItemQTY' . $i,
-                        'oninput' => 'CalculateRow(' . $i . ')',
                     ]) !!}</td>
                     <td>{!! Form::number('ItemPrice' . $i, $RowItem->ItemPrice, [
-                        'class' => 'input_style',
+                        'class' => 'input_style Calculate',
                         'placeholder' => 'ادخل السعر',
                         'id' => 'ItemPrice' . $i,
-                        'oninput' => 'CalculateRow(' . $i . ')',
                     ]) !!}</td>
                     <td><label id="TotalRow{{ $i }}">{{ $RowItem->ItemPrice * $RowItem->ItemQTY }}</label></td>
                 </tr>
@@ -262,14 +260,12 @@
             tr.append($(
                 "<td><input type = 'number' value = '0' id = 'ItemQTY" + myrowCount +
                 "' name = 'ItemQTY" + myrowCount +
-                "' placeholder = 'ادخل الكمية' class = 'input_style CheckQTY' value = '0' oninput = (CalculateRow(" +
-                myrowCount + "))></td>"
+                "' placeholder = 'ادخل الكمية' class = 'input_style CheckQTY Calculate' value = '0'></td>"
             ))
             tr.append($(
                 "<td><input type = 'number' value = '0' id = 'ItemPrice" + myrowCount +
                 "' name = 'ItemPrice" + myrowCount +
-                "' placeholder = 'ادخل السعر' class = 'input_style ' value = '0' oninput = (CalculateRow(" +
-                myrowCount + "))></td>"
+                "' placeholder = 'ادخل السعر' class = 'input_style Calculate' value = '0'></td>"
             ))
             tr.append($("<td><label id = 'TotalRow" + myrowCount + "'>0</label></td>"))
             tr.appendTo(table)
@@ -288,30 +284,19 @@
                 myCurrentID--
 
                 document.getElementById('Row' + i).id = 'Row' + myCurrentID
-                $("#ItemID" + i).attr("id", "ItemID" + myCurrentID)
-                $("#ItemID" + myCurrentID).attr("name", "ItemID" + myCurrentID)
+                $("#ItemID" + i).attr("id", "ItemID" + myCurrentID).attr("name", "ItemID" + myCurrentID)
 
-                $("#ItemName" + i).attr("id", "ItemName" + myCurrentID)
-                $("#ItemName" + myCurrentID).attr("name", "ItemName" + myCurrentID)
+                $("#ItemName" + i).attr("id", "ItemName" + myCurrentID).attr("name", "ItemName" + myCurrentID)
 
                 $("#SelectItem" + i).attr("id", "SelectItem" + myCurrentID)
 
-                $("#ItemQTY" + i).attr("id", "ItemQTY" + myCurrentID)
-                $("#ItemQTY" + myCurrentID).attr("name", "ItemQTY" + myCurrentID)
-                $("#ItemQTY" + myCurrentID).on('input',
-                    function() {
-                        CalculateRow(myCurrentID);
-                    });
+                $("#ItemQTY" + i).attr("id", "ItemQTY" + myCurrentID).attr("name", "ItemQTY" + myCurrentID)
+
 
 
                 $("#AvailableQTY" + i).attr("id", "AvailableQTY" + myCurrentID)
 
-                $("#ItemPrice" + i).attr("id", "ItemPrice" + myCurrentID)
-                $("#ItemPrice" + myCurrentID).attr("name", "ItemPrice" + myCurrentID)
-                $("#ItemPrice" + myCurrentID).on('input',
-                    function() {
-                        CalculateRow(myCurrentID);
-                    });
+                $("#ItemPrice" + i).attr("id", "ItemPrice" + myCurrentID).attr("name", "ItemPrice" + myCurrentID)
 
                 $("#TotalRow" + i).attr("id", "TotalRow" + myCurrentID)
                 $("#TotalRow" + myCurrentID).attr("name", "TotalRow" + myCurrentID)
@@ -368,14 +353,20 @@
             }
         }
 
-        $(document).on('change', '.CheckQTY', function() {
-            var ItemQTY = $(this).val()
-            var RowID = $(this).attr("id").replace("ItemQTY", "");
-            if (parseFloat(ItemQTY) > parseFloat($("#AvailableQTY" + RowID).html()))
-                $(this).removeClass("right_input_style").addClass("wrong_input_style")
-            else
-                $(this).removeClass("wrong_input_style").addClass("right_input_style")
-
+        $(document).on('input', '.Calculate', function() {
+            var NumberOfItems = $("#NumberOfItems").val()
+            for (var i = 1; i <= NumberOfItems; i++) {
+                if (!$.isNumeric($("#ItemQTY" + i).val()) || $("#ItemQTY" + i).val() < 0) {
+                    $("#ItemQTY" + i).val(0);
+                } else if (!$.isNumeric($("#ItemPrice" + i).val()) || $("#ItemPrice" + i).val() < 0) {
+                    $("#ItemPrice" + i).val(0);
+                }
+                var QTY = $("#ItemQTY" + i).val();
+                var ItemPrice = $("#ItemPrice" + i).val();
+                $("#ItemQTY" + i).val(parseInt(QTY))
+                $("#ItemPrice" + i).val(parseInt(ItemPrice))
+                CalculateRow(i);
+            }
         });
 
         function CalculateRow(RowID) {
