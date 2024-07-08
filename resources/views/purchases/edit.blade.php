@@ -1,8 +1,8 @@
 @extends('layouts.app')
 <style>
     .SelectItem {
-        
-    width: 400px;
+
+        width: 400px;
         position: absolute;
         background: #fdfeff;
         padding: 10 30px;
@@ -201,31 +201,36 @@
             var RowID = $(this).attr('id').replace("ItemName", "")
             $("#ItemID" + RowID).val(0)
             var Keyword = $(this).val()
-            if (!Keyword) Keyword = "!!!!!"
-            $.ajax({
-                url: '{{ url('items_search') }}/' + Keyword,
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    $("#SelectItem" + RowID).empty()
-                    $("#SelectItem" + RowID).css("display", "block")
-
-                    if (response.length > 0) {
-                        var ul = $("<ul></ul>")
-                        response.forEach(function(item) {
-                            ul.append("<li onclick='setItem(" + RowID + ", " + item.ItemID +
-                                ", \"" + item.ItemName + "\")'>" + item.ItemName + "</li>");
-                        });
-                        $("#SelectItem" + RowID).append(ul)
-                    } else {
-                        $("#SelectItem" + RowID).append($(
-                            "<div class = 'col-md-12 aler alert-daner'>لا توجد منتجات</div>"))
-                    }
-                },
-                error: function(xhr, status, error) {
-                    customAlert("حدث خطأ أثناء الاتصال بالخادم", "danger");
+            if (Keyword) {
+                $("#SelectItem" + RowID).empty()
+                $("#SelectItem" + RowID).css("display", "block")
+                var Items = {!! json_encode($Items) !!};
+                var flag = false
+                var ul = $("<ul></ul>")
+                var CurrentItems = []
+                for (var i = 1; i < $("#NumberOfItems").val(); i++) {
+                    if ($("#ItemID" + i).val() != 0)
+                        CurrentItems.push(parseInt($("#ItemID" + i).val()))
                 }
-            });
+                Items.forEach(function(item) {
+                    if (!CurrentItems.includes(item.ItemID) && (item.ItemPartNumber.includes(Keyword) ||
+                            item.ItemName.includes(Keyword))) {
+                        ul.append("<li onclick='setItem(" + RowID + ", " + item.ItemID +
+                            ", \"" + item.ItemName + "\")'>" + item.ItemName +
+                            "</li>");
+                        flag = true
+                    }
+                })
+                if (flag) {
+                    $("#SelectItem" + RowID).append(ul)
+                } else {
+                    $("#SelectItem" + RowID).append($(
+                        "<div class = 'col-md-12 aler alert-daner'>لا توجد منتجات</div>"
+                    ))
+                }
+            } else {
+                $("#SelectItem" + RowID).css("display", "none")
+            }
         });
         $(document).on('change', '.SetSupllierName', function() {
             $("#SupplierName").val($(this).find('option:selected').text())

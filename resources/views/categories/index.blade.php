@@ -24,9 +24,8 @@
                     <th>حذف</th>
                 </tr>
             </thead>
-            @foreach ($Categories as $category)
-                <tbody>
-
+            <tbody>
+                @foreach ($Categories as $category)
                     <tr>
                         <td>{{ $category->CategoryID }}</td>
                         <td>{{ $category->CategoryName }}</td>
@@ -51,7 +50,7 @@
 
                         </td>
                     </tr>
-            @endforeach
+                @endforeach
             </tbody>
         </table>
     @else
