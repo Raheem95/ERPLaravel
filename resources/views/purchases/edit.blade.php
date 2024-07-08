@@ -187,10 +187,11 @@
         </div>
     </div>
     <script>
-        function setItem(RowID, ItemID, ItemName) {
+        function setItem(RowID, ItemID, ItemName, ItemPrice) {
             $("#SelectItem" + RowID).css("display", "none")
             $("#ItemName" + RowID).val(ItemName)
             $("#ItemID" + RowID).val(ItemID)
+            $("#ItemPrice" + RowID).val(ItemPrice)
         }
         $(document).on('input', '.getItems', function() {
             var RowID = $(this).attr('id').replace("ItemName", "")
@@ -211,8 +212,9 @@
                     if (!CurrentItems.includes(item.ItemID) && (item.ItemPartNumber.includes(Keyword) ||
                             item.ItemName.includes(Keyword))) {
                         ul.append("<li onclick='setItem(" + RowID + ", " + item.ItemID +
-                            ", \"" + item.ItemName + "\")'>" + item.ItemName +
+                            ", \"" + item.ItemName + "\", " + item.ItemPrice + ")'>" + item.ItemName +
                             "</li>");
+
                         flag = true
                     }
                 })
