@@ -370,19 +370,6 @@
             $("#TotalSale").val(Total)
         }
 
-        function CreateErrorLabel(AfterID, Message) {
-            // Check if the error label already exists
-            if (!$("#" + AfterID + "Error").length) {
-                // Create a new label element for the error message
-                var ErrorLabel = $("<label class = 'error-label' style='color:red;font-size:16px'>").attr("id", AfterID +
-                    "Error").text(
-                    Message);
-
-                // Insert the error label after the element with ID 'AfterID'
-                $("#" + AfterID).after(ErrorLabel);
-            }
-        }
-
         function validateForm() {
             var flag = true
             $(".error-label").remove();
@@ -491,8 +478,3 @@
         }
     </script>
 @endsection
-<style>
-    .error_input {
-        border: 1px solid red !important;
-    }
-</style>

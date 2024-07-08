@@ -1,25 +1,48 @@
 @extends('layouts.app')
 <style>
-    .select2_style {
-        padding: 15px;
-        margin-bottom: 10px;
-        font-weight: 900;
-        color: #4d5961;
-        border: none;
+    .SelectAccount {
+
+        width: 400px;
+        position: absolute;
+        background: #fdfeff;
+        padding: 10 30px;
+        text-align: left;
+        display: none;
+        z-index: 3;
+        max-height: 300px;
+        overflow: scroll;
+    }
+
+
+
+    .SelectAccount li {
+        list-style: none;
+        padding: 5px;
+        border-bottom: 1px solid #3498db;
+        text-align: right;
+    }
+
+    .SelectAccount li:hover {
+        background: #3498db;
+        color: white;
+        font-weight: 600;
     }
 </style>
 @section('content')
     <div class="MainDiv" style="width:99%">
-        <div class="col-md-12 Result" id = "Results"></div>
+        <div class=" input_label">
+            <h1>قيد يومية</h1>
+        </div>
+        <div class="col-md-12 alert Result" id = "Results"></div>
         {!! Form::open([
             'action' => 'DailyAccountingEntryController@store',
             'method' => 'post',
             'onsubmit' => 'return validateForm()',
         ]) !!}
 
-        {!! Form::hidden('restrictionsNum', '1', ['id' => 'restrictionsNum']) !!}
+        {!! Form::hidden('RestrictionsRowsNumber', '1', ['id' => 'RestrictionsRowsNumber']) !!}
         <div class="col-md-12" style="text-align:right;">
-            <label class="input_label" style="font-size:25px;width:20%;"><b>بيان القيد</b></label>
+            <label class="input_label"><b>بيان القيد</b></label>
             {!! Form::text('ResDetails', null, [
                 'class' => 'input_style ReRight',
                 'placeholder' => 'ادخل البيان',
@@ -45,13 +68,10 @@
                             class="fas fa-plus"></i></button>
                 </td>
                 <td>
-                    <select class="select2_style select2" id="AccountID1" name="AccountID1">
-                        <option value="0">اختر الحساب</option>
-                        @foreach ($Accounts as $Account)
-                            <option value="{{ $Account['AccountID'] }}">{{ $Account['AccountNumber'] }} ||
-                                {{ $Account['AccountName'] }}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" class="input_style getAccount" id="AccountName1" name="AccountName1"
+                        placeholder="اختر احساب" autocomplete = "off">
+                    <div class="SelectAccount" id="SelectAccount1"></div>
+                    <input type="hidden" name="AccountID1" id="AccountID1">
                 </td>
                 <td>
                     <input type='text' id='details1' name='details1' class='input_style' placeholder='البيان' />
@@ -81,18 +101,58 @@
                 {!! Form::submit('حفظ', ['class' => 'btn save_button', 'style' => 'width:100%;padding:15px;']) !!}
             </div>
             <div class="col-md-3">
-                <a href="AccountManagment/DailyAccountingEntries">
-                    <button class="btn cancel_button" style="width:100%;padding:15px;">رجوع</button>
+                <a href="/AccountManagment/DailyAccountingEntries">
+                    <button type="button" class="btn cancel_button" style="width:100%;padding:15px;">رجوع</button>
                 </a>
             </div>
         </div>
         {!! Form::close() !!}
     </div>
     <script>
+        $(document).on('input', '.getAccount', function() {
+            var RowID = $(this).attr('id').replace("AccountName", "")
+            $("#AccountID" + RowID).val(0)
+            var Keyword = $(this).val()
+            if (Keyword) {
+                $("#SelectAccount" + RowID).empty()
+                $("#SelectAccount" + RowID).css("display", "block")
+                var Accounts = {!! json_encode($Accounts) !!};
+                var flag = false
+                var ul = $("<ul></ul>")
+                var CurrentAccounts = []
+                for (var i = 1; i < $("#RestrictionsRowsNumber").val(); i++) {
+                    if ($("#AccountID" + i).val() != 0)
+                        CurrentAccounts.push(parseInt($("#AccountID" + i).val()))
+                }
+                Accounts.forEach(function(Account) {
+                    var Refrance = Account.AccountName + " || " + Account.AccountNumber
+                    if (!CurrentAccounts.includes(Account.AccountID) && Refrance.includes(Keyword)) {
+                        ul.append("<li onclick='setAccount(" + RowID + ", " + Account.AccountID +
+                            ", \"" + Refrance + "\")'>" + Refrance + "</li>");
+                        flag = true
+                    }
+                })
+                if (flag) {
+                    $("#SelectAccount" + RowID).append(ul)
+                } else {
+                    $("#SelectAccount" + RowID).append($(
+                        "<div class = 'col-md-12 aler alert-daner'>لا توجد حساب</div>"
+                    ))
+                }
+            } else {
+                $("#SelectAccount" + RowID).css("display", "none")
+            }
+        });
+
+        function setAccount(RowID, AccountID, AccountName) {
+            $("#SelectAccount" + RowID).css("display", "none")
+            $("#AccountName" + RowID).val(AccountName)
+            $("#AccountID" + RowID).val(AccountID)
+        }
         $(document).on('change', '.ReRight', function() {
             var Comment = $(this).val()
 
-            for (var i = 1; i <= $("#restrictionsNum").val(); i++) {
+            for (var i = 1; i <= $("#RestrictionsRowsNumber").val(); i++) {
                 $("#details" + i).val(Comment)
             }
         });
@@ -100,26 +160,22 @@
             var MyAccounts = <?php echo json_encode($Accounts); ?>;
             var table = $("#restrictions")
             var Comment = $("#ResDetails").val()
-            var myrowCount = $("#restrictionsNum").val()
+            var myrowCount = $("#RestrictionsRowsNumber").val()
             myrowCount++
-            $("#restrictionsNum").val(myrowCount)
+            $("#RestrictionsRowsNumber").val(myrowCount)
             var tr = $('<tr id = "Row' + myrowCount + '"></tr>')
             tr.append($('<td><button type = "button" class = "btn " id = "remove' + myrowCount +
                 '" onclick = "removeItemRow(' + myrowCount +
                 ')"><i class="fas fa-trash-alt fa-2x"></i></button></td>'))
-            var Select = $("<select class='select2_style select2' id='AccountID" + myrowCount +
-                "'  name='AccountID" + myrowCount + "'></select>")
-            Select.append($("<option value = '0'>اختر الحساب</option>"))
-            MyAccounts.forEach(function(account) {
-                Select.append($("<option value = '" + account["AccountID"] + "'>" + account[
-                    "AccountNumber"] + "||" + account["AccountName"] + "</option>"))
-            });
-            var td = $("<td></td>")
-            td.append(Select)
-            tr.append(td)
+            tr.append($('<td></td>').html(
+                '<input type="text" class="input_style getAccount" id="AccountName' + myrowCount +
+                '" name="AccountName' + myrowCount + '" placeholder="اختر احساب" autocomplete = "off">' +
+                '<div class="SelectAccount" id="SelectAccount' + myrowCount + '"></div>' +
+                '<input type="hidden" name="AccountID' + myrowCount + '" id="AccountID' + myrowCount + '">'
+            ));
             tr.append($('<td><input type = "text" name = "details' + myrowCount + '" id = "details' + myrowCount +
                 '" value = "' + Comment +
-                '" class = "input_style" placeholder = "البيان" required = "required" ></td>'))
+                '" class = "input_style" placeholder = "البيان"></td>'))
             tr.append($("<td><select class='input_style' id='TransactionType" + myrowCount +
                 "' name='TransactionType" + myrowCount +
                 "'><option value='1'>منه</option><option value='2'>له</option></select></td>"))
@@ -129,71 +185,74 @@
                 myrowCount +
                 '" class = "input_style" placeholder = "ألقيمة المقابلة" required = "required" ></td>'))
             tr.appendTo(table)
-            addSelect2();
         });
 
         function removeItemRow(ItemId) {
             $("#Row" + ItemId).remove()
-            var restrictionsNum = $("#restrictionsNum").val()
+            var RestrictionsRowsNumber = $("#RestrictionsRowsNumber").val()
             ItemId++
-            for (i = ItemId; i <= restrictionsNum; i++) {
+            for (i = ItemId; i <= RestrictionsRowsNumber; i++) {
                 myCurrentID = i
                 myCurrentID--
 
                 document.getElementById('Row' + i).id = 'Row' + myCurrentID
-                $("#AccountID" + i).attr("id", "AccountID" + myCurrentID)
-                $("#AccountID" + myCurrentID).attr("name", "AccountID" + myCurrentID)
-
-                $("#details" + i).attr("id", "details" + myCurrentID)
-                $("#details" + myCurrentID).attr("name", "details" + myCurrentID)
-
-                $("#TransactionType" + i).attr("id", "TransactionType" + myCurrentID)
-                $("#TransactionType" + myCurrentID).attr("name", "TransactionType" + myCurrentID)
-
-                $("#amount" + i).attr("id", "amount" + myCurrentID)
-                $("#amount" + myCurrentID).attr("name", "amount" + myCurrentID)
-
-                $("#val" + i).attr("id", "val" + myCurrentID)
-                $("#val" + myCurrentID).attr("name", "val" + myCurrentID)
-
-                $("#add" + i).attr("id", "add" + myCurrentID)
-                $("#add" + myCurrentID).attr("onclick", 'SetModelId(' + myCurrentID + ')')
-
-                $("#remove" + i).attr("id", "remove" + myCurrentID)
-                $("#remove" + myCurrentID).attr("onclick", 'removeItemRow(' + myCurrentID + ')')
-
+                $("#AccountID" + i).attr("id", "AccountID" + myCurrentID).attr("name", "AccountID" + myCurrentID)
+                $("#AccountName" + i).attr("id", "AccountName" + myCurrentID).attr("name", "AccountName" + myCurrentID)
+                $("#SelectAccount" + i).attr("id", "SelectAccount" + myCurrentID)
+                $("#details" + i).attr("id", "details" + myCurrentID).attr("name", "details" + myCurrentID)
+                $("#TransactionType" + i).attr("id", "TransactionType" + myCurrentID).attr("name", "TransactionType" +
+                    myCurrentID)
+                $("#amount" + i).attr("id", "amount" + myCurrentID).attr("name", "amount" + myCurrentID)
+                $("#val" + i).attr("id", "val" + myCurrentID).attr("name", "val" + myCurrentID)
+                $("#remove" + i).attr("id", "remove" + myCurrentID).attr("onclick", 'removeItemRow(' + myCurrentID + ')')
             }
-            restrictionsNum--
-            $("#restrictionsNum").val(restrictionsNum)
+            RestrictionsRowsNumber--
+            $("#RestrictionsRowsNumber").val(RestrictionsRowsNumber)
 
         }
 
         function validateForm() {
-            var myrowCount = $("#restrictionsNum").val()
+            var RestrictionsRowsNumber = $("#RestrictionsRowsNumber").val()
             var amount = 0
+            $(".error-label").remove();
+            $(".error_input").removeClass("error_input");
+            $("#Results").html("").removeClass("alert-danger");
             var flag = true
-            if (myrowCount > 1) {
-                for (var i = 1; i <= myrowCount; i++) {
-                    if ($('#TransactionType' + i).val() == 1)
-                        amount = amount - parseInt($('#amount' + i).val())
-                    else
-                        amount = amount + parseInt($('#amount' + i).val())
-                    if ($('#AccountID' + i).val() == "0") {
-                        flag = false
-                        $("#Results").css("color", "red")
-                        $("#Results").html("الرجاء تحديد الحساب في القيد رقم " + i)
-                        break
-                    }
-                }
+            if (RestrictionsRowsNumber <= 1) {
+                $("#Results").addClass("alert-danger")
+                $("#Results").html("يجب ان يحتوي القيد على حسابين على الاقل")
+                flag = false
+            }
 
-                if (amount != 0) {
-                    $("#Results").css("color", "red")
-                    $("#Results").html("خطاء في الموازنة")
+            if ($('#ResDetails').val() == "") {
+                $("#ResDetails").addClass("error_input");
+                CreateErrorLabel("ResDetails", "الرجاء ادخال تعليق ")
+                flag = false
+            }
+            for (var i = 1; i <= RestrictionsRowsNumber; i++) {
+                if ($('#TransactionType' + i).val() == 1)
+                    amount = amount - parseInt($('#amount' + i).val())
+                else
+                    amount = amount + parseInt($('#amount' + i).val())
+                if ($('#AccountID' + i).val() == 0) {
+                    $("#AccountName" + i).addClass("error_input");
+                    CreateErrorLabel("AccountID" + i, "الرجاء تحديد الحساب")
                     flag = false
                 }
-            } else {
-                $("#Results").css("color", "red")
-                $("#Results").html("يجب ان يحتوي القيد على حسابين على الاقل")
+                if ($('#amount' + i).val() <= 0) {
+                    $("#amount" + i).addClass("error_input");
+                    CreateErrorLabel("amount" + i, "الرجاء ادخال قيمة صحيحة")
+                    flag = false
+                }
+                if ($('#details' + i).val() == "") {
+                    $("#details" + i).addClass("error_input");
+                    CreateErrorLabel("details" + i, "الرجاء ادخال تعليق ")
+                    flag = false
+                }
+            }
+            if (amount != 0) {
+                $("#Results").addClass("alert-danger")
+                $("#Results").html("خطاء في الموازنة")
                 flag = false
             }
             return flag

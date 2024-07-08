@@ -390,41 +390,45 @@
 
         function validateForm() {
             var flag = true
-            var Result = "";
+            $(".error-label").remove();
+            $(".error_input").removeClass("error_input");
+
             if ($("#CustomerID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار العميل </div>"
+                $("#CustomerID").addClass("error_input");
+                CreateErrorLabel("CustomerID", "الرجاء اختيار العميل");
             }
             if ($("#CustomerName").val() == "") {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء ادخال اسم العميل </div>"
+                $("#CustomerName").addClass("error_input");
+                CreateErrorLabel("CustomerName", "الرجاء ادخال اسم العميل");
             }
             if ($("#StockID").val() == 0) {
                 flag = false;
-                var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المخزن </div>"
+                $("#StockID").addClass("error_input");
+                CreateErrorLabel("StockID", "الرجاء اختيار المخزن");
             }
             if ($("#NumberOfItems").val() == 0) {
                 flag = false;
-                var Result = Result +
-                    "<div class = 'alert alert-danger Result'> يجب ان تحتوي الفاتورة على منتج واحد على الاقل </div>"
+                CreateErrorLabel("NumberOfItems", "يجب أن تحتوي الفاتورة على منتج واحد على الأقل");
             }
             for (var i = 1; i <= $("#NumberOfItems").val(); i++) {
                 if ($("#ItemID" + i).val() == 0) {
                     flag = false;
-                    var Result = Result + "<div class = 'alert alert-danger Result'> الرجاء اختيار المنتج رقم " + i +
-                        "</div>"
+                    $("#ItemName" + i).addClass("error_input");
+                    CreateErrorLabel("ItemID" + i, "الرجاء اختيار المنتج");
                 }
                 var ItemQTY = $("#ItemQTY" + i).val();
                 if (isNaN(ItemQTY) || parseFloat(ItemQTY) <= 0) {
                     flag = false;
-                    var Result = Result +
-                        "<div class = 'alert alert-danger Result'> الرجاء ادخال كمية صحيحة للمنتج رقم " + i + "</div>"
+                    $("#ItemQTY" + i).addClass("error_input");
+                    CreateErrorLabel("ItemQTY" + i, "الرجاء ادخال كمية صحيحة للمنتج");
                 }
                 var ItemPrice = $("#ItemPrice" + i).val();
                 if (isNaN(ItemPrice) || parseFloat(ItemPrice) <= 0) {
                     flag = false;
-                    var Result = Result +
-                        "<div class = 'alert alert-danger Result'> الرجاء ادخال سعر صحيح للمنتج رقم " + i + "</div>"
+                    $("#ItemPrice" + i).addClass("error_input");
+                    CreateErrorLabel("ItemPrice" + i, "الرجاء ادخال سعر صحيح للمنتج");
                 }
             }
 
@@ -448,8 +452,6 @@
                     return false;
                 }
             }
-            document.getElementById('Results').scrollIntoView();
-            $("#Results").html(Result)
             return flag;
         }
 

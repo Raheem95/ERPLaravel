@@ -52,7 +52,7 @@ class DailyAccountingEntryController extends Controller
             $CurrencyValue = $request->input("val{$i}");
             $Result = $this->saveDailyDetails($RestrictionID, $AccountID, $TransactionAmount, $TransactionType, $CurrencyValue, $TransactionDetails, $UserID);
         }
-        return redirect("/AccountManagment/DailyAccountingEntries")->with("success", "تمت اضافة  القيد بنجاح");
+        return redirect("/AccountManagment/DailyAccountingEntries")->with("success", "تم اضافة  القيد بنجاح");
         // return $Rest;
     }
 
@@ -136,7 +136,7 @@ class DailyAccountingEntryController extends Controller
     {
         $Result = $this->deleteDaily($id);
         if ($Result)
-            return redirect("/AccountManagment/DailyAccountingEntries")->with("success", "تمت حذف  القيد بنجاح");
+            return redirect("/AccountManagment/DailyAccountingEntries")->with("success", "تم حذف  القيد بنجاح");
         else
             return redirect("/AccountManagment/DailyAccountingEntries")->with("success", "خطاء في الحذف");
     }

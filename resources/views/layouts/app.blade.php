@@ -26,7 +26,20 @@
     <!-- Font Awesome CSS -->
 
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <script>
+        function CreateErrorLabel(AfterID, Message) {
+            // Check if the error label already exists
+            if (!$("#" + AfterID + "Error").length) {
+                // Create a new label element for the error message
+                var ErrorLabel = $("<label class = 'error-label' style='color:red;font-size:16px'>").attr("id", AfterID +
+                    "Error").text(
+                    Message);
 
+                // Insert the error label after the element with ID 'AfterID'
+                $("#" + AfterID).after(ErrorLabel);
+            }
+        }
+    </script>
     <style>
         @font-face {
             font-family: 'MyFont';
@@ -132,6 +145,10 @@
 
         .sidebar::-webkit-scrollbar-thumb:hover {
             background: #e7eef1;
+        }
+
+        .error_input {
+            border: 1px solid red !important;
         }
     </style>
 </head>

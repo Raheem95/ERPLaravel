@@ -73,12 +73,13 @@
                                 {!! Form::open([
                                     'action' => ['DailyAccountingEntryController@destroy', $DailyAccountingEntry->RestrictionID],
                                     'method' => 'post',
+                                    'id' => 'deleteForm' . $DailyAccountingEntry->RestrictionID,
                                 ]) !!}
                                 {!! Form::hidden('_method', 'DELETE') !!}
                                 {!! Form::button('<i class="fas fa-trash-alt fa-2x"></i> ', [
-                                    'type' => 'submit',
+                                    'type' => 'button',
                                     'class' => 'btn delete_button',
-                                    'onclick' => "return confirm('تاكيد حذف القيد  $DailyAccountingEntry->RestrictionID ')",
+                                    'onclick' => "confirmDelete('تاكيد حذف  القيد    {$DailyAccountingEntry->RestrictionDetails}','deleteForm{$DailyAccountingEntry->RestrictionID}')",
                                 ]) !!}
 
                                 {!! Form::close() !!}
@@ -121,13 +122,13 @@
                         </td>
                         <td>
                             ${restriction.Deletable == 0 ?
-                                `<form action="restrictions/${restriction.RestrictionID}" method="post" style="display: inline;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn delete_button" onclick="return confirm('تأكيد حذف القيد ${restriction.RestrictionID}')">
-                                            <i class="fas fa-trash-alt fa-2x"></i>
-                                        </button>
-                                    </form>` :
+                                `<form action="DailyAccountingEntries/${restriction.RestrictionID}" method="post" style="display: inline;" id='deleteForm${restriction.RestrictionID}'>
+                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                                <button type="button" class="btn delete_button" onclick="return confirmDelete('تأكيد حذف القيد ${restriction.RestrictionDetails}','deleteForm${restriction.RestrictionID}')">
+                                                                    <i class="fas fa-trash-alt fa-2x"></i>
+                                                                </button>
+                                                            </form>` :
                                 'NotDeletable'}
                         </td>
                     </tr>
